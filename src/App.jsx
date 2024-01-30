@@ -1,3 +1,20 @@
+
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import { Suspense, lazy } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import AddEvent from './pages/AddEvent';
+import FallbackLoadingScreen from './components/loading/FallbackLoadingScreen';
+import { EventDetails } from './pages/EventDetails';
+import SearchEvent from './pages/SearchEvent';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faBookmark } from '@fortawesome/free-regular-svg-icons';
+
+const Protector = lazy(() => import('./Protect/Protector'));
+
+// Favorite Icon Global einbinden
+library.add(faBookmark);
+
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import { Suspense, lazy, useState } from "react";
@@ -9,29 +26,38 @@ const Protector = lazy(() => import("./Protect/Protector"));
 import { EventDetails } from "./pages/EventDetails";
 import { LoadingContext } from "./context/context";
 import { Loadingscreen } from "./pages/Loadingscreen";
+import { UserProfile } from "./pages/UserProfile";
+
+
 
 function App() {
   const [loading, setLoading] = useState(false);
   return (
     <>
-      <LoadingContext.Provider value={{ loading, setLoading }}>
+        <LoadingContext.Provider value={{ loading, setLoading }}>
         {loading ? (
-          <BrowserRouter>
-            <Suspense fallback={<FallbackLoadingScreen />}>
-              <Routes>
-                <Route path="/" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route element={<Protector />}>
-                  <Route path="/eventdetails/:id" element={<EventDetails />} />
-                  <Route path="/event/add" element={<AddEvent />} />
-                </Route>
-              </Routes>
-            </Suspense>
-          </BrowserRouter>
-        ) : (
+      <BrowserRouter>
+        <Suspense fallback={<FallbackLoadingScreen />}>
+          <Routes>
+            <Route path="/" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+
+            <Route element={<Protector />}>
+              <Route path="/eventdetails/:id" element={<EventDetails />} />
+              <Route path="/event/add" element={<AddEvent />} />
+              <Route path="/event/search" element={<SearchEvent />} />
+
+              <Route path="/user" element={<UserProfile />} />
+
+            </Route>
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
+) : (
           <Loadingscreen />
         )}
       </LoadingContext.Provider>
+
     </>
   );
 }

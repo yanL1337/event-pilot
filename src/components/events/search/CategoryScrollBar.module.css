@@ -1,0 +1,42 @@
+.category_buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.scrollContainer {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  cursor: grab;
+  width: 100%;
+}
+
+.scrollContainer.grabbing {
+  cursor: grabbing;
+}
+
+.category_buttons_List {
+  display: flex;
+  gap: 12px;
+}
+
+.category_button {
+  padding: 5% 10% 5% 10%;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  width: 150px;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  background-color: var(--firstButtonColor);
+  color: white;
+  font-size: 2rem;
+}
+
+.scrollButton {
+  flex: 0 0 auto;
+  margin: 5px;
+  /* Weitere Styles für Ihre Buttons */
+}
