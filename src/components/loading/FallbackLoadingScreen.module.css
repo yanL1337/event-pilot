@@ -1,0 +1,11 @@
+.section {
+  width: 100vw;
+}
+
+.loading_div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
