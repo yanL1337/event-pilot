@@ -10,14 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-
-
-
+    "@fortawesome/fontawesome-svg-core": "^6.5.1",
+    "@fortawesome/free-brands-svg-icons": "^6.5.1",
+    "@fortawesome/free-regular-svg-icons": "^6.5.1",
+    "@fortawesome/free-solid-svg-icons": "^6.5.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "axios": "^1.6.7",
-    "node-geocoder": "^4.2.0",
-
     "dotenv": "^16.4.1",
-
+    "node-geocoder": "^4.2.0",
     "pocketbase": "^0.21.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

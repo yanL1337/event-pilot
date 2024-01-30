@@ -1,5 +1,5 @@
-import PocketBase from "pocketbase";
+import PocketBase from 'pocketbase';
 
-const pb = new PocketBase("https://event-pilot.pockethost.io");
+const pb = new PocketBase(`${import.meta.env.VITE_POCKET_FETCH_URL}`);
 
 export default pb;

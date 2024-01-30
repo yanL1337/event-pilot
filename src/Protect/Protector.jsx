@@ -1,16 +1,15 @@
-import { Navigate, Outlet } from "react-router-dom";
-import PocketBase from "pocketbase";
-import useLocalStorage from "../hooks/useLocalStorage";
-import { getUserExample } from "../utils/fetchData";
-import { useEffect } from "react";
 
-const pb = new PocketBase(`${import.meta.env.VITE_POCKET_FETCH_URL}`);
+import { Navigate, Outlet } from 'react-router-dom';
+import { getUserExample } from '../utils/fetchData';
+import { useEffect, useState } from 'react';
+import pb from '../lib/pocketbase';
 
 const Protector = () => {
-  const [isLogin] = useLocalStorage("pocketbase_auth", null);
-  // const isLogin = useLocalStorage('pocketbase_auth', null);
+  const [isLogin] = useState(pb.authStore.isValid);
+
 
   useEffect(() => {
+    console.log('first');
     /* Diese Funktion ist aktuell nur provisorisch!!!! */
     const fetchData = async () => {
       const userData = await getUserExample(pb);
