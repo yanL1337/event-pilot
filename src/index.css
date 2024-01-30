@@ -1,3 +1,7 @@
+@font-face {
+  font-family: Inter;
+  src: url('./assets/fonts/Inter-VariableFont_slnt_wght.ttf');
+}
 
 * {
   box-sizing: border-box;
@@ -7,9 +11,13 @@
 
 html {
   font-size: 62.5%;
+  font-family: Inter, Arial, Helvetica, sans-serif;
 }
 
 :root {
   --selectedColor: #00ecaa;
+  --firstBGColor: #5d3ede;
+  --firstButtonColor: #876afd;
+  --firstFontColor: #668be9;
+  --firstBoxShadowColor: #a6a6a6;
 }
-

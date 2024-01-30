@@ -1,12 +1,9 @@
 import axios from 'axios';
-import PocketBase from 'pocketbase';
-
-// Die pb Instanz muss global kommen
+import pb from '../lib/pocketbase';
 
 /* POCKETBASE */
 
 export const createEventByUser = async (eventData, authToken) => {
-  const pb = new PocketBase(`${import.meta.env.VITE_POCKET_FETCH_URL}`);
   try {
     if (!authToken) {
       throw new Error('Das Event anzulegen ist fehlgeschlagen');
@@ -32,9 +29,17 @@ export const createEventByUser = async (eventData, authToken) => {
   }
 };
 
+export const viewAllEvents = async () => {
+  const records = await pb.collection('events').getFullList({
+    sort: '-created',
+  });
+
+  return records;
+};
+
 /* NODEMAILER */
 export const sendRegisteredEventEmail = async (method, email, urlParams, headers = {}) => {
-  const url = `${import.meta.env.VITE_EMAIL_FETCH_URL}${urlParams}`;
+  const url = `${import.meta.env.VITE_POCKET_FETCH_URL}${urlParams}`;
   // sende Email, wenn User sich an einem Event registriert hat!
   try {
     const response = await axios({
