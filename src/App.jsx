@@ -1,31 +1,35 @@
+
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import { Suspense, lazy } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+// import Protector from './Protect/Protector';
+import AddEvent from './pages/AddEvent';
+import FallbackLoadingScreen from './components/loading/FallbackLoadingScreen';
+
+const Protector = lazy(() => import('./Protect/Protector'));
+
+import { EventDetails } from "./assets/pages/EventDetails";
+
 
 function App() {
-  var i;
-
-  console.log("local storage");
-  for (i = 0; i < localStorage.length; i++) {
-    console.log(
-      localStorage.key(i) +
-        "=[" +
-        localStorage.getItem(localStorage.key(i)) +
-        "]"
-    );
-  }
-
-  console.log("session storage");
-  for (i = 0; i < sessionStorage.length; i++) {
-    console.log(
-      sessionStorage.key(i) +
-        "=[" +
-        sessionStorage.getItem(sessionStorage.key(i)) +
-        "]"
-    );
-  }
   return (
     <>
-      <LoginPage />
+
+      <BrowserRouter>
+        <Suspense fallback={<FallbackLoadingScreen />}>
+          <Routes>
+    <Route element={<LoginPage />}/>
+      <Route element={<RegisterPage />}/>
+            <Route element={<Protector />}>
+              <Route path="/eventdetails/:id" element={<EventDetails />}/>
+              <Route path="/event/add" element={<AddEvent />} />
+            </Route>
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
+
+
     </>
   );
 }
