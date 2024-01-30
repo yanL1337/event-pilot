@@ -1,4 +1,6 @@
 
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 import { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 // import Protector from './Protect/Protector';
@@ -17,6 +19,8 @@ function App() {
       <BrowserRouter>
         <Suspense fallback={<FallbackLoadingScreen />}>
           <Routes>
+    <Route element={<LoginPage />}/>
+      <Route element={<RegisterPage />}/>
             <Route element={<Protector />}>
               <Route path="/eventdetails/:id" element={<EventDetails />}/>
               <Route path="/event/add" element={<AddEvent />} />
@@ -24,6 +28,7 @@ function App() {
           </Routes>
         </Suspense>
       </BrowserRouter>
+
 
     </>
   );
