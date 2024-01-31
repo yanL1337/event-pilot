@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import pb from "../lib/pocketbase.js";
-import editProfile from "../../public/images/Icon.svg";
+import editProfile from "/images/EditIcon.svg";
+import submitEdit from "/images/Arrow.svg";
 
 export const UserProfile = () => {
   const [user, setUser] = useState();
   const [following, setFollowing] = useState();
+  const [edit, setEdit] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -31,7 +33,11 @@ export const UserProfile = () => {
     getFollowing();
   }, [user]);
 
-  console.log(user);
+  const editUser = () => {
+    setEdit((prev) => !prev);
+  };
+
+  console.log(edit);
 
   return (
     <div style={{}}>
@@ -43,57 +49,89 @@ export const UserProfile = () => {
           alignItems: "center",
         }}
       >
-        <div className="top-bar">
-          <div className="name"> {`${user?.firstname} ${user?.lastname}`}</div>
-        </div>
+        {!edit ? (
+          <>
+            <div className="top-bar">
+              <div className="name">
+                {" "}
+                {`${user?.firstname} ${user?.lastname}`}
+              </div>
+            </div>
+            <img
+              className="image"
+              alt="Image"
+              src={`https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage}`}
+            />
+            <div
+              onClick={() => setEdit(true)}
+              style={{
+                borderRadius: "10px",
+                border: "1.5px solid var(--4, #777BF3)",
+                display: "flex",
+                alignItems: "center",
+                width: "30vw",
+                padding: "1vh 1vw",
+              }}
+            >
+              <img className="icon" alt="Icon" src={editProfile} />
+              <p className="d">Edit Profile</p>
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "5vw",
+              }}
+            >
+              <div style={{ textAlign: "center" }}>
+                <div className="text-wrapper-3">Following</div>
+                <div className="text-wrapper-4">{following}</div>
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <div className="text-wrapper-3">Followers</div>
+                <div className="text-wrapper-4">{user?.follower.length}</div>
+              </div>
+            </div>
+            <div className="about-me">
+              <p className="p">
+                <span className="span">{user?.description}</span>
+              </p>
+              <div className="headline">About Me</div>
+            </div>
+            <div className="interests">
+              <div className="interests-2">{""}</div>
+            </div>
+          </>
+        ) : (
+          <>
+            <img
+              className="image"
+              alt="Image"
+              src={`https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage}`}
+            />
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <input placeholder={user.firstname} />
+              <input placeholder={user.lastname} />
+            </div>
 
-        <img
-          className="image"
-          alt="Image"
-          src={`https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage}`}
-        />
-
-        <div
-          style={{
-            borderRadius: "10px",
-            border: "1.5px solid var(--4, #777BF3)",
-            display: "flex",
-            alignItems: "center",
-            width: "30vw",
-            padding: "1vh 1vw",
-          }}
-        >
-          <img className="icon" alt="Icon" src={editProfile} />
-          <p className="d">Edit Profile</p>
-        </div>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "5vw",
-          }}
-        >
-          <div style={{ textAlign: "center" }}>
-            <div className="text-wrapper-3">Following</div>
-            <div className="text-wrapper-4">{following}</div>
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <div className="text-wrapper-3">Followers</div>
-            <div className="text-wrapper-4">{user?.follower.length}</div>
-          </div>
-        </div>
-
-        <div className="about-me">
-          <p className="p">
-            <span className="span">{user?.description}</span>
-          </p>
-          <div className="headline">About Me</div>
-        </div>
-
-        <div className="interests">
-          <div className="interests-2">{""}</div>
-        </div>
+            <div className="about-me">
+              <div className="headline">About Me</div>
+              <p className="p">
+                <span className="span">{user?.description}</span>
+              </p>
+            </div>
+            <div className="interests">
+              <div className="interests-2">{""}</div>
+            </div>
+            <div
+              style={{ display: "flex", alignItems: "center" }}
+              onClick={() => setEdit(false)}
+            >
+              <p>Save changes</p>
+              <img src={submitEdit} alt="" />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
