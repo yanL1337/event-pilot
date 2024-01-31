@@ -1,27 +1,24 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import pb from "../lib/pocketbase.js";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const emailRef = useRef();
   const passRef = useRef();
+  const navigate = useNavigate();
 
   const sendData = async () => {
     try {
       const authData = await pb
         .collection("users")
         .authWithPassword(emailRef.current.value, passRef.current.value);
-      console.log(authData);
+      navigate("/home");
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    setInterval(() => {
-      // console.log(pb.authStore.isValid);
-    }, 3000);
-  }, []);
 
   //console.log(pb.authStore);
 

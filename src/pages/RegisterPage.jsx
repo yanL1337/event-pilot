@@ -1,13 +1,16 @@
+import { useNavigate } from "react-router-dom";
 import pb from "../lib/pocketbase.js";
 
 const RegisterPage = () => {
+  const navigate = useNavigate();
+
   const sendData = async (event) => {
     event.preventDefault();
 
     const formData = new FormData(event.target);
     try {
       const record = await pb.collection("users").create(formData);
-      console.log(record);
+      navigate("/login");
     } catch (error) {
       console.log(error);
     }
@@ -31,8 +34,8 @@ const RegisterPage = () => {
             placeholder="Vorname"
           />
           <input
-            name="username"
-            id="username"
+            name="lastname"
+            id="lastname"
             type="text"
             placeholder="Nachname"
           />
