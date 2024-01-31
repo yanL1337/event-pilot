@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import pb from "../lib/pocketbase.js";
 import { useNavigate } from "react-router-dom";
 
@@ -17,6 +18,7 @@ const LoginPage = () => {
       console.log(error);
     }
   };
+
 
   //console.log(pb.authStore);
 
@@ -41,12 +43,9 @@ const LoginPage = () => {
         </div>
         <div>
           Don&apos;t have an account?
-          {/* <Link
-          to={"/register"}
-          href="#"
-        >
-          Register
-        </Link> */}
+          <Link to={"/register"} href="#">
+            Register
+          </Link>
         </div>
       </div>
     </section>

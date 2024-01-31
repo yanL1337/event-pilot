@@ -1,0 +1,47 @@
+.categoryOutput_wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-top: 7.5%;
+  font-size: 1.5rem;
+}
+
+.categoryOutput_box {
+  display: flex;
+  gap: 16px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px var(--firstBoxShadowColor);
+  padding: 15px;
+  position: relative;
+}
+
+.categoryOutput_box img {
+  height: 100px;
+  width: 100px;
+  object-fit: cover;
+  border-radius: 15px;
+}
+
+.categoryOutput_box_info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.categoryOutput_box_info p {
+  color: var(--firstFontColor);
+}
+
+.categoryOutput_location {
+  display: flex;
+  gap: 6px;
+  font-size: 1.5rem;
+}
+
+.categoryOutput_favorite {
+  position: absolute;
+  background-color: var(--firstBoxShadowColor);
+  padding: 2%;
+  top: 0;
+  right: 0;
+}

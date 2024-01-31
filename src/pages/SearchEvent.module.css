@@ -1,0 +1,7 @@
+.search_event {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: var(--firstBGColor);
+  padding-bottom: 3%;
+}
