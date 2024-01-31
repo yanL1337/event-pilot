@@ -1,0 +1,77 @@
+.filter_event_box_wrapper {
+  position: fixed;
+  height: 100vh;
+  top: 0;
+  background-color: rgba(122, 120, 120, 0.5);
+  display: flex;
+
+  align-items: flex-end;
+}
+
+.filter_event_box {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  align-items: center;
+  border-radius: 15px;
+  margin-top: auto;
+  height: 75vh;
+  width: 100vw;
+  background-color: white;
+  overflow: auto;
+}
+
+.filter_event_box p {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.event_box_content {
+  width: 95%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-right: auto;
+  padding-left: 2.5%;
+}
+
+.event_box_content p {
+  font-size: 1.5rem;
+}
+
+.isButtonClicked {
+  background-color: var(--firstButtonColor);
+}
+
+.box_content_buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.category_button_box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.category_button_box span {
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+.category_button {
+  background-color: white;
+  border: 2px solid var(--firstBoxShadowColor);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.category_button_icons {
+  height: 50px;
+  color: var(--firstBoxShadowColor);
+}
