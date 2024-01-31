@@ -13,10 +13,13 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faBookmark } from "@fortawesome/free-regular-svg-icons";
 import { CreatorProfil } from "./pages/CreatorProfil";
 
+
+
+
+
+library.add(faBookmark);
 const Protector = lazy(() => import("./Protect/Protector"));
 
-// Favorite Icon Global einbinden
-library.add(faBookmark);
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -30,14 +33,11 @@ function App() {
               <Routes>
                 <Route path="/" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
-
                 <Route element={<Protector />}>
                   <Route path="/eventdetails/:id" element={<EventDetails />} />
                   <Route path="/event/add" element={<AddEvent />} />
                   <Route path="/event/search" element={<SearchEvent />} />
-
                   <Route path="/user" element={<UserProfile />} />
-
                   <Route path="/creator/:id" element={<CreatorProfil />} />
                 </Route>
               </Routes>
