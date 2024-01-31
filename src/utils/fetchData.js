@@ -38,34 +38,25 @@ export const viewAllEvents = async () => {
 };
 
 export const viewEventByFilter = async (filter) => {
-  let query = pb.collection('events');
-  console.log(filter);
+  // Wir erstellen uns einen queryFilterBuilder
+  const filterString = queryBuilder(filter);
 
-  Object.keys(filter).forEach((key) => {
-    const value = filter[key];
+  // Wenn wir nix im Filter haben rufen wir alle Daten wieder ab?...
+  if (!filterString) {
+    return await viewAllEvents();
+  }
 
-    // Wir erzeugen unsere filter für den querybuilder / diese werden immer mit angehangen
-    if (Array.isArray(value) && value.length > 0) {
-      // filtern unser category Array anhand jedes items im Array
-      value.forEach((item) => {
-        query = query.filter(key, '=', item);
-      });
-    } else if (value) {
-      // Der Query wird mit "keyname=value" erzeugt
-      query = query.filter(key, '=', value);
-    }
+  // Wenn query gebaut ist holen wir uns die data
+  try {
+    // query builder einbauen
+    const records = await pb.collection('events').getFullList({
+      filter: filterString,
+    });
 
-    // Wenn quer gebaut ist holen wir uns die data
-    try {
-      // query builder einbauen
-    } catch (error) {
-      return null;
-    }
-  });
-
-  const records = await pb.collection('events', filter);
-
-  console.log(records);
+    return records;
+  } catch (error) {
+    return null;
+  }
 };
 
 /* NODEMAILER */
@@ -98,4 +89,25 @@ export const getUserExample = async (_pb) => {
     console.log(error);
     return false;
   }
+};
+
+const queryBuilder = (filter) => {
+  let queryParams = [];
+
+  for (const key in filter) {
+    const value = filter[key];
+
+    if (Array.isArray(value) && value.length > 0) {
+      // für category müssen wir den string mit or operatoren verknüpfen und in Klammern setzten
+      const arrayFilter = '(' + value.map((item) => `${key}="${item}"`).join('||') + ')';
+      queryParams.push(arrayFilter);
+    } else if (value && value.length > 0) {
+      // Ganz normal den Wert setzen
+      const valueFilter = `${key}="${value}"`;
+      queryParams.push(valueFilter);
+    }
+  }
+
+  // Wir verknüpfen die queries dann mit dem und operator und returnen den Rotz
+  return queryParams.join('&&');
 };

@@ -5,3 +5,7 @@
   background-color: var(--firstBGColor);
   padding-bottom: 3%;
 }
+
+.filter_event {
+  position: relative;
+}
