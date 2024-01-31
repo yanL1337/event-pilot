@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import pb from "../lib/pocketbase";
 import FallbackLoadingScreen from "../components/loading/FallbackLoadingScreen";
 
@@ -7,13 +7,6 @@ export function EventDetails() {
   const [detailEvent, setDetailEvent] = useState([]);
   const [creator, setCreator] = useState([]);
   const { id } = useParams();
-
-  async function xy() {
-    const record = await pb.collection("users").getOne("5b8q8ysjttmqpg2");
-    console.log(record);
-  }
-
-  xy();
 
   // - fetch für die Eventdaten
   useEffect(() => {
@@ -27,17 +20,15 @@ export function EventDetails() {
 
   // - fetch für Creator Daten
   useEffect(() => {
-    const getCreator = async () => {
-      await fetch(
-        pb.baseUrl + "/api/collections/users/records/" + detailEvent.creator
-      )
-        .then((response) => response.json())
-        .then((data) => setCreator(data));
-    };
+    async function getCreator() {
+      const record = await pb.collection("users").getOne(detailEvent.creator);
+      console.log(record);
+      setCreator(record);
+    }
     getCreator();
   }, [detailEvent]);
 
-  // console.log(creator);
+  console.log("Creator: ", creator);
 
   // console.log("Detailevent: ", detailEvent);
 
@@ -85,7 +76,11 @@ export function EventDetails() {
         <p>
           {day}.{month + 1}.{year} {hours - 1}:{minutes}0 Uhr
         </p>
-        <p>Creator-ID: {detailEvent.creator}</p>
+        <Link to={`/creator/${creator.id}`}>
+          <p>{creator.firstname}</p>
+          <p>Organizer</p>
+          <button>Follow</button>
+        </Link>
         <button onClick={sendMail}>register</button>
       </main>
     );

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import pb from "../lib/pocketbase.js";
 
 const LoginPage = () => {
@@ -18,7 +19,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     setInterval(() => {
-      console.log(pb.authStore.isValid);
+      // console.log(pb.authStore.isValid);
     }, 3000);
   }, []);
 
@@ -45,12 +46,9 @@ const LoginPage = () => {
         </div>
         <div>
           Don&apos;t have an account?
-          {/* <Link
-          to={"/register"}
-          href="#"
-        >
-          Register
-        </Link> */}
+          <Link to={"/register"} href="#">
+            Register
+          </Link>
         </div>
       </div>
     </section>
