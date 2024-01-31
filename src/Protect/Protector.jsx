@@ -1,21 +1,19 @@
-
-import { Navigate, Outlet } from 'react-router-dom';
-import { getUserExample } from '../utils/fetchData';
-import { useEffect, useState } from 'react';
-import pb from '../lib/pocketbase';
+import { Navigate, Outlet } from "react-router-dom";
+import { getUserExample } from "../utils/fetchData";
+import { useEffect, useState } from "react";
+import pb from "../lib/pocketbase";
 
 const Protector = () => {
   const [isLogin] = useState(pb.authStore.isValid);
 
-
   useEffect(() => {
-    console.log('first');
+    console.log("first");
     /* Diese Funktion ist aktuell nur provisorisch!!!! */
     const fetchData = async () => {
       const userData = await getUserExample(pb);
       if (!userData) {
         // Wenn wir unsere Userdaten nicht abrufen können leiten wir uns zur Login Seite um
-        return <Navigate to={"/login"} />;
+        return <Navigate to={"/"} />;
       }
     };
 
@@ -26,7 +24,7 @@ const Protector = () => {
 
   if (!isLogin) {
     // Wenn wir unsere Userdaten nicht abrufen können leiten wir uns zur Login Seite um
-    return <Navigate to={"/login"} />;
+    return <Navigate to={"/"} />;
   }
 
   return (
