@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import pb from "../lib/pocketbase";
 import FallbackLoadingScreen from "../components/loading/FallbackLoadingScreen";
+import style from "./css/EventDetails.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { formatDateToString } from "../utils/helperFunction";
 
 export function EventDetails() {
   const [detailEvent, setDetailEvent] = useState([]);
@@ -48,40 +51,68 @@ export function EventDetails() {
     });
   };
 
-  // * für Datum und Uhrzeit
-  const date = new Date(detailEvent.date);
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const day = date.getDate();
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-
   if (detailEvent && creator) {
     return (
-      <main>
-        <h1>Eventdetails</h1>
+      <main className={style.main}>
         <img
+          className={style.img}
           src={`${pb.baseUrl}/api/files/${detailEvent.collectionId}/${detailEvent.id}/${detailEvent.image}`}
           alt="Image"
         />
+        <div className={style.eventDetails}>
+          <Link to="/event/search">←</Link>
+          <button className={style.bookmark}>
+            <FontAwesomeIcon
+              icon={["far", "bookmark"]}
+              style={{ color: "#63E6BE", height: "25px" }}
+            />
+          </button>
+          <h1>Event Details</h1>
+        </div>
+
         {detailEvent.registeredUser >= 0 && (
-          <p>{detailEvent.registeredUser.length} registered</p>
+          <div className={style.registered}>
+            <img src="../images/Group.png" alt="" />
+            <p>{detailEvent.registeredUser.length} registered</p>
+          </div>
         )}
 
-        <p>{detailEvent.name}</p>
-        <p>{detailEvent.category}</p>
-        <p>About Event:</p>
-        <p>{detailEvent.description}</p>
-        <p>{detailEvent.location}</p>
-        <p>
-          {day}.{month + 1}.{year} {hours - 1}:{minutes}0 Uhr
-        </p>
-        <Link to={`/creator/${creator.id}`}>
-          <p>{creator.firstname}</p>
-          <p>Organizer</p>
-          <button>Follow</button>
-        </Link>
-        <button onClick={sendMail}>register</button>
+        <section className={style.section}>
+          <p className={style.eventname}>{detailEvent.name}</p>
+
+          <div className={style.div}>
+            <img src="../images/Location.png" alt="" />
+            <p>{detailEvent.location}</p>
+          </div>
+
+          <div className={style.div}>
+            <img src="../images/Date.png" alt="" />
+            <p>{formatDateToString(detailEvent.date)}</p>
+          </div>
+
+          <Link className={style.creator} to={`/creator/${creator.id}`}>
+            <div className={style.creatordiv}>
+              <img
+                src={`${pb.baseUrl}/api/files/${creator.collectionId}/${creator.id}/${creator.profilImage}`}
+                alt="Profilbild des Creators"
+              />
+              <div className={style.creatorname}>
+                <p>{creator.firstname}</p>
+                <p>Organizer</p>
+              </div>
+            </div>
+
+            <button>Follow</button>
+          </Link>
+          <div className={style.description}>
+            <p>About Event:</p>
+            <p>{detailEvent.description}</p>
+          </div>
+
+          <button className={style.register} onClick={sendMail}>
+            REGISTER
+          </button>
+        </section>
       </main>
     );
   } else {

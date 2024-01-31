@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import pb from "../lib/pocketbase";
 import style from "./css/CreatorProfile.module.css";
@@ -10,6 +10,7 @@ export function CreatorProfil() {
   const [state, setState] = useState("about");
   const [event, setEvent] = useState();
   const [color, setColor] = useState(false);
+  const [refresh, setRefresh] = useState(false);
   const { id } = useParams();
 
   useEffect(() => {
@@ -38,17 +39,17 @@ export function CreatorProfil() {
   //- functions für die verschiedenen Tabs
   function about() {
     setState("about");
-    setColor(true);
+    setColor((prev) => !prev);
   }
 
   function events() {
     setState("events");
-    setColor(true);
+    setColor((prev) => !prev);
   }
 
   function reviews() {
     setState("reviews");
-    setColor(true);
+    setColor((prev) => !prev);
   }
 
   //* follow/unfollow-function
@@ -58,6 +59,7 @@ export function CreatorProfil() {
       .update(creator.id, { "follower+": [pb.authStore.model.id] });
     console.log("updated creator: ", record);
     setColor(true);
+    setRefresh((prev) => !prev);
   }
 
   async function unfollow() {
@@ -65,6 +67,7 @@ export function CreatorProfil() {
       .collection("users")
       .update(creator.id, { "follower-": [pb.authStore.model.id] });
     setColor(false);
+    setRefresh((prev) => !prev);
     console.log("updated creator: ", record);
   }
 
@@ -73,21 +76,31 @@ export function CreatorProfil() {
     if (state === "about") {
       return (
         <main>
-          <h2>Creator Profil</h2>
+          <Link to="/home">←</Link>
+          <h2>{creator.firstname}</h2>
           <img
+            className={style.creatorprofil_img}
             src={`${pb.baseUrl}/api/files/${creator.collectionId}/${creator.id}/${creator.profilImage}`}
             alt="Profilbild des Creators"
           />
+          <p>Follower {creator.follower?.length}</p>
           <button className={color ? style.lila : null} onClick={follow}>
             follow
           </button>
           <button onClick={unfollow}>unfollow</button>
-          <p>Follower {creator.follower?.length}</p>
-          <p>{creator.firstname}</p>
 
-          <button onClick={about}>About</button>
-          <button onClick={events}>Events</button>
-          <button onClick={reviews}>Reviews</button>
+          <div className={style.tabs}>
+            <button className={color ? style.lila : null} onClick={about}>
+              ABOUT
+            </button>
+            <button className={color ? style.lila : null} onClick={events}>
+              EVENTS
+            </button>
+            <button className={color ? style.lila : null} onClick={reviews}>
+              REVIEWS
+            </button>
+          </div>
+
           <h1>ABOUT</h1>
           <p>{creator.description}</p>
         </main>
@@ -95,18 +108,30 @@ export function CreatorProfil() {
     } else if (state === "events") {
       return (
         <main>
-          <h2>Creator Profil</h2>
+          <Link to="/home">←</Link>
+          <h2>{creator.firstname}</h2>
           <img
+            className={style.creatorprofil_img}
             src={`${pb.baseUrl}/api/files/${creator.collectionId}/${creator.id}/${creator.profilImage}`}
             alt="Profilbild des Creators"
           />
-          <button onClick={follow}>follow</button>
           <p>Follower {creator.follower?.length}</p>
-          <p>{creator.firstname}</p>
+          <button className={color ? style.lila : null} onClick={follow}>
+            follow
+          </button>
+          <button onClick={unfollow}>unfollow</button>
 
-          <button onClick={about}>About</button>
-          <button onClick={events}>Events</button>
-          <button onClick={reviews}>Reviews</button>
+          <div className={style.tabs}>
+            <button className={color ? style.lila : null} onClick={about}>
+              ABOUT
+            </button>
+            <button className={color ? style.lila : null} onClick={events}>
+              EVENTS
+            </button>
+            <button className={color ? style.lila : null} onClick={reviews}>
+              REVIEWS
+            </button>
+          </div>
           <h1>EVENTS</h1>
           {event.items.map((singleEvent) => {
             return <CreatorEvent singleEvent={singleEvent} />;
@@ -116,18 +141,30 @@ export function CreatorProfil() {
     } else if (state === "reviews") {
       return (
         <main>
-          <h2>Creator Profil</h2>
+          <Link to="/home">←</Link>
+          <h2>{creator.firstname}</h2>
           <img
+            className={style.creatorprofil_img}
             src={`${pb.baseUrl}/api/files/${creator.collectionId}/${creator.id}/${creator.profilImage}`}
             alt="Profilbild des Creators"
           />
-          <button onClick={follow}>follow</button>
           <p>Follower {creator.follower?.length}</p>
-          <p>{creator.firstname}</p>
+          <button className={color ? style.lila : null} onClick={follow}>
+            follow
+          </button>
+          <button onClick={unfollow}>unfollow</button>
 
-          <button onClick={about}>About</button>
-          <button onClick={events}>Events</button>
-          <button onClick={reviews}>Reviews</button>
+          <div className={style.tabs}>
+            <button className={color ? style.lila : null} onClick={about}>
+              ABOUT
+            </button>
+            <button className={color ? style.lila : null} onClick={events}>
+              EVENTS
+            </button>
+            <button className={color ? style.lila : null} onClick={reviews}>
+              REVIEWS
+            </button>
+          </div>
           <h1>REVIEWS</h1>
         </main>
       );

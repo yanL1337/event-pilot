@@ -1,0 +1,150 @@
+.img {
+  height: 25%;
+  width: 100%;
+  z-index: -5;
+}
+
+.eventDetails {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  margin: -65% 0 60% 5%;
+}
+
+.bookmark {
+  position: absolute;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.22);
+  border-radius: 15px;
+  padding: 2%;
+  top: 1%;
+  right: 5%;
+}
+
+.eventDetails a {
+  color: white;
+  font-size: 30px;
+  border: none;
+  text-decoration: none;
+  font-weight: 400;
+}
+
+.registered {
+  width: 75%;
+  padding: 16px 20px;
+  border-radius: 15px;
+  box-shadow: 0 0 10px lightgray;
+
+  font-weight: 500;
+  font-size: 1.5rem;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin: -50px auto 5% auto;
+}
+
+.eventDetails h1 {
+  font-weight: 400;
+  font-size: 2.4rem;
+}
+
+.section {
+  width: 85%;
+  margin: 0 auto;
+}
+
+.eventname {
+  color: #120d26;
+  font-weight: 100;
+  font-size: 3.5rem;
+  margin-bottom: 20px;
+}
+
+.creator {
+  display: flex;
+  text-decoration: none;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.creatordiv {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.creator button {
+  background-color: rgba(102, 139, 233, 0.18);
+  border-radius: 10px;
+  font-weight: 100;
+  font-size: 1.2rem;
+  border: none;
+  padding: 7px 15px;
+  height: 50%;
+  color: #5d3ede;
+}
+
+.creator img {
+  height: 75px;
+  width: 75px;
+  object-fit: cover;
+  border-radius: 15px;
+}
+
+.creatorname p:nth-of-type(1) {
+  font-size: 1.5rem;
+  color: #0d0c26;
+}
+
+.creatorname p:nth-of-type(2) {
+  font-size: 1.2rem;
+  color: #706e8f;
+}
+
+.description p:nth-of-type(1) {
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: #120d26;
+  margin-bottom: 10px;
+}
+
+.description p:nth-of-type(2) {
+  font-size: 1.6rem;
+  line-height: 28px;
+  color: #120d26;
+  margin-bottom: 15px;
+}
+
+/* button */
+.register {
+  background-color: #5d3ede;
+  display: block;
+  color: white;
+  font-size: 1.6rem;
+  border: none;
+  width: 90%;
+  padding: 20px 0;
+  border-radius: 10px;
+  margin: 0 auto;
+}
+
+.div {
+  display: flex;
+  font-weight: 500;
+  font-size: 1.6rem;
+  line-height: 34px;
+  color: #120d26;
+  gap: 15px;
+  margin-bottom: 15px;
+  align-items: center;
+}
+
+.div img {
+  width: 75px;
+  height: 75px;
+  object-fit: cover;
+  border-radius: 15px;
+}
