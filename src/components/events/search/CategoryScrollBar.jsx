@@ -1,20 +1,25 @@
+import PropTypes from 'prop-types';
 /* CSS */
 import { useRef, useState } from 'react';
 import { getCategories, getCategoryIcons } from '../../../utils/helperFunction';
 import styles from './CategoryScrollBar.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const CategoryScrollBar = () => {
+const CategoryScrollBar = ({ eventFilter, eventFilterDispatch }) => {
   const scrollContainerRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
+  // Ist die Schwelle ab wann man ein drag Event registriert wird
+  const DRAG_THRESHOLD = 10;
+
   /* DRAG FUNKTIONALITÄT EVENTUELL SPÄTER AUSLAGERN */
   const startDragging = (e) => {
     // Überprüfen ob desktop oder touchscreen/mobile
     const initialPosition = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
-    setIsDragging(true);
+    // Wir hauen den dragging state erstmal auf false
+    setIsDragging(false);
     setStartX(initialPosition - scrollContainerRef.current.offsetLeft);
     setScrollLeft(scrollContainerRef.current.scrollLeft);
   };
@@ -24,12 +29,32 @@ const CategoryScrollBar = () => {
   };
 
   const onDrag = (e) => {
-    if (!isDragging) return;
-    e.preventDefault();
     // Überprüfen ob desktop oder touchscreen
     const currentPosition = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
     const walk = (currentPosition - startX) * 1;
-    scrollContainerRef.current.scrollLeft = scrollLeft - walk;
+
+    // Wir überprüfen ob die Schwelle überschritten wird / wird sie nicht überschritten handelt es sich um ein click Event
+    if (!isDragging && Math.abs(currentPosition - startX) > DRAG_THRESHOLD) {
+      setIsDragging(true);
+    }
+
+    if (isDragging) {
+      e.preventDefault();
+      scrollContainerRef.current.scrollLeft = scrollLeft - walk;
+    }
+  };
+
+  const selectSingleCategory = (category) => {
+    /* Wir sollten bei erneutem Click den Button wieder de-selecten
+      Wir tauschen hier die Category immer aus
+     */
+    eventFilterDispatch({
+      type: 'TOGGLE_ARRAY_ITEM',
+      field: 'category',
+      value: category,
+    });
+
+    return eventFilter;
   };
 
   return (
@@ -49,7 +74,13 @@ const CategoryScrollBar = () => {
           return (
             <button
               key={crypto.randomUUID()}
-              className={`${styles.category_button} ${styles.scrollButton}`}
+              className={`${styles.category_button} ${styles.scrollButton} ${
+                eventFilter.category.includes(category) && styles.isButtonClicked
+              }`}
+              onClick={() => {
+                // select Event auf Button
+                selectSingleCategory(category);
+              }}
             >
               <FontAwesomeIcon icon={getCategoryIcons(category)} />
               <span> {category}</span>
@@ -59,6 +90,12 @@ const CategoryScrollBar = () => {
       </div>
     </article>
   );
+};
+
+CategoryScrollBar.propTypes = {
+  eventFilter: PropTypes.object,
+  eventFilterDispatch: PropTypes.func,
+  loadEventDataByFilter: PropTypes.func,
 };
 
 export default CategoryScrollBar;

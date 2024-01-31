@@ -18,10 +18,38 @@ export const initialEventState = {
   },
 };
 
+export const initialEventFilterState = {
+  name: '',
+  category: [],
+  date: '',
+  location: '',
+};
+
 export const reducer = (state, action) => {
   switch (action.type) {
     case 'SET_FIELD':
       return { ...state, [action.field]: action.value };
+    case 'SET_ARRAY':
+      return {
+        ...state,
+        [action.field]: [...state[action.field], action.value].flat(),
+      };
+
+    case 'TOGGLE_ARRAY_ITEM': {
+      const array = state[action.field];
+      const index = array.indexOf(action.value);
+      let newArray = [];
+
+      if (index === -1) {
+        // Wert ist nicht im Array wir tauschen ihn aus / fügen hinzu
+        newArray = [action.value];
+      } else {
+        // Wert ist im Array, entferne ihn
+        newArray = [];
+      }
+
+      return { ...state, [action.field]: newArray };
+    }
     case 'SET_ERROR':
       return { ...state, errors: action.errors };
 

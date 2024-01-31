@@ -37,6 +37,37 @@ export const viewAllEvents = async () => {
   return records;
 };
 
+export const viewEventByFilter = async (filter) => {
+  let query = pb.collection('events');
+  console.log(filter);
+
+  Object.keys(filter).forEach((key) => {
+    const value = filter[key];
+
+    // Wir erzeugen unsere filter für den querybuilder / diese werden immer mit angehangen
+    if (Array.isArray(value) && value.length > 0) {
+      // filtern unser category Array anhand jedes items im Array
+      value.forEach((item) => {
+        query = query.filter(key, '=', item);
+      });
+    } else if (value) {
+      // Der Query wird mit "keyname=value" erzeugt
+      query = query.filter(key, '=', value);
+    }
+
+    // Wenn quer gebaut ist holen wir uns die data
+    try {
+      // query builder einbauen
+    } catch (error) {
+      return null;
+    }
+  });
+
+  const records = await pb.collection('events', filter);
+
+  console.log(records);
+};
+
 /* NODEMAILER */
 export const sendRegisteredEventEmail = async (method, email, urlParams, headers = {}) => {
   const url = `${import.meta.env.VITE_POCKET_FETCH_URL}${urlParams}`;

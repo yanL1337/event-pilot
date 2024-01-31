@@ -6,6 +6,7 @@ import {
   faHeadset,
 } from '@fortawesome/free-solid-svg-icons';
 
+/**  HELPER OBJECTS / ARRAYS **/
 const categoryObj = {
   Sport: faVolleyball,
   Music: faMusic,
@@ -14,6 +15,7 @@ const categoryObj = {
   Gaming: faHeadset,
 };
 
+/** HELPER FUNCTIONS **/
 export const getCategories = () => {
   return Object.keys(categoryObj);
 };
@@ -43,4 +45,33 @@ export const createImagePath = (image, recordId) => {
   return imageUrl;
 };
 
-export const formatDateToString = (inputDate) => {};
+export const formatDateToString = (inputDate) => {
+  const date = new Date(inputDate);
+
+  const weekDay = date
+    .toLocaleDateString('default', { weekday: 'long' })
+    .toLocaleUpperCase()
+    .slice(0, 3);
+  const month = date.toLocaleString('default', { month: 'long' }).toLocaleUpperCase().slice(0, 3);
+
+  const day = date.getDate();
+
+  const hours = date.getHours() % 12 || 12;
+  const minutes = date.getMinutes();
+  // Wir checken ob PM / AM
+  const ampm = date.getHours() >= 12 ? 'PM' : 'AM';
+
+  const dayWithSuffix =
+    day +
+    (day % 10 === 1 && day !== 11
+      ? 'ST'
+      : day % 10 === 2 && day !== 12
+      ? 'ND'
+      : day % 10 === 3 && day !== 13
+      ? 'RD'
+      : 'TH');
+
+  return `${dayWithSuffix} ${month}-${weekDay} - ${hours}:${
+    minutes < 10 ? '0' : ''
+  }${minutes} ${ampm}`;
+};

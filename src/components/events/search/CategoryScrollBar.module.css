@@ -40,3 +40,7 @@
   margin: 5px;
   /* Weitere Styles für Ihre Buttons */
 }
+
+.isButtonClicked {
+  background-color: var(--selectedColor);
+}
