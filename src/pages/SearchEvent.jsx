@@ -17,6 +17,11 @@ const SearchEvent = () => {
   const [showFilter, setShowFilter] = useState(false);
 
   useEffect(() => {
+    // if (eventFilter.name) {
+    //   console.log('CHANGE NAME');
+    //   return;
+    // }
+
     setIsLoading(true);
     // Hole erstmal alle Events bei laden der Seite und übergeben die fetchfunctions als callback
 
@@ -56,11 +61,19 @@ const SearchEvent = () => {
   return (
     <>
       <section className={styles.search_event}>
-        <SearchFilterBar onHandleShowFilterBox={handleShowFilterBox} />
+        <SearchFilterBar
+          onHandleShowFilterBox={handleShowFilterBox}
+          eventFilter={eventFilter}
+          eventFilterDispatch={eventFilterDispatch}
+        />
         <CategoryScrollBar eventFilter={eventFilter} eventFilterDispatch={eventFilterDispatch} />
       </section>
       <section>
-        <CategoryOutput viewEventData={viewEventData} isLoading={isLoading} />
+        <CategoryOutput
+          viewEventData={viewEventData}
+          isLoading={isLoading}
+          eventFilter={eventFilter}
+        />
       </section>
       <section className={styles.filter_event}>
         {showFilter && (
