@@ -1,6 +1,6 @@
 @font-face {
   font-family: Inter;
-  src: url("./assets/fonts/Inter-VariableFont_slnt_wght.ttf");
+  src: url('./assets/fonts/Inter-VariableFont_slnt_wght.ttf');
 }
 
 * {
@@ -19,6 +19,8 @@ html {
   --selectedColor: #00ecaa;
   --firstBGColor: #5d3ede;
   --firstButtonColor: #876afd;
+  --secondButtonColor: #5d3ede;
+  --firstButtonColorOpacity: #876afd50;
   --firstFontColor: #668be9;
   --firstBoxShadowColor: #a6a6a6;
 }

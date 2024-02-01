@@ -1,0 +1,153 @@
+.filter_event_box_wrapper {
+  position: fixed;
+  height: 100vh;
+  top: 0;
+  background-color: rgba(122, 120, 120, 0.5);
+  display: flex;
+  align-items: flex-end;
+}
+
+.filter_event_box {
+  display: flex;
+  flex-direction: column;
+  gap: 10%;
+  align-items: center;
+  border-radius: 15px;
+  margin-top: auto;
+  height: 76vh;
+  width: 100vw;
+  background-color: white;
+  overflow: auto;
+  padding-bottom: 100px;
+}
+
+.filter_event_box p {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.filter_event_box h2 {
+  font-size: 2.5rem;
+  margin-right: auto;
+  padding-left: 2.5%;
+}
+
+.event_box_content {
+  width: 95%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.isButtonClicked {
+  background-color: var(--secondButtonColor) !important;
+  border: 2px solid var(--secondButtonColor) !important;
+  color: white;
+}
+
+.isButtonClicked svg {
+  color: white;
+}
+
+.box_category_buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.category_button_box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.category_button_box span {
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+.category_button {
+  background-color: white;
+  border: 2px solid var(--firstBoxShadowColor);
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.category_button_icons {
+  height: 50px;
+  color: var(--firstBoxShadowColor);
+}
+
+.box_date_buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.date_button {
+  background-color: white;
+  padding: 15px;
+  width: 31%;
+  border: 2px solid var(--firstBoxShadowColor);
+  border-radius: 10px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  text-align: center;
+}
+
+.box_location {
+  display: flex;
+  align-items: center;
+  position: relative;
+  border: 2px solid var(--firstBoxShadowColor);
+  border-radius: 10px;
+  padding: 0 2% 0 2%;
+}
+
+.box_location input {
+  padding: 7% 0 7% 5%;
+  width: 100%;
+  border: none;
+  font-size: 2rem;
+}
+
+.box_location input[type='text']:focus {
+  outline: none;
+}
+
+.box_location_icon {
+  color: var(--firstButtonColor);
+  height: 25px;
+  border: 7px solid var(--firstButtonColorOpacity);
+  padding: 5px 7.5px 5px 7.5px;
+  border-radius: 15px;
+}
+
+.box_location_arrow {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--firstButtonColor);
+}
+
+.calendar {
+  grid-column: 1/-1;
+  width: 60%;
+}
+
+.trigger_buttons {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: 12px;
+}
+
+.trigger_buttons button {
+  font-size: 2rem;
+}
+
+.resetButton {
+  background-color: white;
+  border: 2px solid var(--firstBoxShadowColor);
+  border-radius: 10px;
+  padding: 20px 10px 20px 10px;
+}

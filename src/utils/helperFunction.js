@@ -75,3 +75,34 @@ export const formatDateToString = (inputDate) => {
     minutes < 10 ? '0' : ''
   }${minutes} ${ampm}`;
 };
+
+export const formatDateToPB = (dateStr) => {
+  const dateObj = new Date(dateStr);
+
+  // Wir müssen die Hour auf die verpiepte Pockebase UTC Zeitzone setzten bevor wir die Anfrage senden!!!
+  dateObj.setHours(dateObj.getHours() - 1); // funktioniert nur für die deutsche utc Zeit
+
+  const year = dateObj.getFullYear();
+  const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+  const day = dateObj.getDate().toString().padStart(2, '0');
+  const hours = dateObj.getHours().toString().padStart(2, '0');
+  const minutes = dateObj.getMinutes().toString().padStart(2, '0');
+  const seconds = dateObj.getSeconds().toString().padStart(2, '0');
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+};
+
+export const getEndOfCurrentWeek = (now) => {
+  const daysToAdd = (7 - now.getDay()) % 7;
+
+  const endOfWeek = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + daysToAdd,
+    23,
+    59,
+    59
+  );
+
+  return endOfWeek;
+};
