@@ -2,43 +2,30 @@ import React, { useEffect, useState } from "react";
 import pb from "../lib/pocketbase.js";
 import editProfile from "/images/EditIcon.svg";
 import submitEdit from "/images/Arrow.svg";
+import Following from "../components/following/Following.jsx";
+import Interests from "../components/interests/Interests.jsx";
 
 export const UserProfile = ({ children }) => {
   const [user, setUser] = useState();
-  const [following, setFollowing] = useState();
   const [edit, setEdit] = useState(false);
+  const [changes, setChanges] = useState();
 
   useEffect(() => {
     const getUser = async () => {
       const record = await pb.collection("users").getOne(pb.authStore.model.id);
       setUser(record);
+      setChanges(record);
     };
 
     getUser();
-    //console.log(user);
   }, []);
 
-  useEffect(() => {
-    let count = 0;
-    const getFollowing = async () => {
-      const records = await pb.collection("users").getFullList();
-
-      records.forEach((userRecord) =>
-        userRecord?.follower.forEach((follower) =>
-          follower == user?.id ? count++ : null
-        )
-      );
-      setFollowing(count);
-    };
-    getFollowing();
-  }, [user]);
-
-  const editUser = () => {
-    setEdit((prev) => !prev);
+  const submitChanges = async () => {
+    //const record = await pb.collection("users").update(user.id, changes);
+    setEdit(false);
   };
 
-  console.log(edit);
-
+  console.log(user);
   return (
     <div style={{}}>
       <div
@@ -53,15 +40,18 @@ export const UserProfile = ({ children }) => {
           <>
             <div className="top-bar">
               <div className="name">
-                {" "}
                 {`${user?.firstname} ${user?.lastname}`}
               </div>
             </div>
-            <img
-              className="image"
-              alt="Image"
-              src={`https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage}`}
-            />
+            <div
+              style={{
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+                backgroundImage: `url(https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage})`,
+                height: "20vh",
+              }}
+            ></div>
             <div
               onClick={() => setEdit(true)}
               style={{
@@ -85,52 +75,50 @@ export const UserProfile = ({ children }) => {
             >
               <div style={{ textAlign: "center" }}>
                 <div className="text-wrapper-3">Following</div>
-                <div className="text-wrapper-4">{following}</div>
+                <Following user={user} />
               </div>
               <div style={{ textAlign: "center" }}>
                 <div className="text-wrapper-3">Followers</div>
                 <div className="text-wrapper-4">{user?.follower.length}</div>
               </div>
             </div>
-            <div className="about-me">
-              <p className="p">
-                <span className="span">{user?.description}</span>
-              </p>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
               <div className="headline">About Me</div>
+              <p>{user?.description}</p>
             </div>
-            <div className="interests">
-              <div className="interests-2">{""}</div>
-            </div>
+            <Interests user={user} edit={edit} />
           </>
         ) : (
-          <>
+          <form onSubmit={submitChanges} style={{ width: "100vw" }}>
             <img
               className="image"
               alt="Image"
-              src={`https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage}`}
+              src={`https://event-pilot.pockethost.io/api/files/${changes?.collectionId}/${changes?.id}/${changes?.profilImage}`}
             />
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <input placeholder={user.firstname} />
-              <input placeholder={user.lastname} />
+              <input placeholder={changes.firstname} />
+              <input placeholder={changes.lastname} />
             </div>
 
             <div className="about-me">
               <div className="headline">About Me</div>
-              <p className="p">
-                <span className="span">{user?.description}</span>
-              </p>
+              <p className="p">{changes?.description}</p>
             </div>
-            <div className="interests">
-              <div className="interests-2">{""}</div>
-            </div>
-            <div
+            <Interests changes={changes} setChanges={setChanges} edit={edit} />
+            <button
               style={{ display: "flex", alignItems: "center" }}
-              onClick={() => setEdit(false)}
+              type="submit"
             >
               <p>Save changes</p>
               <img src={submitEdit} alt="" />
-            </div>
-          </>
+            </button>
+          </form>
         )}
       </div>
       {children}
