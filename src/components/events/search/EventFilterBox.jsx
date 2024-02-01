@@ -34,6 +34,16 @@ const EventFilterBox = ({ eventFilter, eventFilterDispatch, onHandleShowFilterBo
       eventFilterDispatch({ type: 'TOGGLE_ARRAY_MULTIPLE_ITEM', field: field, value: value });
       return;
     }
+
+    if (field === 'date' && value.type !== 'equal') {
+      eventFilterDispatch({ type: 'TOGGLE_OBJECT', field: field, value: value });
+      return;
+    }
+    // Wenn wir das Date field clearn müssen wir den Wert wieder löschen da wir trotzdem ein Object erhalten nur mit leeren value, am besten mit dem Toggle
+    if (field === 'date' && value.type === 'equal' && value.value === '') {
+      eventFilterDispatch({ type: 'TOGGLE_OBJECT', field: field, value: value });
+      return;
+    }
     eventFilterDispatch({ type: 'TOGGLE_FIELD', field: field, value: value });
   };
 

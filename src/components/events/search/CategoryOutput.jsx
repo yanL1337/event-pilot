@@ -1,22 +1,46 @@
 import PropTypes from 'prop-types';
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Pin from '../../general/Pin';
 
 /* CSS */
 import styles from './CategoryOutput.module.css';
 import LoadingElement from '../../loading/LoadingElement';
 import { createImagePath, formatDateToString } from '../../../utils/helperFunction';
 
-const CategoryOutput = ({ viewEventData, isLoading }) => {
+const CategoryOutput = ({ viewEventData, isLoading, eventFilter }) => {
   return (
     <article className={styles.categoryOutput_wrapper}>
+      <div className={styles.pin_list}>
+        {eventFilter &&
+          Object.keys(eventFilter).map((filter) => {
+            if (!eventFilter[filter] || eventFilter[filter].length === 0) {
+              return null;
+            }
+
+            if (filter === 'name') {
+              return;
+            }
+
+            if (filter === 'date') {
+              return <Pin key={crypto.randomUUID()} value={eventFilter[filter].type} />;
+            }
+
+            if (Array.isArray(eventFilter[filter])) {
+              return eventFilter[filter].map((categories) => {
+                return <Pin key={crypto.randomUUID()} value={categories} />;
+              });
+            }
+
+            return <Pin key={crypto.randomUUID()} value={eventFilter[filter]} />;
+          })}
+      </div>
       {isLoading ? (
         <LoadingElement />
       ) : viewEventData && viewEventData.length > 0 ? (
         viewEventData.map((event) => {
           return (
             <div className={styles.categoryOutput_box} key={event.id}>
-              {/* {console.log(createImagePath())} */}
               <img
                 src={`${
                   createImagePath(event.image, event.id)
@@ -37,7 +61,7 @@ const CategoryOutput = ({ viewEventData, isLoading }) => {
               <div className={styles.categoryOutput_favorite}>
                 <FontAwesomeIcon
                   icon={['far', 'bookmark']}
-                  style={{ color: '#63E6BE', height: '25px' }}
+                  style={{ color: '#63E6BE', height: '20px' }}
                 />
               </div>
             </div>
@@ -53,6 +77,7 @@ const CategoryOutput = ({ viewEventData, isLoading }) => {
 CategoryOutput.propTypes = {
   viewEventData: PropTypes.array,
   isLoading: PropTypes.bool,
+  eventFilter: PropTypes.object,
 };
 
 export default CategoryOutput;
