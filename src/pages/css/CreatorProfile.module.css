@@ -26,3 +26,12 @@
   background-color: transparent;
   font-weight: 100;
 }
+
+.followbutton {
+  width: 50%;
+  padding: 10px;
+  font-size: 1.6rem;
+  border: 1px solid violet;
+  border-radius: 15px;
+  background-color: transparent;
+}

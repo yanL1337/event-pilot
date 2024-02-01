@@ -10,7 +10,8 @@ export function CreatorProfil() {
   const [state, setState] = useState("about");
   const [event, setEvent] = useState();
   const [color, setColor] = useState(false);
-  const [refresh, setRefresh] = useState(false);
+  const [followed, setFollowed] = useState(false);
+  const [following, setFollowing] = useState();
   const { id } = useParams();
 
   useEffect(() => {
@@ -19,7 +20,7 @@ export function CreatorProfil() {
       setCreator(record);
     }
     getCreator();
-  }, []);
+  }, [followed]);
 
   //   console.log("Creator: ", creator);
 
@@ -54,25 +55,45 @@ export function CreatorProfil() {
 
   //* follow/unfollow-function
   async function follow() {
-    const record = await pb
-      .collection("users")
-      .update(creator.id, { "follower+": [pb.authStore.model.id] });
-    console.log("updated creator: ", record);
-    setColor(true);
-    setRefresh((prev) => !prev);
+    let vorhanden = false;
+    creator.follower.forEach((userID) => {
+      userID == pb.authStore.model.id ? (vorhanden = true) : false;
+    });
+    console.log("Vorhanden?:", vorhanden);
+
+    if (!vorhanden) {
+      const record = await pb
+        .collection("users")
+        .update(creator.id, { "follower+": [pb.authStore.model.id] });
+      console.log("follower wurde hinzugefügt: ", record);
+      setFollowed((prev) => !prev);
+    } else {
+      const record = await pb
+        .collection("users")
+        .update(creator.id, { "follower-": [pb.authStore.model.id] });
+      setFollowed((prev) => !prev);
+      console.log("follower wurde entfernt: ", record);
+    }
   }
 
-  async function unfollow() {
-    const record = await pb
-      .collection("users")
-      .update(creator.id, { "follower-": [pb.authStore.model.id] });
-    setColor(false);
-    setRefresh((prev) => !prev);
-    console.log("updated creator: ", record);
-  }
+  // * following
+  useEffect(() => {
+    let count = 0;
+    const getFollowing = async () => {
+      const records = await pb.collection("users").getFullList();
+
+      records.forEach((userRecord) =>
+        userRecord?.follower.forEach((follower) =>
+          follower == creator?.id ? count++ : null
+        )
+      );
+      setFollowing(count);
+    };
+    getFollowing();
+  }, [creator]);
 
   //   ======================================
-  if (creator && event) {
+  if (creator) {
     if (state === "about") {
       return (
         <main>
@@ -84,10 +105,10 @@ export function CreatorProfil() {
             alt="Profilbild des Creators"
           />
           <p>Follower {creator.follower?.length}</p>
-          <button className={color ? style.lila : null} onClick={follow}>
+          <p>Following {following}</p>
+          <button className={style.followbutton} onClick={follow}>
             follow
           </button>
-          <button onClick={unfollow}>unfollow</button>
 
           <div className={style.tabs}>
             <button className={color ? style.lila : null} onClick={about}>
