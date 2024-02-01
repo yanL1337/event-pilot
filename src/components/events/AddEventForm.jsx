@@ -9,6 +9,7 @@ import styles from './AddEventForm.module.css';
 import { createEventByUser } from '../../utils/fetchData';
 import { Link } from 'react-router-dom';
 import LoadingElement from '../loading/LoadingElement';
+import DynamicTriggerButton from '../buttons/DynamicTriggerButton';
 
 const AddEventForm = () => {
   // reduce
@@ -167,10 +168,11 @@ const AddEventForm = () => {
             <input type="file" name="image" id="image" onChange={handleChangeEventFormData} />
           </div>
           {!isLoading ? (
-            <div>
-              <button className={styles.button}>ADD</button>
-            </div>
+            <DynamicTriggerButton hasArrow={true}>ADD</DynamicTriggerButton>
           ) : (
+            // <div>
+            //   <button className={styles.button}>ADD</button>
+            // </div>
             <LoadingElement />
           )}
         </form>
