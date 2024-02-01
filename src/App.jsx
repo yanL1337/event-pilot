@@ -16,6 +16,7 @@ import pb from "./lib/pocketbase";
 import Navbar from "./components/navbar/Navbar";
 import { Home } from "./pages/Home";
 import { Favorites } from "./pages/Favorites";
+import { Review } from "./pages/Review";
 
 pb.autoCancellation(false);
 
@@ -70,6 +71,7 @@ function App() {
                     }
                   />
                   <Route path="/creator/:id" element={<CreatorProfil />} />
+                  <Route path="/review/:id" element={<Review />} />
                 </Route>
               </Routes>
             </Suspense>
