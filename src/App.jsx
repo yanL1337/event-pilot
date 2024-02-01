@@ -12,14 +12,12 @@ import SearchEvent from "./pages/SearchEvent";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faBookmark } from "@fortawesome/free-regular-svg-icons";
 import { CreatorProfil } from "./pages/CreatorProfil";
-
-
-
-
+import Navbar from "./components/navbar/Navbar";
+import { Home } from "./pages/Home";
+import { Favorites } from "./pages/Favorites";
 
 library.add(faBookmark);
 const Protector = lazy(() => import("./Protect/Protector"));
-
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -34,10 +32,40 @@ function App() {
                 <Route path="/" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route element={<Protector />}>
+                  <Route
+                    path="/home"
+                    element={
+                      <Home>
+                        <Navbar activeName="home" />
+                      </Home>
+                    }
+                  />
+                  <Route
+                    path="/favorites"
+                    element={
+                      <Favorites>
+                        <Navbar activeName="events" />
+                      </Favorites>
+                    }
+                  />
                   <Route path="/eventdetails/:id" element={<EventDetails />} />
                   <Route path="/event/add" element={<AddEvent />} />
-                  <Route path="/event/search" element={<SearchEvent />} />
-                  <Route path="/user" element={<UserProfile />} />
+                  <Route
+                    path="/event/search"
+                    element={
+                      <SearchEvent>
+                        <Navbar activeName="search" />
+                      </SearchEvent>
+                    }
+                  />
+                  <Route
+                    path="/user"
+                    element={
+                      <UserProfile>
+                        <Navbar activeName="profile" />
+                      </UserProfile>
+                    }
+                  />
                   <Route path="/creator/:id" element={<CreatorProfil />} />
                 </Route>
               </Routes>
