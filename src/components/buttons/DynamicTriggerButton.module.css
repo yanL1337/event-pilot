@@ -1,0 +1,24 @@
+.trigger_button {
+  padding: 10px;
+  width: 100%;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  background-color: var(--firstButtonColor);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.trigger_button div {
+  width: 100%;
+  margin-left: 40px;
+}
+
+.button_arrow {
+  background-color: var(--secondButtonColor);
+  padding: 10px;
+  border-radius: 50%;
+  margin-left: auto;
+}

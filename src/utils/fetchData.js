@@ -41,6 +41,8 @@ export const viewEventByFilter = async (filter) => {
   // Wir erstellen uns einen queryFilterBuilder
   const filterString = queryBuilder(filter);
 
+  console.log(filterString);
+
   // Wenn wir nix im Filter haben rufen wir alle Daten wieder ab?...
   if (!filterString) {
     return await viewAllEvents();
@@ -51,6 +53,7 @@ export const viewEventByFilter = async (filter) => {
     // query builder einbauen
     const records = await pb.collection('events').getFullList({
       filter: filterString,
+      // filter: '(category="Sport")&&location="Essen, Germany"',
     });
 
     return records;
@@ -101,10 +104,28 @@ const queryBuilder = (filter) => {
       // für category müssen wir den string mit or operatoren verknüpfen und in Klammern setzten
       const arrayFilter = '(' + value.map((item) => `${key}="${item}"`).join('||') + ')';
       queryParams.push(arrayFilter);
-    } else if (value && value.length > 0) {
-      // Ganz normal den Wert setzen
-      const valueFilter = `${key}="${value}"`;
-      queryParams.push(valueFilter);
+    } else if ((value && value.length > 0) || value.value) {
+      switch (key) {
+        case 'date':
+          {
+            if (value.type === 'equal') {
+              const valueFilter = `${key}="${value.value}"`;
+              queryParams.push(valueFilter);
+            }
+          }
+          break;
+
+        default:
+          // Hie kommen alle anderen Werte rein
+          {
+            console.log('default');
+            // Ganz normal den Wert setzen
+            const valueFilter = `${key}="${value}"`;
+            queryParams.push(valueFilter);
+          }
+
+          break;
+      }
     }
   }
 
