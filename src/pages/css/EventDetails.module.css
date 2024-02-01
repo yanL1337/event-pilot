@@ -1,5 +1,6 @@
 .img {
-  height: 25%;
+  height: 25vh;
+  object-fit: cover;
   width: 100%;
   z-index: -5;
 }

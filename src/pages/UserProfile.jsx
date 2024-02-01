@@ -3,7 +3,7 @@ import pb from "../lib/pocketbase.js";
 import editProfile from "/images/EditIcon.svg";
 import submitEdit from "/images/Arrow.svg";
 
-export const UserProfile = () => {
+export const UserProfile = ({ children }) => {
   const [user, setUser] = useState();
   const [following, setFollowing] = useState();
   const [edit, setEdit] = useState(false);
@@ -133,6 +133,7 @@ export const UserProfile = () => {
           </>
         )}
       </div>
+      {children}
     </div>
   );
 };
