@@ -12,13 +12,15 @@ import SearchEvent from "./pages/SearchEvent";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faBookmark } from "@fortawesome/free-regular-svg-icons";
 import { CreatorProfil } from "./pages/CreatorProfil";
+import pb from "./lib/pocketbase";
 import Navbar from "./components/navbar/Navbar";
 import { Home } from "./pages/Home";
 import { Favorites } from "./pages/Favorites";
 
+pb.autoCancellation(false);
+
 library.add(faBookmark);
 const Protector = lazy(() => import("./Protect/Protector"));
-
 
 function App() {
   const [loading, setLoading] = useState(false);
