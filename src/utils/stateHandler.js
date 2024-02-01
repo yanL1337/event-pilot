@@ -21,7 +21,7 @@ export const initialEventState = {
 export const initialEventFilterState = {
   name: '',
   category: [],
-  date: '',
+  date: {},
   location: '',
 };
 
@@ -35,21 +35,43 @@ export const reducer = (state, action) => {
         [action.field]: [...state[action.field], action.value].flat(),
       };
 
-    case 'TOGGLE_ARRAY_ITEM': {
+    case 'TOGGLE_FIELD':
+      return {
+        ...state,
+        [action.field]: state[action.field] === action.value ? '' : action.value,
+      };
+
+    case 'TOGGLE_ARRAY_MULTIPLE_ITEM': {
+      const array = state[action.field];
+      const index = array.indexOf(action.value);
+      let newArray = [...array];
+
+      if (index === -1) {
+        newArray.push(action.value);
+      } else {
+        newArray.splice(index, 1);
+      }
+
+      return { ...state, [action.field]: newArray };
+    }
+
+    case 'TOGGLE_ARRAY_SINGLE_ITEM': {
       const array = state[action.field];
       const index = array.indexOf(action.value);
       let newArray = [];
 
       if (index === -1) {
-        // Wert ist nicht im Array wir tauschen ihn aus / fügen hinzu
         newArray = [action.value];
       } else {
-        // Wert ist im Array, entferne ihn
         newArray = [];
       }
 
       return { ...state, [action.field]: newArray };
     }
+
+    case 'RESET_STATE':
+      // clearn den Scheiss
+      return initialEventFilterState;
     case 'SET_ERROR':
       return { ...state, errors: action.errors };
 

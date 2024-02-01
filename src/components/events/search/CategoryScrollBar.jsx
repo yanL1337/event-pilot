@@ -49,7 +49,7 @@ const CategoryScrollBar = ({ eventFilter, eventFilterDispatch }) => {
       Wir tauschen hier die Category immer aus
      */
     eventFilterDispatch({
-      type: 'TOGGLE_ARRAY_ITEM',
+      type: 'TOGGLE_ARRAY_MULTIPLE_ITEM',
       field: 'category',
       value: category,
     });

@@ -19,6 +19,7 @@ import { Favorites } from "./pages/Favorites";
 library.add(faBookmark);
 const Protector = lazy(() => import("./Protect/Protector"));
 
+
 function App() {
   const [loading, setLoading] = useState(false);
 

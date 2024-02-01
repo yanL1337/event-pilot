@@ -22,14 +22,21 @@ const SearchEvent = ({ children }) => {
   useEffect(() => {
     setIsLoading(true);
     // Hole erstmal alle Events bei laden der Seite und übergeben die fetchfunctions als callback
+
+    if (showFilter) {
+      return;
+    }
+
     if (isInitialLoad) {
       fetchEventData(viewAllEvents);
       setIsInitialLoad(false);
     } else {
       fetchEventData(() => viewEventByFilter(eventFilter));
     }
+    return;
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [eventFilter]);
+  }, [eventFilter, showFilter]);
 
   const fetchEventData = async (cb) => {
     const response = await cb();
@@ -45,23 +52,27 @@ const SearchEvent = ({ children }) => {
     setViewEventData(null);
   };
 
+  const handleShowFilterBox = () => {
+    setShowFilter((cur) => !cur);
+  };
+
   return (
     <>
       <section className={styles.search_event}>
-        <SearchFilterBar />
-        <CategoryScrollBar
-          eventFilter={eventFilter}
-          eventFilterDispatch={eventFilterDispatch}
-        />
+        <SearchFilterBar onHandleShowFilterBox={handleShowFilterBox} />
+        <CategoryScrollBar eventFilter={eventFilter} eventFilterDispatch={eventFilterDispatch} />
       </section>
       <section>
         <CategoryOutput viewEventData={viewEventData} isLoading={isLoading} />
       </section>
       <section className={styles.filter_event}>
-        <EventFilterBox
-          eventFilter={eventFilter}
-          eventFilterDispatch={eventFilterDispatch}
-        />
+        {showFilter && (
+          <EventFilterBox
+            eventFilter={eventFilter}
+            eventFilterDispatch={eventFilterDispatch}
+            onHandleShowFilterBox={handleShowFilterBox}
+          />
+        )}
       </section>
       {children}
     </>
