@@ -3,7 +3,7 @@
 const getCurrentPosition = () => {
   return new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
-      reject(new Error("Geolocation wird nicht unterstützt"));
+      reject(new Error('Geolocation wird nicht unterstützt'));
     } else {
       // Wir returnen die aktuellen Koordinaten des Browsers
       navigator.geolocation.getCurrentPosition(resolve, reject);
@@ -25,17 +25,10 @@ const getCityFromCoordinates = async (latitude, longitude) => {
 
     // die daten kommen über data.adress und dann entweder city town usw.
     return (
-      `${
-        data.address.city && data.address.city + "," + data.address.country
-      }` ||
-      `${
-        data.address.town && data.address.town + "," + data.address.country
-      }` ||
-      `${
-        data.address.village &&
-        data.address.village + "," + data.address.country
-      }` ||
-      "Stadt nicht gefunden"
+      `${data.address.city ? data.address.city + ',' + data.address.country : false}` ||
+      `${data.address.town ? data.address.town + ',' + data.address.country : false}` ||
+      `${data.address.village ? data.address.village + ',' + data.address.country : false}` ||
+      'Stadt nicht gefunden'
     );
   } catch (error) {
     return null;
@@ -45,10 +38,7 @@ const getCityFromCoordinates = async (latitude, longitude) => {
 export const getCityFromLocation = async () => {
   try {
     const position = await getCurrentPosition();
-    const city = await getCityFromCoordinates(
-      position.coords.latitude,
-      position.coords.longitude
-    );
+    const city = await getCityFromCoordinates(position.coords.latitude, position.coords.longitude);
 
     if (!city) {
       throw new Error();
