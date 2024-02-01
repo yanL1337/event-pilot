@@ -23,13 +23,16 @@ const getCityFromCoordinates = async (latitude, longitude) => {
       throw new Error();
     }
 
+    let returnString = '';
+    if (data.address.city) {
+      returnString = `${data.address.city}, ${data.address.country}`;
+    } else if (data.address.town) {
+      returnString = `${data.address.town}, ${data.address.country}`;
+    } else if (data.address.village) {
+      returnString = `${data.address.village}, ${data.address.country}`;
+    }
     // die daten kommen über data.adress und dann entweder city town usw.
-    return (
-      `${data.address.city ? data.address.city + ',' + data.address.country : false}` ||
-      `${data.address.town ? data.address.town + ',' + data.address.country : false}` ||
-      `${data.address.village ? data.address.village + ',' + data.address.country : false}` ||
-      'Stadt nicht gefunden'
-    );
+    return returnString;
   } catch (error) {
     return null;
   }
