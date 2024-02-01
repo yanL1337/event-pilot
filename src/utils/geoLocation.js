@@ -25,9 +25,9 @@ const getCityFromCoordinates = async (latitude, longitude) => {
 
     // die daten kommen über data.adress und dann entweder city town usw.
     return (
-      `${data.address.city}, ${data.address.country}` ||
-      `${data.address.town}, ${data.address.country}` ||
-      `${data.address.village}, ${data.address.country}` ||
+      `${data.address.city && data.address.city + ',' + data.address.country}` ||
+      `${data.address.town && data.address.town + ',' + data.address.country}` ||
+      `${data.address.village && data.address.village + ',' + data.address.country}` ||
       'Stadt nicht gefunden'
     );
   } catch (error) {
