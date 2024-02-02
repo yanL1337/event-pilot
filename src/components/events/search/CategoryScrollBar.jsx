@@ -11,35 +11,45 @@ const CategoryScrollBar = ({ eventFilter, eventFilterDispatch }) => {
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
-  // Ist die Schwelle ab wann man ein drag Event registriert wird
-  const DRAG_THRESHOLD = 0;
+  // Minimale Bewegungsschwelle für das Starten des Dragging
+  const DRAG_THRESHOLD = 5;
 
-  /* DRAG FUNKTIONALITÄT EVENTUELL SPÄTER AUSLAGERN */
   const startDragging = (e) => {
-    // Überprüfen ob desktop oder touchscreen/mobile
+    e.preventDefault();
     const initialPosition = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
-    // Wir hauen den dragging state erstmal auf false
-    setIsDragging(false);
+    setIsDragging(false); // Initial false setzen
     setStartX(initialPosition - scrollContainerRef.current.offsetLeft);
     setScrollLeft(scrollContainerRef.current.scrollLeft);
+    scrollContainerRef.current.classList.add('grabbing');
+
+    // Globale Event-Listener hinzufügen
+    document.addEventListener('mousemove', onDrag);
+    document.addEventListener('mouseup', stopDragging);
   };
 
   const stopDragging = () => {
-    setIsDragging(false);
+    if (isDragging) {
+      setIsDragging(false);
+    }
+
+    scrollContainerRef.current.classList.remove('grabbing');
+
+    // Globale Event-Listener entfernen
+    document.removeEventListener('mousemove', onDrag);
+    document.removeEventListener('mouseup', stopDragging);
   };
 
   const onDrag = (e) => {
-    // Überprüfen ob desktop oder touchscreen
     const currentPosition = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
-    const walk = (currentPosition - startX) * 1;
+    const walk = (currentPosition - startX) * 2; // Bewegungsfaktor anpassen nach Bedarf
 
-    // Wir überprüfen ob die Schwelle überschritten wird / wird sie nicht überschritten handelt es sich um ein click Event
+    // Schwellenwert überprüfen, bevor isDragging auf true gesetzt wird
     if (!isDragging && Math.abs(currentPosition - startX) > DRAG_THRESHOLD) {
       setIsDragging(true);
     }
 
     if (isDragging) {
-      e.preventDefault();
+      e.preventDefault(); // Verhindert das Scrollen des Browsers oder ähnliche Aktionen
       scrollContainerRef.current.scrollLeft = scrollLeft - walk;
     }
   };

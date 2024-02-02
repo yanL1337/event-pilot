@@ -15,8 +15,6 @@ const OutputItem = ({ data, allFavorites, favMessageTimer, isOnFavSite, register
 
   const { setFavMessage } = useContext(SetFavoriteMessageContext);
 
-  console.log(registeredEvents);
-
   useEffect(() => {
     if (isOnFavSite) {
       // Registrierte Events holen
