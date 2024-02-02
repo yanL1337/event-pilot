@@ -1,35 +1,31 @@
-import { useState } from "react";
-import pb from "../../lib/pocketbase";
 import AddInterest from "./AddInterest";
 
-const Interests = ({ changes, edit }) => {
-  const [userInterests, setUserInterests] = useState(changes?.interests);
-  //   const removeInterest = async (interest) => {
-  //     const record = await pb
-  //       .collection("users")
-  //       .update(changes.id, { "interests-": [interest] });
-
-  //     console.log(record);
-  //   };
-
+const Interests = ({ user, changes, edit, setChanges }) => {
   const removeInterest = (selected) => {
-    setUserInterests(userInterests.filter((interest) => interest != selected));
+    const updatedInterests = changes.interests.filter(
+      (interest) => interest !== selected
+    );
+
+    setChanges({ ...changes, interests: updatedInterests });
   };
 
-  console.log(userInterests);
+  const addInterest = (newInterest) => {
+    if (!changes.interests.includes(newInterest)) {
+      const updatedInterests = [...changes.interests, newInterest];
+      setChanges({ ...changes, interests: updatedInterests });
+    }
+  };
+
   return (
     <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "start",
-      }}
+      style={{ display: "flex", flexDirection: "column", alignItems: "start" }}
     >
       <p>Interests</p>
       <div style={{ display: "flex", gap: "1vw" }}>
-        {userInterests?.map((interest, index) => {
-          return (
+        {(edit ? changes?.interests || [] : user?.interests || []).map(
+          (interest, index) => (
             <div
+              key={index}
               style={{
                 backgroundColor: "#5D3EDE",
                 color: "white",
@@ -37,7 +33,6 @@ const Interests = ({ changes, edit }) => {
                 borderRadius: "20px",
                 display: "flex",
               }}
-              key={index}
             >
               {interest}
               {edit && (
@@ -53,10 +48,10 @@ const Interests = ({ changes, edit }) => {
                 </div>
               )}
             </div>
-          );
-        })}
+          )
+        )}
       </div>
-      {edit && <AddInterest user={changes} />}
+      {edit && <AddInterest addInterest={addInterest} />}
     </div>
   );
 };
