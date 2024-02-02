@@ -17,76 +17,89 @@ import Navbar from "./components/navbar/Navbar";
 import { Home } from "./pages/Home";
 import { Favorites } from "./pages/Favorites";
 import { Review } from "./pages/Review";
-import { SetFavoriteMessageContext } from './context/context';
-import FavoriteTriggerMessage from './components/general/FavoriteTriggerMessage';
-
+import { SetFavoriteMessageContext } from "./context/context";
+import FavoriteTriggerMessage from "./components/general/FavoriteTriggerMessage";
+import { ThemeContext } from "./context/Context";
+import "./App.css";
 
 pb.autoCancellation(false);
 
 library.add(faBookmark);
-const Protector = lazy(() => import('./Protect/Protector'));
+const Protector = lazy(() => import("./Protect/Protector"));
 
 function App() {
   const [loading, setLoading] = useState(false);
   const [favMessage, setFavMessage] = useState(null);
+  const [theme, setTheme] = useState(false);
+
+  console.log(theme);
 
   return (
     <>
-      <LoadingContext.Provider value={{ loading, setLoading }}>
-        {favMessage && <FavoriteTriggerMessage favMessage={favMessage} />}
-        {loading ? (
-          <BrowserRouter>
-            <Suspense fallback={<FallbackLoadingScreen />}>
-              <Routes>
-                <Route path="/" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route element={<Protector />}>
-                  <Route
-                    path="/home"
-                    element={
-                      <Home>
-                        <Navbar activeName="home" />
-                      </Home>
-                    }
-                  />
-                  <Route
-                    path="/favorites"
-                    element={
-                      <Favorites>
-                        <Navbar activeName="events" />
-                      </Favorites>
-                    }
-                  />
-                  <Route path="/eventdetails/:id" element={<EventDetails />} />
-                  <Route path="/event/add" element={<AddEvent />} />
-                  <Route
-                    path="/event/search"
-                    element={
-                      <SetFavoriteMessageContext.Provider value={{ favMessage, setFavMessage }}>
-                        <SearchEvent>
-                          <Navbar activeName="search" />
-                        </SearchEvent>
-                      </SetFavoriteMessageContext.Provider>
-                    }
-                  />
-                  <Route
-                    path="/user"
-                    element={
-                      <UserProfile>
-                        <Navbar activeName="profile" />
-                      </UserProfile>
-                    }
-                  />
-                  <Route path="/creator/:id" element={<CreatorProfil />} />
-                  <Route path="/review/:id" element={<Review />} />
-                </Route>
-              </Routes>
-            </Suspense>
-          </BrowserRouter>
-        ) : (
-          <Loadingscreen />
-        )}
-      </LoadingContext.Provider>
+      <section className={theme ? "dark" : null}>
+        <ThemeContext.Provider value={{ theme, setTheme }}>
+          <LoadingContext.Provider value={{ loading, setLoading }}>
+            {favMessage && <FavoriteTriggerMessage favMessage={favMessage} />}
+            {loading ? (
+              <BrowserRouter>
+                <Suspense fallback={<FallbackLoadingScreen />}>
+                  <Routes>
+                    <Route path="/" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
+                    <Route element={<Protector />}>
+                      <Route
+                        path="/home"
+                        element={
+                          <Home>
+                            <Navbar activeName="home" />
+                          </Home>
+                        }
+                      />
+                      <Route
+                        path="/favorites"
+                        element={
+                          <Favorites>
+                            <Navbar activeName="events" />
+                          </Favorites>
+                        }
+                      />
+                      <Route
+                        path="/eventdetails/:id"
+                        element={<EventDetails />}
+                      />
+                      <Route path="/event/add" element={<AddEvent />} />
+                      <Route
+                        path="/event/search"
+                        element={
+                          <SetFavoriteMessageContext.Provider
+                            value={{ favMessage, setFavMessage }}
+                          >
+                            <SearchEvent>
+                              <Navbar activeName="search" />
+                            </SearchEvent>
+                          </SetFavoriteMessageContext.Provider>
+                        }
+                      />
+                      <Route
+                        path="/user"
+                        element={
+                          <UserProfile>
+                            <Navbar activeName="profile" />
+                          </UserProfile>
+                        }
+                      />
+                      <Route path="/creator/:id" element={<CreatorProfil />} />
+                      <Route path="/review/:id" element={<Review />} />
+                    </Route>
+                  </Routes>
+                </Suspense>
+              </BrowserRouter>
+            ) : (
+              <Loadingscreen />
+            )}
+          </LoadingContext.Provider>
+        </ThemeContext.Provider>
+      </section>
     </>
   );
 }
