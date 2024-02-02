@@ -1,23 +1,25 @@
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import { Suspense, lazy, useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import AddEvent from './pages/AddEvent';
-import FallbackLoadingScreen from './components/loading/FallbackLoadingScreen';
-import { EventDetails } from './pages/EventDetails';
-import { LoadingContext } from './context/context';
-import { Loadingscreen } from './pages/Loadingscreen';
-import { UserProfile } from './pages/UserProfile';
-import SearchEvent from './pages/SearchEvent';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faBookmark } from '@fortawesome/free-regular-svg-icons';
-import { CreatorProfil } from './pages/CreatorProfil';
-import pb from './lib/pocketbase';
-import Navbar from './components/navbar/Navbar';
-import { Home } from './pages/Home';
-import { Favorites } from './pages/Favorites';
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import { Suspense, lazy, useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AddEvent from "./pages/AddEvent";
+import FallbackLoadingScreen from "./components/loading/FallbackLoadingScreen";
+import { EventDetails } from "./pages/EventDetails";
+import { LoadingContext } from "./context/context";
+import { Loadingscreen } from "./pages/Loadingscreen";
+import { UserProfile } from "./pages/UserProfile";
+import SearchEvent from "./pages/SearchEvent";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faBookmark } from "@fortawesome/free-regular-svg-icons";
+import { CreatorProfil } from "./pages/CreatorProfil";
+import pb from "./lib/pocketbase";
+import Navbar from "./components/navbar/Navbar";
+import { Home } from "./pages/Home";
+import { Favorites } from "./pages/Favorites";
+import { Review } from "./pages/Review";
 import { SetFavoriteMessageContext } from './context/context';
 import FavoriteTriggerMessage from './components/general/FavoriteTriggerMessage';
+
 
 pb.autoCancellation(false);
 
@@ -76,6 +78,7 @@ function App() {
                     }
                   />
                   <Route path="/creator/:id" element={<CreatorProfil />} />
+                  <Route path="/review/:id" element={<Review />} />
                 </Route>
               </Routes>
             </Suspense>

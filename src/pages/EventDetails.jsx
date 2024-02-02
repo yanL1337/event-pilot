@@ -31,10 +31,6 @@ export function EventDetails() {
     getCreator();
   }, [detailEvent]);
 
-  console.log("Creator: ", creator);
-
-  // console.log("Detailevent: ", detailEvent);
-
   //   * Bestätigungsmail senden, wenn man sich für das Event registriert
   const sendMail = async () => {
     console.log("sendmail function");

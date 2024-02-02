@@ -8,7 +8,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "./CreatorEvent.module.css";
 
 export function CreatorEvent({ singleEvent }) {
-  console.log(singleEvent);
   return (
     <Link
       className={style.categoryOutput_box}

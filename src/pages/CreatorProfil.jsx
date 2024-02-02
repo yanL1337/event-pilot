@@ -4,13 +4,21 @@ import pb from "../lib/pocketbase";
 import style from "./css/CreatorProfile.module.css";
 import { CreatorEvent } from "../components/events/CreatorEvents";
 import FallbackLoadingScreen from "../components/loading/FallbackLoadingScreen";
+import { Comment } from "../components/review/Comment";
+import { Rating } from "../components/review/Rating";
+import styles from "./css/Review.module.css";
 
 export function CreatorProfil() {
   const [creator, setCreator] = useState([]);
   const [state, setState] = useState("about");
   const [event, setEvent] = useState();
-  const [color, setColor] = useState(false);
-  const [followed, setFollowed] = useState(false);
+  const [comments, setComments] = useState();
+
+  const [colorAbout, setColorAbout] = useState(true);
+  const [colorEvents, setColorEvents] = useState(false);
+  const [colorReviews, setColorReviews] = useState(false);
+
+  const [followed, setFollowed] = useState();
   const [following, setFollowing] = useState();
   const { id } = useParams();
 
@@ -21,8 +29,6 @@ export function CreatorProfil() {
     }
     getCreator();
   }, [followed]);
-
-  //   console.log("Creator: ", creator);
 
   //* events des creators fetchen
   useEffect(() => {
@@ -35,44 +41,60 @@ export function CreatorProfil() {
     getEvents();
   }, [creator]);
 
-  //   console.log("Events: ", event);
+  //* comments des creators fetchen
+  useEffect(() => {
+    async function getComments() {
+      const commentList = await pb.collection("reviews").getList(1, 20, {
+        filter: `creator_id="${creator?.id}"`,
+      });
+      setComments(commentList);
+    }
+    getComments();
+  }, [creator]);
 
   //- functions für die verschiedenen Tabs
   function about() {
     setState("about");
-    setColor((prev) => !prev);
+    setColorAbout(true);
+    setColorEvents(false);
+    setColorReviews(false);
   }
 
   function events() {
     setState("events");
-    setColor((prev) => !prev);
+    setColorAbout(false);
+    setColorEvents(true);
+    setColorReviews(false);
   }
 
   function reviews() {
     setState("reviews");
-    setColor((prev) => !prev);
+    setColorAbout(false);
+    setColorEvents(false);
+    setColorReviews(true);
   }
 
   //* follow/unfollow-function
-  async function follow() {
-    let vorhanden = false;
-    creator.follower.forEach((userID) => {
-      userID == pb.authStore.model.id ? (vorhanden = true) : false;
-    });
-    console.log("Vorhanden?:", vorhanden);
+  useEffect(() => {
+    async function startFollow() {
+      creator.follower?.forEach((userID) => {
+        userID == pb.authStore.model.id ? setFollowed(true) : false;
+      });
+    }
+    startFollow();
+  }, [creator]);
 
-    if (!vorhanden) {
-      const record = await pb
+  async function follow() {
+    if (!followed) {
+      await pb
         .collection("users")
         .update(creator.id, { "follower+": [pb.authStore.model.id] });
-      console.log("follower wurde hinzugefügt: ", record);
-      setFollowed((prev) => !prev);
+      setFollowed(true);
     } else {
-      const record = await pb
+      await pb
         .collection("users")
         .update(creator.id, { "follower-": [pb.authStore.model.id] });
-      setFollowed((prev) => !prev);
-      console.log("follower wurde entfernt: ", record);
+      setFollowed(false);
     }
   }
 
@@ -106,23 +128,39 @@ export function CreatorProfil() {
           />
           <p>Follower {creator.follower?.length}</p>
           <p>Following {following}</p>
-          <button className={style.followbutton} onClick={follow}>
-            follow
-          </button>
+          <div className={style.button}>
+            <button
+              className={
+                followed ? style.activefollowbutton : style.followbutton
+              }
+              onClick={follow}
+            >
+              Follow
+            </button>
+            <Link to={`/review/${id}`}>Review</Link>
+          </div>
 
           <div className={style.tabs}>
-            <button className={color ? style.lila : null} onClick={about}>
+            <button
+              className={colorAbout ? style.activeTab : null}
+              onClick={about}
+            >
               ABOUT
             </button>
-            <button className={color ? style.lila : null} onClick={events}>
+            <button
+              className={colorEvents ? style.activeTab : null}
+              onClick={events}
+            >
               EVENTS
             </button>
-            <button className={color ? style.lila : null} onClick={reviews}>
+            <button
+              className={colorReviews ? style.activeTab : null}
+              onClick={reviews}
+            >
               REVIEWS
             </button>
           </div>
 
-          <h1>ABOUT</h1>
           <p>{creator.description}</p>
         </main>
       );
@@ -137,23 +175,40 @@ export function CreatorProfil() {
             alt="Profilbild des Creators"
           />
           <p>Follower {creator.follower?.length}</p>
-          <button className={color ? style.lila : null} onClick={follow}>
-            follow
-          </button>
-          <button onClick={unfollow}>unfollow</button>
+          <p>Following {following}</p>
+          <div className={style.button}>
+            <button
+              className={
+                followed ? style.activefollowbutton : style.followbutton
+              }
+              onClick={follow}
+            >
+              Follow
+            </button>
+            <Link to={`/review/${id}`}>Review</Link>
+          </div>
 
           <div className={style.tabs}>
-            <button className={color ? style.lila : null} onClick={about}>
+            <button
+              className={colorAbout ? style.activeTab : null}
+              onClick={about}
+            >
               ABOUT
             </button>
-            <button className={color ? style.lila : null} onClick={events}>
+            <button
+              className={colorEvents ? style.activeTab : null}
+              onClick={events}
+            >
               EVENTS
             </button>
-            <button className={color ? style.lila : null} onClick={reviews}>
+            <button
+              className={colorReviews ? style.activeTab : null}
+              onClick={reviews}
+            >
               REVIEWS
             </button>
           </div>
-          <h1>EVENTS</h1>
+
           {event.items.map((singleEvent) => {
             return <CreatorEvent singleEvent={singleEvent} />;
           })}
@@ -170,23 +225,48 @@ export function CreatorProfil() {
             alt="Profilbild des Creators"
           />
           <p>Follower {creator.follower?.length}</p>
-          <button className={color ? style.lila : null} onClick={follow}>
-            follow
-          </button>
-          <button onClick={unfollow}>unfollow</button>
+          <p>Following {following}</p>
+          <div className={style.button}>
+            <button
+              className={
+                followed ? style.activefollowbutton : style.followbutton
+              }
+              onClick={follow}
+            >
+              Follow
+            </button>
+            <Link to={`/review/${id}`}>Review</Link>
+          </div>
 
           <div className={style.tabs}>
-            <button className={color ? style.lila : null} onClick={about}>
+            <button
+              className={colorAbout ? style.activeTab : null}
+              onClick={about}
+            >
               ABOUT
             </button>
-            <button className={color ? style.lila : null} onClick={events}>
+            <button
+              className={colorEvents ? style.activeTab : null}
+              onClick={events}
+            >
               EVENTS
             </button>
-            <button className={color ? style.lila : null} onClick={reviews}>
+            <button
+              className={colorReviews ? style.activeTab : null}
+              onClick={reviews}
+            >
               REVIEWS
             </button>
           </div>
-          <h1>REVIEWS</h1>
+
+          {comments.items.map((singleComment) => {
+            return (
+              <div className={styles.ratingCard}>
+                <Rating rating={singleComment.rating} />
+                <Comment singleComment={singleComment} />
+              </div>
+            );
+          })}
         </main>
       );
     } else {
