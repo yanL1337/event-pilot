@@ -12,7 +12,7 @@ const CategoryScrollBar = ({ eventFilter, eventFilterDispatch }) => {
   const [scrollLeft, setScrollLeft] = useState(0);
 
   // Ist die Schwelle ab wann man ein drag Event registriert wird
-  const DRAG_THRESHOLD = 10;
+  const DRAG_THRESHOLD = 0;
 
   /* DRAG FUNKTIONALITÄT EVENTUELL SPÄTER AUSLAGERN */
   const startDragging = (e) => {

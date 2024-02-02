@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { createImagePath, formatDateToString } from '../../utils/helperFunction';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBookmark, faLocationDot } from '@fortawesome/free-solid-svg-icons';
+import { faBookmark, faCircleCheck, faLocationDot } from '@fortawesome/free-solid-svg-icons';
 
 /* CSS */
 import styles from './OutputItem.module.css';
@@ -10,11 +10,19 @@ import { useContext, useEffect, useState } from 'react';
 import { addEventFavorites } from '../../utils/fetchData';
 import { SetFavoriteMessageContext } from '../../context/context';
 
-const OutputItem = ({ data, allFavorites, favMessageTimer }) => {
+const OutputItem = ({ data, allFavorites, favMessageTimer, isOnFavSite, registeredEvents }) => {
   const [eventFavorite, setEventFavorite] = useState(null);
+
   const { setFavMessage } = useContext(SetFavoriteMessageContext);
 
+  console.log(registeredEvents);
+
   useEffect(() => {
+    if (isOnFavSite) {
+      // Registrierte Events holen
+      return;
+    }
+
     const favId = allFavorites.filter((fav) => fav === data.id).join('');
 
     setEventFavorite(favId);
@@ -80,9 +88,15 @@ const OutputItem = ({ data, allFavorites, favMessageTimer }) => {
           <span>{data.location}</span>
         </div>
       </div>
-
       <div className={styles.item_favorite}>
-        {eventFavorite === data.id ? (
+        {isOnFavSite ? (
+          registeredEvents.includes(data.id) && (
+            <FontAwesomeIcon
+              icon={faCircleCheck}
+              style={{ color: '#63E6BE', height: '20px', width: '20px' }}
+            />
+          )
+        ) : eventFavorite === data.id ? (
           <FontAwesomeIcon
             icon={faBookmark}
             style={{ color: '#63E6BE', height: '20px', width: '20px' }}
@@ -104,6 +118,8 @@ OutputItem.propTypes = {
   data: PropTypes.object,
   allFavorites: PropTypes.array,
   favMessageTimer: PropTypes.object,
+  isOnFavSite: PropTypes.bool,
+  registeredEvents: PropTypes.array,
 };
 
 export default OutputItem;

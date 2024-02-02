@@ -7,6 +7,7 @@ import OutputItem from '../../general/OutputItem';
 import styles from './CategoryOutput.module.css';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { getEventFavorites } from '../../../utils/fetchData';
+import { formatDateToString } from '../../../utils/helperFunction';
 
 const CategoryOutput = ({ viewEventData, isLoading, eventFilter }) => {
   const [allFavorites, setAllFavorites] = useState([]);
@@ -37,6 +38,14 @@ const CategoryOutput = ({ viewEventData, isLoading, eventFilter }) => {
             }
 
             if (filter === 'date') {
+              if (eventFilter[filter].type === 'equal') {
+                return (
+                  <Pin
+                    key={crypto.randomUUID()}
+                    value={formatDateToString(eventFilter[filter].value)}
+                  />
+                );
+              }
               return <Pin key={crypto.randomUUID()} value={eventFilter[filter].type} />;
             }
 

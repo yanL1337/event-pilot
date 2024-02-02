@@ -10,6 +10,8 @@ import { createEventByUser } from '../../utils/fetchData';
 import { Link } from 'react-router-dom';
 import LoadingElement from '../loading/LoadingElement';
 import DynamicTriggerButton from '../buttons/DynamicTriggerButton';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 
 const AddEventForm = () => {
   // reduce
@@ -67,6 +69,11 @@ const AddEventForm = () => {
     eventFormDispatch({ type: 'SET_FIELD', field: e.target.name, value: e.target.value });
   };
 
+  const resetForm = () => {
+    eventFormDispatch({ type: 'RESET_FORM_STATE' });
+    setAddSuccess(false);
+  };
+
   return (
     <section className={styles.section}>
       <article
@@ -75,7 +82,7 @@ const AddEventForm = () => {
         <h1>ADD EVENT</h1>
         <form
           onSubmit={onSubmitForm}
-          style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}
+          style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%' }}
         >
           <div style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
             <label htmlFor="name"></label>
@@ -170,9 +177,6 @@ const AddEventForm = () => {
           {!isLoading ? (
             <DynamicTriggerButton hasArrow={true}>ADD</DynamicTriggerButton>
           ) : (
-            // <div>
-            //   <button className={styles.button}>ADD</button>
-            // </div>
             <LoadingElement />
           )}
         </form>
@@ -180,8 +184,16 @@ const AddEventForm = () => {
       {addSuccess && (
         <article className={styles.successmessage_wrapper}>
           <div className={styles.successmessage_box}>
-            <p>Sie haben das Event erfolgreich anglegt</p>
-            <Link to="/events">Zurück zu Events</Link>
+            <FontAwesomeIcon icon={faThumbsUp} />
+            <p>Sie haben das Event erfolgreich angelegt</p>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <Link to="/home" className={styles.successmessage_box_elements}>
+                Zurück zu Events
+              </Link>
+              <p className={styles.successmessage_box_elements} onClick={resetForm}>
+                Neues Event anlegen
+              </p>
+            </div>
           </div>
         </article>
       )}

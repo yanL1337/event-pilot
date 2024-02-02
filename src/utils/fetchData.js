@@ -226,3 +226,40 @@ export const getEventFavorites = async () => {
     return null;
   }
 };
+
+export const getEventFavoritesData = async () => {
+  try {
+    // holen uns erstmal alle fav ids
+    const favIds = await getEventFavorites();
+    const returnFavArr = [];
+
+    const allExistingEvents = await pb.collection('events').getFullList();
+
+    for (const eventObj of allExistingEvents) {
+      favIds.forEach((fav) => {
+        if (fav === eventObj.id) {
+          returnFavArr.push(eventObj);
+        }
+      });
+    }
+
+    return returnFavArr;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getRegisteredEventsByUser = async () => {
+  try {
+    const userId = pb.authStore.model.id;
+
+    const registeredEvents = await pb.collection('users').getOne(userId, {
+      expand: 'registeredUsers',
+      fields: 'registeredEvents',
+    });
+
+    return registeredEvents.registeredEvents;
+  } catch (error) {
+    console.log(error);
+  }
+};

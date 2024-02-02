@@ -35,7 +35,7 @@ const SearchFilterBar = ({ onHandleShowFilterBox, eventFilter, eventFilterDispat
         <div className={`${styles.filterbar_icon}`}>
           <FontAwesomeIcon
             icon={faBars}
-            style={{ color: 'white', fontWeight: 'bold', height: '25px' }}
+            style={{ color: 'white', fontWeight: 'bold', height: '20px' }}
           />
         </div>
         <span>Filter</span>
