@@ -3,6 +3,16 @@
   src: url('./assets/fonts/Inter-VariableFont_slnt_wght.ttf');
 }
 
+@font-face {
+  font-family: Oswald;
+  src: url('./assets/fonts/Oswald-VariableFont_wght.ttf');
+}
+
+@font-face {
+  font-family: KumbhSans;
+  src: url('./assets/fonts/KumbhSans-VariableFont_YOPQ_wght.ttf');
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -11,7 +21,7 @@
 
 html {
   font-size: 62.5%;
-  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-family: KumbhSans, Arial, Helvetica, sans-serif;
   font-weight: 100;
 }
 
@@ -23,4 +33,6 @@ html {
   --firstButtonColorOpacity: #876afd50;
   --firstFontColor: #668be9;
   --firstBoxShadowColor: #a6a6a6;
+  --individualColor: #f8f5f5;
+  --irgendEinOrange: #ffb21c;
 }
