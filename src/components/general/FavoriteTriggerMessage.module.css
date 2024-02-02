@@ -1,0 +1,28 @@
+.message_box {
+  animation: fadeInFromTop 0.3s ease-out forwards;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  position: fixed;
+  font-size: 1.5rem;
+  top: 0;
+  color: white;
+  min-height: 67px;
+  width: 100%;
+  font-weight: 700;
+  border-radius: 12px;
+  padding: 16px 22px 17px 20px;
+  background: var(--selectedColor);
+  z-index: 10;
+}
+
+@keyframes fadeInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-100%); /* Startet oberhalb des sichtbaren Bereichs */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0); /* Endet in der normalen Position */
+  }
+}

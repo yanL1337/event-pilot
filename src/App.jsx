@@ -17,18 +17,23 @@ import Navbar from "./components/navbar/Navbar";
 import { Home } from "./pages/Home";
 import { Favorites } from "./pages/Favorites";
 import { Review } from "./pages/Review";
+import { SetFavoriteMessageContext } from './context/context';
+import FavoriteTriggerMessage from './components/general/FavoriteTriggerMessage';
+
 
 pb.autoCancellation(false);
 
 library.add(faBookmark);
-const Protector = lazy(() => import("./Protect/Protector"));
+const Protector = lazy(() => import('./Protect/Protector'));
 
 function App() {
   const [loading, setLoading] = useState(false);
+  const [favMessage, setFavMessage] = useState(null);
 
   return (
     <>
       <LoadingContext.Provider value={{ loading, setLoading }}>
+        {favMessage && <FavoriteTriggerMessage favMessage={favMessage} />}
         {loading ? (
           <BrowserRouter>
             <Suspense fallback={<FallbackLoadingScreen />}>
@@ -57,9 +62,11 @@ function App() {
                   <Route
                     path="/event/search"
                     element={
-                      <SearchEvent>
-                        <Navbar activeName="search" />
-                      </SearchEvent>
+                      <SetFavoriteMessageContext.Provider value={{ favMessage, setFavMessage }}>
+                        <SearchEvent>
+                          <Navbar activeName="search" />
+                        </SearchEvent>
+                      </SetFavoriteMessageContext.Provider>
                     }
                   />
                   <Route

@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
-import { getCategories, getCategoryIcons, lockLastDays } from '../../../utils/helperFunction';
+import { getCategories, getCategoryIcons, lockLastDays } from '../../../../utils/helperFunction';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarDays, faLocationDot } from '@fortawesome/free-solid-svg-icons';
 
 /* CSS */
 import styles from './EventFilterBox.module.css';
 import { useEffect, useRef } from 'react';
-import { getCityFromLocation } from '../../../utils/geoLocation';
-import DynamicTriggerButton from '../../buttons/DynamicTriggerButton';
+import { getCityFromLocation } from '../../../../utils/geoLocation';
+import DynamicTriggerButton from '../../../buttons/DynamicTriggerButton';
 
 const EventFilterBox = ({ eventFilter, eventFilterDispatch, onHandleShowFilterBox }) => {
   const dateInputRef = useRef(null);
