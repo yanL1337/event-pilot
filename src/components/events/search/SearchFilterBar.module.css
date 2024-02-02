@@ -55,6 +55,8 @@
   align-items: center;
   justify-content: space-around;
   gap: 16px;
+  border: none;
+  border-radius: 10px;
   background-color: var(--firstButtonColor);
   color: white;
 }

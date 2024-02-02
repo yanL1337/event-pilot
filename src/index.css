@@ -29,10 +29,12 @@ html {
   --selectedColor: #00ecaa;
   --firstBGColor: #5d3ede;
   --firstButtonColor: #876afd;
+  --firstButtonColorOpacity: #876afd75;
   --secondButtonColor: #5d3ede;
-  --firstButtonColorOpacity: #876afd50;
+  --secondButtonColorOpacity: #5d3ede75;
   --firstFontColor: #668be9;
   --firstBoxShadowColor: #a6a6a6;
   --individualColor: #f8f5f5;
   --irgendEinOrange: #ffb21c;
+  --linkColor: #44abd4;
 }

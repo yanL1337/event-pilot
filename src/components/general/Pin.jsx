@@ -8,7 +8,7 @@ const Pin = ({ isEditable, value, triggerFn }) => {
     <>
       {value && (
         <p className={styles.pin}>
-          <span style={{ fontSize: '2rem' }}>{value} </span>
+          <span>{value} </span>
           {isEditable && (
             <span
               style={{ color: '#00ECAA', fontWeight: '800', fontSize: '1.75rem' }}

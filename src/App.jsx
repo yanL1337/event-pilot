@@ -22,6 +22,7 @@ import FavoriteTriggerMessage from "./components/general/FavoriteTriggerMessage"
 import { ThemeContext } from "./context/Context";
 import "./App.css";
 
+
 pb.autoCancellation(false);
 
 library.add(faBookmark);
@@ -36,6 +37,7 @@ function App() {
 
   return (
     <>
+
       <section className={theme ? "dark" : null}>
         <ThemeContext.Provider value={{ theme, setTheme }}>
           <LoadingContext.Provider value={{ loading, setLoading }}>
@@ -55,14 +57,16 @@ function App() {
                           </Home>
                         }
                       />
-                      <Route
+                    <Route
                         path="/favorites"
-                        element={
-                          <Favorites>
-                            <Navbar activeName="events" />
-                          </Favorites>
-                        }
-                      />
+                          element={
+                            <SetFavoriteMessageContext.Provider value={{ favMessage, setFavMessage }}>
+                              <Favorites>
+                              <Navbar activeName="events" />
+                        </Favorites>
+                      </SetFavoriteMessageContext.Provider>
+                       }
+                    />
                       <Route
                         path="/eventdetails/:id"
                         element={<EventDetails />}
