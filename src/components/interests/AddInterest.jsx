@@ -40,6 +40,7 @@ const AddInterest = ({ addInterest }) => {
       {showModal && (
         <dialog style={{ padding: "5px" }} open>
           <select onChange={add}>
+            <option>Select Interest</option>
             {userInterests.map((interest, index) => {
               return (
                 <option key={index} value={interest}>
