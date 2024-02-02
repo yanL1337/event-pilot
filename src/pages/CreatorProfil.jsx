@@ -7,6 +7,7 @@ import FallbackLoadingScreen from "../components/loading/FallbackLoadingScreen";
 import { Comment } from "../components/review/Comment";
 import { Rating } from "../components/review/Rating";
 import styles from "./css/Review.module.css";
+import { Header } from "../components/header/Header";
 
 export function CreatorProfil() {
   const [creator, setCreator] = useState([]);
@@ -119,8 +120,8 @@ export function CreatorProfil() {
     if (state === "about") {
       return (
         <main>
-          <Link to="/home">←</Link>
-          <h2>{creator.firstname}</h2>
+          <Header headertext={creator.firstname} />
+
           <img
             className={style.creatorprofil_img}
             src={`${pb.baseUrl}/api/files/${creator.collectionId}/${creator.id}/${creator.profilImage}`}
@@ -167,8 +168,7 @@ export function CreatorProfil() {
     } else if (state === "events") {
       return (
         <main>
-          <Link to="/home">←</Link>
-          <h2>{creator.firstname}</h2>
+          <Header headertext={creator.firstname} />
           <img
             className={style.creatorprofil_img}
             src={`${pb.baseUrl}/api/files/${creator.collectionId}/${creator.id}/${creator.profilImage}`}
@@ -217,8 +217,7 @@ export function CreatorProfil() {
     } else if (state === "reviews") {
       return (
         <main>
-          <Link to="/home">←</Link>
-          <h2>{creator.firstname}</h2>
+          <Header headertext={creator.firstname} />
           <img
             className={style.creatorprofil_img}
             src={`${pb.baseUrl}/api/files/${creator.collectionId}/${creator.id}/${creator.profilImage}`}

@@ -38,3 +38,11 @@
 .date {
   color: #a6a6a6;
 }
+
+.creatorprofil_img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin: 0 auto;
+  display: block;
+}

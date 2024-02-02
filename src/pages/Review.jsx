@@ -2,6 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import pb from "../lib/pocketbase";
 import style from "./css/Review.module.css";
+import { Header } from "../components/header/Header";
 
 export function Review() {
   const [creator, setCreator] = useState([]);
@@ -41,7 +42,16 @@ export function Review() {
   if (creator) {
     return (
       <main>
-        Review {creator.firstname} {creator.lastname}
+        <Header
+          headertext={`Review ${creator.firstname} ${creator.lastname}`}
+        />
+        <div>
+          <img
+            className={style.creatorprofil_img}
+            src={`${pb.baseUrl}/api/files/${creator.collectionId}/${creator.id}/${creator.profilImage}`}
+            alt="Profilbild"
+          />
+        </div>
         <div>
           <label htmlFor="">Comment</label>
           <input type="text" ref={commentRef} />
