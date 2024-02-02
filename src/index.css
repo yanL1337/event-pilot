@@ -38,3 +38,7 @@ html {
   --irgendEinOrange: #ffb21c;
   --linkColor: #44abd4;
 }
+
+.grabbing {
+  user-select: none;
+}
