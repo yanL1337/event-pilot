@@ -1,19 +1,15 @@
 import { useState } from "react";
-import pb from "../../lib/pocketbase";
 
-const AddInterest = ({ user }) => {
+const AddInterest = ({ addInterest }) => {
   const [showModal, setShowModal] = useState(false);
 
-  // Funktion zum Umschalten der Anzeige des Modals
   const toggleModal = () => {
     setShowModal(!showModal);
   };
 
   const add = async (event) => {
-    pb.collection("users").update(user.id, {
-      "interests+": [event.target.value],
-    });
-    console.log(event.target.value);
+    addInterest(event.target.value);
+    toggleModal();
   };
 
   const userInterests = [
@@ -43,7 +39,7 @@ const AddInterest = ({ user }) => {
 
       {showModal && (
         <dialog style={{ padding: "5px" }} open>
-          <select onSelect={add}>
+          <select onChange={add}>
             {userInterests.map((interest, index) => {
               return (
                 <option key={index} value={interest}>
