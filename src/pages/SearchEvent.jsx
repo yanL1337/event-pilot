@@ -1,30 +1,23 @@
-import { useEffect, useReducer, useState } from "react";
-import CategoryOutput from "../components/events/search/CategoryOutput";
-import CategoryScrollBar from "../components/events/search/CategoryScrollBar";
-import SearchFilterBar from "../components/events/search/SearchFilterBar";
+import PropTypes from 'prop-types';
+import { useEffect, useReducer, useState } from 'react';
+import CategoryOutput from '../components/events/search/CategoryOutput';
+import CategoryScrollBar from '../components/events/search/CategoryScrollBar';
+import SearchFilterBar from '../components/events/search/SearchFilterBar';
 
 /* CSS */
-import styles from "./SearchEvent.module.css";
-import { viewAllEvents, viewEventByFilter } from "../utils/fetchData";
-import { initialEventFilterState, reducer } from "../utils/stateHandler";
-import EventFilterBox from "../components/events/search/EventFilterBox";
+import styles from './SearchEvent.module.css';
+import { viewAllEvents, viewEventByFilter } from '../utils/fetchData';
+import { initialEventFilterState, reducer } from '../utils/stateHandler';
+import EventFilterBox from '../components/events/search/filter/EventFilterBox';
 
 const SearchEvent = ({ children }) => {
-  const [eventFilter, eventFilterDispatch] = useReducer(
-    reducer,
-    initialEventFilterState
-  );
+  const [eventFilter, eventFilterDispatch] = useReducer(reducer, initialEventFilterState);
   const [viewEventData, setViewEventData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
 
   useEffect(() => {
-    // if (eventFilter.name) {
-    //   console.log('CHANGE NAME');
-    //   return;
-    // }
-
     setIsLoading(true);
     // Hole erstmal alle Events bei laden der Seite und übergeben die fetchfunctions als callback
 
@@ -46,8 +39,6 @@ const SearchEvent = ({ children }) => {
   const fetchEventData = async (cb) => {
     const response = await cb();
     setIsLoading(false);
-
-    console.log(response);
 
     if (response && response.length > 0) {
       setViewEventData(response);
@@ -90,6 +81,10 @@ const SearchEvent = ({ children }) => {
       {children}
     </>
   );
+};
+
+SearchEvent.propTypes = {
+  children: PropTypes.object,
 };
 
 export default SearchEvent;

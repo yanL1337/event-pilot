@@ -191,3 +191,38 @@ const queryBuilder = (filter) => {
   // Wir verknüpfen die queries dann mit dem und operator und returnen den Rotz
   return queryParams.join('&&');
 };
+
+export const addEventFavorites = async (favId) => {
+  const userId = pb.authStore.model.id;
+  // Holen uns die Daten vom user
+  const user = await pb.collection('users').getOne(userId);
+
+  const hasFavorite = user.favoriteEvents.filter((eventId) => eventId === favId);
+
+  try {
+    if (hasFavorite.length > 0) {
+      await pb.collection('users').update(userId, { 'favoriteEvents-': [favId] });
+
+      return false;
+    } else {
+      await pb.collection('users').update(userId, { 'favoriteEvents+': [favId] });
+      return true;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getEventFavorites = async () => {
+  try {
+    const userId = pb.authStore.model.id;
+
+    const record = await pb.collection('users').getOne(userId, {
+      expand: 'favoriteEvents',
+    });
+
+    return record.favoriteEvents;
+  } catch (error) {
+    return null;
+  }
+};

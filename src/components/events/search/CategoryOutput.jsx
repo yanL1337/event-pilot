@@ -1,14 +1,28 @@
 import PropTypes from 'prop-types';
-import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Pin from '../../general/Pin';
+import LoadingElement from '../../loading/LoadingElement';
+import OutputItem from '../../general/OutputItem';
 
 /* CSS */
 import styles from './CategoryOutput.module.css';
-import LoadingElement from '../../loading/LoadingElement';
-import { createImagePath, formatDateToString } from '../../../utils/helperFunction';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { getEventFavorites } from '../../../utils/fetchData';
 
 const CategoryOutput = ({ viewEventData, isLoading, eventFilter }) => {
+  const [allFavorites, setAllFavorites] = useState([]);
+  const favMessageTimer = useRef(null);
+
+  const fetchFavorites = useCallback(async () => {
+    const response = await getEventFavorites();
+
+    setAllFavorites(response);
+  }, []);
+
+  useEffect(() => {
+    // Holen uns die Favorite und gleichen ab und sättän datt state
+    fetchFavorites();
+  }, [fetchFavorites]);
+
   return (
     <article className={styles.categoryOutput_wrapper}>
       <div className={styles.pin_list}>
@@ -40,31 +54,12 @@ const CategoryOutput = ({ viewEventData, isLoading, eventFilter }) => {
       ) : viewEventData && viewEventData.length > 0 ? (
         viewEventData.map((event) => {
           return (
-            <div className={styles.categoryOutput_box} key={event.id}>
-              <img
-                src={`${
-                  createImagePath(event.image, event.id)
-                    ? createImagePath(event.image, event.id)
-                    : '/images/No_image_available.svg.png'
-                }`}
-                alt="event image"
-              />
-              <div className={styles.categoryOutput_box_info}>
-                <p>{formatDateToString(event.date)}</p>
-                <h2>{event.name}</h2>
-                <div className={styles.categoryOutput_location} style={{ marginTop: 'auto' }}>
-                  <FontAwesomeIcon icon={faLocationDot} />
-                  <span>{event.location}</span>
-                </div>
-              </div>
-
-              <div className={styles.categoryOutput_favorite}>
-                <FontAwesomeIcon
-                  icon={['far', 'bookmark']}
-                  style={{ color: '#63E6BE', height: '20px' }}
-                />
-              </div>
-            </div>
+            <OutputItem
+              data={event}
+              allFavorites={allFavorites}
+              key={event.id}
+              favMessageTimer={favMessageTimer}
+            />
           );
         })
       ) : (
