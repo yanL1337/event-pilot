@@ -41,25 +41,31 @@ export function Review() {
 
   if (creator) {
     return (
-      <main>
+      <>
         <Header
           headertext={`Review ${creator.firstname} ${creator.lastname}`}
         />
-        <div>
-          <img
-            className={style.creatorprofil_img}
-            src={`${pb.baseUrl}/api/files/${creator.collectionId}/${creator.id}/${creator.profilImage}`}
-            alt="Profilbild"
-          />
-        </div>
-        <div>
-          <label htmlFor="">Comment</label>
-          <input type="text" ref={commentRef} />
-          <label htmlFor="">Rating</label>
-          <input type="number" min="0" max="5" ref={ratingRef} />
-        </div>
-        <button onClick={sendReview}>review</button>
-      </main>
+        <main className={style.wrapper}>
+          <div>
+            <img
+              className={style.creatorprofil_img}
+              src={`${pb.baseUrl}/api/files/${creator.collectionId}/${creator.id}/${creator.profilImage}`}
+              alt="Profilbild"
+            />
+          </div>
+          <div>
+            <label className={style.labelrating}>Rating</label>
+            <input type="number" min="0" max="5" ref={ratingRef} />
+            <div className={style.commentdiv}>
+              <label className={style.label}>★ Your Review</label>
+              <input type="text" ref={commentRef} className={style.input} />
+            </div>
+          </div>
+          <button className={style.button} onClick={sendReview}>
+            SUBMIT
+          </button>
+        </main>
+      </>
     );
   }
 }
