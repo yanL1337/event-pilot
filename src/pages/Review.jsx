@@ -47,24 +47,30 @@ export function Review() {
     };
     try {
       const response = await pb.collection("reviews").create(review);
-      navigate(`/creator/${id}`);
-      return response;
+
+      console.log(response);
+
+      if (response.rating > 0 && response.rating < 6) {
+        console.log("Ich bin im if");
+        displayFavMessage(
+          `Deine Review wurde gespeichert`,
+          setFavMessage,
+          favMessageTimer
+        );
+      } else {
+        console.log("Ich bin im else");
+        displayFavMessage(
+          `Upps, deine Review konnte nicht gespeichert werden.`,
+          setFavMessage,
+          favMessageTimer
+        );
+      }
     } catch (error) {
       console.log(error);
     }
-    if (response.ok) {
-      displayFavMessage(
-        `Deine Review wurde gespeichert`,
-        setFavMessage,
-        favMessageTimer
-      );
-    } else {
-      displayFavMessage(
-        `Upps, deine Review konnte nicht gespeichert werden.`,
-        setFavMessage,
-        favMessageTimer
-      );
-    }
+    setTimeout(() => {
+      navigate(`/creator/${id}`);
+    }, 1500);
   };
 
   // - Sterne Rating
