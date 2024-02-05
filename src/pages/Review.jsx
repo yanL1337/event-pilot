@@ -51,14 +51,12 @@ export function Review() {
       console.log(response);
 
       if (response.rating > 0 && response.rating < 6) {
-        console.log("Ich bin im if");
         displayFavMessage(
           `Deine Review wurde gespeichert`,
           setFavMessage,
           favMessageTimer
         );
       } else {
-        console.log("Ich bin im else");
         displayFavMessage(
           `Upps, deine Review konnte nicht gespeichert werden.`,
           setFavMessage,
