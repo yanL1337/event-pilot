@@ -11,11 +11,11 @@ const ToggleFavoritesBar = ({ styles, onHandleToggleButton, toggleButton }) => {
       </button>
       <button
         className={`${styles.reset_button_styles} ${
-          toggleButton === 'past' && styles.toggle_button
+          toggleButton === 'registered' && styles.toggle_button
         }`}
-        onClick={() => onHandleToggleButton('past')}
+        onClick={() => onHandleToggleButton('registered')}
       >
-        PAST EVENTS
+        REGISTERED
       </button>
     </div>
   );

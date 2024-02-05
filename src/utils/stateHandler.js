@@ -89,7 +89,10 @@ export const reducer = (state, action) => {
       // clearn den Scheiss
       return initialEventFilterState;
     case 'RESET_FORM_STATE':
-      return initialEventState;
+      return {
+        ...initialEventState,
+        creator: state.creator,
+      };
     case 'SET_ERROR':
       return { ...state, errors: action.errors };
 

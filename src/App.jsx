@@ -1,44 +1,40 @@
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
-import { Suspense, lazy, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import AddEvent from "./pages/AddEvent";
-import FallbackLoadingScreen from "./components/loading/FallbackLoadingScreen";
-import { EventDetails } from "./pages/EventDetails";
-import { LoadingContext } from "./context/context";
-import { Loadingscreen } from "./pages/Loadingscreen";
-import { UserProfile } from "./pages/UserProfile";
-import SearchEvent from "./pages/SearchEvent";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faBookmark } from "@fortawesome/free-regular-svg-icons";
-import { CreatorProfil } from "./pages/CreatorProfil";
-import pb from "./lib/pocketbase";
-import Navbar from "./components/navbar/Navbar";
-import { Home } from "./pages/Home";
-import { Favorites } from "./pages/Favorites";
-import { Review } from "./pages/Review";
-import { SetFavoriteMessageContext } from "./context/context";
-import FavoriteTriggerMessage from "./components/general/FavoriteTriggerMessage";
-import { ThemeContext } from "./context/Context";
-import "./App.css";
-
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import { Suspense, lazy, useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import AddEvent from './pages/AddEvent';
+import FallbackLoadingScreen from './components/loading/FallbackLoadingScreen';
+import { EventDetails } from './pages/EventDetails';
+import { LoadingContext } from './context/context';
+import { Loadingscreen } from './pages/Loadingscreen';
+import { UserProfile } from './pages/UserProfile';
+import SearchEvent from './pages/SearchEvent';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faBookmark } from '@fortawesome/free-regular-svg-icons';
+import { CreatorProfil } from './pages/CreatorProfil';
+import pb from './lib/pocketbase';
+import Navbar from './components/navbar/Navbar';
+import { Home } from './pages/Home';
+import { Favorites } from './pages/Favorites';
+import { Review } from './pages/Review';
+import { SetFavoriteMessageContext } from './context/context';
+import FavoriteTriggerMessage from './components/general/FavoriteTriggerMessage';
+import { ThemeContext } from './context/Context';
+import './App.css';
 
 pb.autoCancellation(false);
 
 library.add(faBookmark);
-const Protector = lazy(() => import("./Protect/Protector"));
+const Protector = lazy(() => import('./Protect/Protector'));
 
 function App() {
   const [loading, setLoading] = useState(false);
   const [favMessage, setFavMessage] = useState(null);
   const [theme, setTheme] = useState(false);
 
-  console.log(theme);
-
   return (
     <>
-
-      <section className={theme ? "dark" : null}>
+      <section className={theme ? 'dark' : null}>
         <ThemeContext.Provider value={{ theme, setTheme }}>
           <LoadingContext.Provider value={{ loading, setLoading }}>
             {favMessage && <FavoriteTriggerMessage favMessage={favMessage} />}
@@ -57,27 +53,29 @@ function App() {
                           </Home>
                         }
                       />
-                    <Route
+                      <Route
                         path="/favorites"
-                          element={
-                            <SetFavoriteMessageContext.Provider value={{ favMessage, setFavMessage }}>
-                              <Favorites>
+                        element={
+                          <SetFavoriteMessageContext.Provider value={{ favMessage, setFavMessage }}>
+                            <Favorites>
                               <Navbar activeName="events" />
-                        </Favorites>
-                      </SetFavoriteMessageContext.Provider>
-                       }
-                    />
+                            </Favorites>
+                          </SetFavoriteMessageContext.Provider>
+                        }
+                      />
                       <Route
                         path="/eventdetails/:id"
-                        element={<EventDetails />}
+                        element={
+                          <SetFavoriteMessageContext.Provider value={{ favMessage, setFavMessage }}>
+                            <EventDetails />
+                          </SetFavoriteMessageContext.Provider>
+                        }
                       />
                       <Route path="/event/add" element={<AddEvent />} />
                       <Route
                         path="/event/search"
                         element={
-                          <SetFavoriteMessageContext.Provider
-                            value={{ favMessage, setFavMessage }}
-                          >
+                          <SetFavoriteMessageContext.Provider value={{ favMessage, setFavMessage }}>
                             <SearchEvent>
                               <Navbar activeName="search" />
                             </SearchEvent>

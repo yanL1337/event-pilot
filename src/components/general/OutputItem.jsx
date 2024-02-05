@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { createImagePath, formatDateToString } from '../../utils/helperFunction';
+import { createImagePath, displayFavMessage, formatDateToString } from '../../utils/helperFunction';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark, faCircleCheck, faLocationDot } from '@fortawesome/free-solid-svg-icons';
 
@@ -17,17 +17,18 @@ const OutputItem = ({ data, allFavorites, favMessageTimer, isOnFavSite, register
 
   useEffect(() => {
     if (isOnFavSite) {
-      // Registrierte Events holen
       return;
     }
 
+    // Registrierte Events holen
     const favId = allFavorites.filter((fav) => fav === data.id).join('');
 
     setEventFavorite(favId);
 
     return () => {
-      if (favMessageTimer.current) {
-        clearTimeout(favMessageTimer.current);
+      const cleanUpRef = favMessageTimer;
+      if (cleanUpRef.current) {
+        clearTimeout(cleanUpRef.current);
         setFavMessage(null);
       }
     };
@@ -40,9 +41,17 @@ const OutputItem = ({ data, allFavorites, favMessageTimer, isOnFavSite, register
 
       // message einblenden
       if (fav) {
-        displayFavMessage(`${eventName} wurde als Favoriten hinzugefügt`);
+        displayFavMessage(
+          `${eventName} wurde als Favoriten hinzugefügt`,
+          setFavMessage,
+          favMessageTimer
+        );
       } else {
-        displayFavMessage(`${eventName} wurde aus den Favoriten entfernt`);
+        displayFavMessage(
+          `${eventName} wurde aus den Favoriten entfernt`,
+          setFavMessage,
+          favMessageTimer
+        );
       }
 
       return fav;
@@ -50,20 +59,6 @@ const OutputItem = ({ data, allFavorites, favMessageTimer, isOnFavSite, register
 
     // persistieren
     await addEventFavorites(favId);
-  };
-
-  const displayFavMessage = (message) => {
-    setFavMessage(message);
-
-    // Wir löschen wieder den Timer wenn eine neue message reinkommt
-    if (favMessageTimer.current) {
-      clearTimeout(favMessageTimer.current);
-    }
-
-    favMessageTimer.current = setTimeout(() => {
-      setFavMessage(null);
-      favMessageTimer.current = null;
-    }, 3000);
   };
 
   return (
@@ -88,7 +83,7 @@ const OutputItem = ({ data, allFavorites, favMessageTimer, isOnFavSite, register
       </div>
       <div className={styles.item_favorite}>
         {isOnFavSite ? (
-          registeredEvents.includes(data.id) && (
+          registeredEvents.some((regEv) => regEv.id === data.id) && (
             <FontAwesomeIcon
               icon={faCircleCheck}
               style={{ color: '#63E6BE', height: '20px', width: '20px' }}

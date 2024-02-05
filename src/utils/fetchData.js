@@ -52,7 +52,6 @@ export const viewEventByFilter = async (filter) => {
     // query builder einbauen
     const records = await pb.collection('events').getFullList({
       filter: filterString,
-      // filter: '(category="Sport")&&location="Essen, Germany"',
     });
 
     return records;
@@ -258,7 +257,15 @@ export const getRegisteredEventsByUser = async () => {
       fields: 'registeredEvents',
     });
 
-    return registeredEvents.registeredEvents;
+    let detailedEvents = [];
+
+    for (const eventID of registeredEvents.registeredEvents) {
+      const detail = await pb.collection('events').getOne(eventID);
+
+      detailedEvents.push(detail);
+    }
+
+    return detailedEvents;
   } catch (error) {
     console.log(error);
   }

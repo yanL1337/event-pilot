@@ -11,13 +11,20 @@ import { Link } from 'react-router-dom';
 import LoadingElement from '../loading/LoadingElement';
 import DynamicTriggerButton from '../buttons/DynamicTriggerButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faThumbsUp } from '@fortawesome/free-solid-svg-icons';
+import {
+  faBarsStaggered,
+  faCalendarDays,
+  faLocationDot,
+  faThumbsUp,
+  faUpload,
+} from '@fortawesome/free-solid-svg-icons';
 
 const AddEventForm = () => {
   // reduce
   const [eventData, eventFormDispatch] = useReducer(reducer, initialEventState);
   const [addSuccess, setAddSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
   const userDataAuth = useLocalStorage('pocketbase_auth', null);
 
   useEffect(() => {
@@ -28,7 +35,9 @@ const AddEventForm = () => {
       }
     });
 
+    // Setzen den Creator
     eventFormDispatch({ type: 'SET_FIELD', field: 'creator', value: userDataAuth[0].model.id });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -63,6 +72,13 @@ const AddEventForm = () => {
     // Die File müssen wir anders behandeln
     if (e.target.name === 'image') {
       eventFormDispatch({ type: 'SET_FIELD', field: e.target.name, value: e.target.files[0] });
+
+      // Wir müssen die upload datei anzeigen lassen hinter dem Button
+      const file = e.target.files[0];
+
+      if (file) {
+        setSelectedImage(URL.createObjectURL(file));
+      }
       return;
     }
 
@@ -70,8 +86,18 @@ const AddEventForm = () => {
   };
 
   const resetForm = () => {
+    // Clearn State
     eventFormDispatch({ type: 'RESET_FORM_STATE' });
+    // clearn Image
+    handleClearImage();
     setAddSuccess(false);
+  };
+
+  const handleClearImage = () => {
+    setSelectedImage(null);
+    // Wir hauen das Bild wieder raus
+    document.getElementById('image').value = '';
+    eventFormDispatch({ type: 'SET_FIELD', field: 'image', value: '' });
   };
 
   return (
@@ -79,21 +105,34 @@ const AddEventForm = () => {
       <article
         style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100vw' }}
       >
-        <h1>ADD EVENT</h1>
         <form
           onSubmit={onSubmitForm}
-          style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%' }}
+          style={{ display: 'flex', flexDirection: 'column', gap: '32px', width: '100%' }}
         >
           <div style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
             <label htmlFor="name"></label>
-            <input
-              type="text"
-              name="name"
-              id="name"
-              placeholder="Name"
-              value={eventData.name}
-              onChange={handleChangeEventFormData}
-            />
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+              <FontAwesomeIcon
+                icon={faBarsStaggered}
+                style={{
+                  color: 'gray',
+                  height: '30px',
+                  position: 'absolute',
+
+                  left: '16px',
+                  top: '22.5%',
+                }}
+              />
+              <input
+                type="text"
+                name="name"
+                id="name"
+                placeholder="Name"
+                value={eventData.name}
+                onChange={handleChangeEventFormData}
+                className={styles.fields}
+              />
+            </div>
             <div className={styles.error_wrapper}>
               {eventData.errors && eventData.errors.name && (
                 <span className={styles.errormessage}>{eventData.errors.name}</span>
@@ -102,16 +141,33 @@ const AddEventForm = () => {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
             <label htmlFor="category"></label>
-            <select name="category" value={eventData.category} onChange={handleChangeEventFormData}>
-              <option value="">Bitte auswählen</option>
-              {getCategories().map((category) => {
-                return (
-                  <option value={category} key={crypto.randomUUID()}>
-                    {category}
-                  </option>
-                );
-              })}
-            </select>
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+              <FontAwesomeIcon
+                icon={faBarsStaggered}
+                style={{
+                  color: 'gray',
+                  height: '30px',
+                  position: 'absolute',
+                  left: '16px',
+                  top: '22.5%',
+                }}
+              />
+              <select
+                name="category"
+                value={eventData.category}
+                onChange={handleChangeEventFormData}
+                className={styles.fields}
+              >
+                <option value="">Bitte auswählen</option>
+                {getCategories().map((category) => {
+                  return (
+                    <option value={category} key={crypto.randomUUID()}>
+                      {category}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
             <div className={styles.error_wrapper}>
               {eventData.errors && eventData.errors.category && (
                 <span className={styles.errormessage}>{eventData.errors.category}</span>
@@ -120,31 +176,64 @@ const AddEventForm = () => {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
             <label htmlFor="date"></label>
-            <input
-              type="datetime-local"
-              name="date"
-              id="date"
-              {...lockLastDays()}
-              placeholder="Date"
-              value={eventData.date}
-              onChange={handleChangeEventFormData}
-            />
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+              <FontAwesomeIcon
+                icon={faCalendarDays}
+                style={{
+                  color: 'gray',
+                  height: '30px',
+                  position: 'absolute',
+                  left: '16px',
+                  top: '22.5%',
+                }}
+              />
+              <input
+                type="datetime-local"
+                name="date"
+                id="date"
+                {...lockLastDays()}
+                placeholder="Date"
+                value={eventData.date}
+                onChange={handleChangeEventFormData}
+                className={styles.fields}
+              />
+            </div>
             <div className={styles.error_wrapper}>
               {eventData.errors && eventData.errors.date && (
                 <span className={styles.errormessage}>{eventData.errors.date}</span>
               )}
             </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
             <label htmlFor="location"></label>
-            <input
-              type="text"
-              name="location"
-              id="location"
-              placeholder="Location"
-              value={eventData.location}
-              onChange={handleChangeEventFormData}
-            />
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+              <FontAwesomeIcon
+                icon={faLocationDot}
+                style={{
+                  color: 'gray',
+                  height: '30px',
+                  position: 'absolute',
+                  left: '16px',
+                  top: '22.5%',
+                }}
+                onClick={() => {
+                  getCityFromLocation().then((city) => {
+                    if (city) {
+                      eventFormDispatch({ type: 'SET_FIELD', field: 'location', value: city });
+                    }
+                  });
+                }}
+              />
+              <input
+                type="text"
+                name="location"
+                id="location"
+                placeholder="Location"
+                value={eventData.location}
+                onChange={handleChangeEventFormData}
+                className={styles.fields}
+              />
+            </div>
             <div className={styles.error_wrapper}>
               {eventData.errors && eventData.errors.location && (
                 <span className={styles.errormessage}>{eventData.errors.location}</span>
@@ -153,16 +242,29 @@ const AddEventForm = () => {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
             <label htmlFor="description"></label>
-            <textarea
-              type="text"
-              name="description"
-              id="description"
-              placeholder="About"
-              cols="30"
-              rows="10"
-              value={eventData.description}
-              onChange={handleChangeEventFormData}
-            ></textarea>
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+              <FontAwesomeIcon
+                icon={faBarsStaggered}
+                style={{
+                  color: 'gray',
+                  height: '30px',
+                  position: 'absolute',
+                  left: '16px',
+                  top: '10%',
+                }}
+              />
+              <textarea
+                type="text"
+                name="description"
+                id="description"
+                placeholder="About"
+                cols="30"
+                rows="10"
+                value={eventData.description}
+                onChange={handleChangeEventFormData}
+                className={styles.fields}
+              ></textarea>
+            </div>
 
             <div className={styles.error_wrapper}>
               {eventData.errors && eventData.errors.description && (
@@ -171,8 +273,22 @@ const AddEventForm = () => {
             </div>
           </div>
           <div>
-            <label htmlFor="image"></label>
+            <label htmlFor="image" className={styles.custom_file_upload}>
+              <FontAwesomeIcon icon={faUpload} style={{ color: 'gray', height: '30px' }} />
+              <span> Event Image Upload</span>
+            </label>
             <input type="file" name="image" id="image" onChange={handleChangeEventFormData} />
+            {selectedImage && (
+              <div className={styles.imagePreview}>
+                <p onClick={handleClearImage}>Clear Image</p>
+                <img src={selectedImage} alt="Event" style={{ width: '100%', marginTop: '10px' }} />
+              </div>
+            )}
+          </div>
+          <div className={styles.error_wrapper}>
+            {eventData.errors && eventData.errors.creator && (
+              <span className={styles.errormessage}>{eventData.errors.creator}</span>
+            )}
           </div>
           {!isLoading ? (
             <DynamicTriggerButton hasArrow={true}>ADD</DynamicTriggerButton>
