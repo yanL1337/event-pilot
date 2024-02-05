@@ -3,14 +3,18 @@ import Pin from '../../general/Pin';
 import LoadingElement from '../../loading/LoadingElement';
 import OutputItem from '../../general/OutputItem';
 
+const eventsPerRow = 6;
+
 /* CSS */
 import styles from './CategoryOutput.module.css';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { getEventFavorites } from '../../../utils/fetchData';
 import { formatDateToString } from '../../../utils/helperFunction';
+import LoadMoreButton from '../../buttons/LoadMoreButton';
 
 const CategoryOutput = ({ viewEventData, isLoading, eventFilter }) => {
   const [allFavorites, setAllFavorites] = useState([]);
+  const [next, setNext] = useState(eventsPerRow);
   const favMessageTimer = useRef(null);
 
   const fetchFavorites = useCallback(async () => {
@@ -23,6 +27,10 @@ const CategoryOutput = ({ viewEventData, isLoading, eventFilter }) => {
     // Holen uns die Favorite und gleichen ab und sättän datt state
     fetchFavorites();
   }, [fetchFavorites]);
+
+  const handleMoreEvents = () => {
+    setNext(next + eventsPerRow);
+  };
 
   return (
     <article className={styles.categoryOutput_wrapper}>
@@ -61,7 +69,7 @@ const CategoryOutput = ({ viewEventData, isLoading, eventFilter }) => {
       {isLoading ? (
         <LoadingElement />
       ) : viewEventData && viewEventData.length > 0 ? (
-        viewEventData.map((event) => {
+        viewEventData?.slice(0, next)?.map((event) => {
           return (
             <OutputItem
               data={event}
@@ -74,6 +82,7 @@ const CategoryOutput = ({ viewEventData, isLoading, eventFilter }) => {
       ) : (
         <p>Keine Events gefunden</p>
       )}
+      {next < viewEventData?.length && <LoadMoreButton handleMoreEvents={handleMoreEvents} />}
     </article>
   );
 };

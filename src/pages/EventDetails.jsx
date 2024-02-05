@@ -43,14 +43,12 @@ export function EventDetails() {
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-
   }, []);
 
   // - fetch für Creator Daten
   useEffect(() => {
     async function getCreator() {
-
-      const record = await pb.collection("users").getOne(detailEvent.creator);
+      const record = await pb.collection('users').getOne(detailEvent.creator);
 
       setCreator(record);
     }
@@ -62,29 +60,27 @@ export function EventDetails() {
 
   const sendMail = () => {
     const Mail = async () => {
-      console.log("sendmail function");
-      await fetch(import.meta.env.VITE_BACKEND + "/sendmail", {
-        method: "POST",
+      console.log('sendmail function');
+      await fetch(import.meta.env.VITE_BACKEND + '/sendmail', {
+        method: 'POST',
         body: JSON.stringify({
           email: pb.authStore.model.email,
           name: pb.authStore.model.firstname,
           event: detailEvent.name,
         }),
         headers: {
-          "content-type": "application/json",
+          'content-type': 'application/json',
         },
       });
     };
     const registerUser = async () => {
-      await pb.collection("events").update(detailEvent.id, {
-        "registeredUser+": [pb.authStore.model.id],
+      await pb.collection('events').update(detailEvent.id, {
+        'registeredUser+': [pb.authStore.model.id],
       });
     };
     Mail();
     registerUser();
   };
-
-
 
   const toggleFavorites = async (favId, eventName) => {
     setEventFavorite((cur) => {
@@ -119,7 +115,6 @@ export function EventDetails() {
       setEventFavorite(favId);
     }
   };
-
 
   if (detailEvent && creator) {
     return (
