@@ -1,9 +1,11 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import pb from "../lib/pocketbase";
 import style from "./css/Review.module.css";
 import { Header } from "../components/header/Header";
 import { Rating } from "react-simple-star-rating";
+import { displayFavMessage } from "../utils/helperFunction";
+import { SetFavoriteMessageContext } from "../context/context";
 
 export function Review() {
   const [creator, setCreator] = useState([]);
@@ -11,6 +13,9 @@ export function Review() {
   const { id } = useParams();
 
   const navigate = useNavigate();
+
+  const favMessageTimer = useRef(null);
+  const { setFavMessage } = useContext(SetFavoriteMessageContext);
 
   //   Ref
   const commentRef = useRef();
@@ -22,6 +27,14 @@ export function Review() {
       setCreator(record);
     }
     getCreator();
+
+    return () => {
+      const cleanUpRef = favMessageTimer;
+      if (cleanUpRef.current) {
+        clearTimeout(cleanUpRef.current);
+        setFavMessage(null);
+      }
+    };
   }, []);
 
   //   - Review in db speichern
@@ -33,10 +46,24 @@ export function Review() {
       rating: rating,
     };
     try {
-      await pb.collection("reviews").create(review);
+      const response = await pb.collection("reviews").create(review);
       navigate(`/creator/${id}`);
+      return response;
     } catch (error) {
       console.log(error);
+    }
+    if (response.ok) {
+      displayFavMessage(
+        `Deine Review wurde gespeichert`,
+        setFavMessage,
+        favMessageTimer
+      );
+    } else {
+      displayFavMessage(
+        `Upps, deine Review konnte nicht gespeichert werden.`,
+        setFavMessage,
+        favMessageTimer
+      );
     }
   };
 
