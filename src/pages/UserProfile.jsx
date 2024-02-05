@@ -71,20 +71,7 @@ export const UserProfile = ({ children }) => {
             style={{ width: "70vw", borderRadius: "50%" }}
             src={`https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage}`}
           />
-          <div
-            onClick={() => setEdit(true)}
-            style={{
-              borderRadius: "10px",
-              border: "1.5px solid var(--4, #777BF3)",
-              display: "flex",
-              alignItems: "center",
-              width: "30vw",
-              padding: "1vh 1vw",
-            }}
-          >
-            <img className="icon" alt="Icon" src={editProfile} />
-            <p className="d">Edit Profile</p>
-          </div>
+
           <div
             style={{
               display: "grid",
@@ -112,6 +99,20 @@ export const UserProfile = ({ children }) => {
             <p>{user?.description}</p>
           </div>
           <Interests user={user} edit={edit} />
+          <div
+            onClick={() => setEdit(true)}
+            style={{
+              borderRadius: "10px",
+              border: "1.5px solid var(--4, #777BF3)",
+              display: "flex",
+              alignItems: "center",
+              width: "30vw",
+              padding: "1vh 1vw",
+            }}
+          >
+            <img className="icon" alt="Icon" src={editProfile} />
+            <p className="d">Edit Profile</p>
+          </div>
         </>
       ) : (
         //submitChanges, changes, handleInputChange
