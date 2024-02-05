@@ -24,14 +24,18 @@ const OutputItem = ({ data, allFavorites, favMessageTimer, isOnFavSite, register
     const favId = allFavorites.filter((fav) => fav === data.id).join('');
 
     setEventFavorite(favId);
+    console.log();
 
-    return () => {
-      const cleanUpRef = favMessageTimer;
-      if (cleanUpRef.current) {
-        clearTimeout(cleanUpRef.current);
-        setFavMessage(null);
-      }
-    };
+    if (window.location.pathname !== '/event/search') {
+      return () => {
+        const cleanUpRef = favMessageTimer;
+        if (cleanUpRef.current) {
+          clearTimeout(cleanUpRef.current);
+          setFavMessage(null);
+        }
+      };
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data.id, allFavorites, favMessageTimer]);
 

@@ -10,48 +10,47 @@ const CategoryScrollBar = ({ eventFilter, eventFilterDispatch }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
+  const [dragStartTimestamp, setDragStartTimestamp] = useState(null);
 
-  // Minimale Bewegungsschwelle für das Starten des Dragging
   const DRAG_THRESHOLD = 5;
+  const CLICK_THRESHOLD_MS = 200;
 
-  const startDragging = (e) => {
+  const handlePointerDown = (e) => {
     e.preventDefault();
-    const initialPosition = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
-    setIsDragging(false); // Initial false setzen
+    const initialPosition = e.pageX || e.touches[0].pageX;
     setStartX(initialPosition - scrollContainerRef.current.offsetLeft);
     setScrollLeft(scrollContainerRef.current.scrollLeft);
+    setDragStartTimestamp(Date.now());
+
+    scrollContainerRef.current.setPointerCapture(e.pointerId);
     scrollContainerRef.current.classList.add('grabbing');
-
-    // Globale Event-Listener hinzufügen
-    document.addEventListener('mousemove', onDrag);
-    document.addEventListener('mouseup', stopDragging);
   };
 
-  const stopDragging = () => {
-    if (isDragging) {
-      setIsDragging(false);
-    }
+  const handlePointerMove = (e) => {
+    if (!dragStartTimestamp) return;
+    const currentPosition = e.pageX || e.touches[0].pageX;
+    const walk = (currentPosition - startX) * 2;
 
-    scrollContainerRef.current.classList.remove('grabbing');
-
-    // Globale Event-Listener entfernen
-    document.removeEventListener('mousemove', onDrag);
-    document.removeEventListener('mouseup', stopDragging);
-  };
-
-  const onDrag = (e) => {
-    const currentPosition = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
-    const walk = (currentPosition - startX) * 2; // Bewegungsfaktor anpassen nach Bedarf
-
-    // Schwellenwert überprüfen, bevor isDragging auf true gesetzt wird
-    if (!isDragging && Math.abs(currentPosition - startX) > DRAG_THRESHOLD) {
+    const elapsedTime = Date.now() - dragStartTimestamp;
+    if (elapsedTime > CLICK_THRESHOLD_MS || Math.abs(walk) > DRAG_THRESHOLD) {
       setIsDragging(true);
     }
 
     if (isDragging) {
-      e.preventDefault(); // Verhindert das Scrollen des Browsers oder ähnliche Aktionen
+      e.preventDefault();
       scrollContainerRef.current.scrollLeft = scrollLeft - walk;
     }
+  };
+
+  const handlePointerUp = () => {
+    const elapsedTime = Date.now() - dragStartTimestamp;
+    if (elapsedTime <= CLICK_THRESHOLD_MS && !isDragging) {
+      // wird als click dann behandelt
+    }
+
+    setIsDragging(false);
+    scrollContainerRef.current.classList.remove('grabbing');
+    setDragStartTimestamp(null);
   };
 
   const selectSingleCategory = (category) => {
@@ -72,13 +71,10 @@ const CategoryScrollBar = ({ eventFilter, eventFilterDispatch }) => {
       <div
         ref={scrollContainerRef}
         className={`${styles.scrollContainer} ${isDragging ? 'grabbing' : ''}`}
-        onMouseDown={startDragging}
-        onMouseUp={stopDragging}
-        onMouseLeave={stopDragging}
-        onMouseMove={onDrag}
-        onTouchStart={startDragging}
-        onTouchEnd={stopDragging}
-        onTouchMove={onDrag}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
       >
         {getCategories().map((category) => {
           return (
