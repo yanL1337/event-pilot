@@ -48,9 +48,13 @@ function App() {
                       <Route
                         path="/home"
                         element={
-                          <Home>
-                            <Navbar activeName="home" />
-                          </Home>
+                          <SetFavoriteMessageContext.Provider
+                            value={{ favMessage, setFavMessage }}
+                          >
+                            <Home>
+                              <Navbar activeName="home" />
+                            </Home>
+                          </SetFavoriteMessageContext.Provider>
                         }
                       />
                       <Route

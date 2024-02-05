@@ -5,10 +5,11 @@ import CategoryScrollBar from '../components/events/search/CategoryScrollBar';
 import SearchFilterBar from '../components/events/search/SearchFilterBar';
 
 /* CSS */
-import styles from './SearchEvent.module.css';
+import styles from './css/SearchEvent.module.css';
 import { viewAllEvents, viewEventByFilter } from '../utils/fetchData';
 import { initialEventFilterState, reducer } from '../utils/stateHandler';
 import EventFilterBox from '../components/events/search/filter/EventFilterBox';
+import LocationHeader from '../components/header/LocationHeader';
 
 const SearchEvent = ({ children }) => {
   const [eventFilter, eventFilterDispatch] = useReducer(reducer, initialEventFilterState);
@@ -54,31 +55,34 @@ const SearchEvent = ({ children }) => {
 
   return (
     <>
-      <section className={styles.search_event}>
-        <SearchFilterBar
-          onHandleShowFilterBox={handleShowFilterBox}
-          eventFilter={eventFilter}
-          eventFilterDispatch={eventFilterDispatch}
-        />
-        <CategoryScrollBar eventFilter={eventFilter} eventFilterDispatch={eventFilterDispatch} />
-      </section>
-      <section>
-        <CategoryOutput
-          viewEventData={viewEventData}
-          isLoading={isLoading}
-          eventFilter={eventFilter}
-        />
-      </section>
-      <section className={styles.filter_event}>
-        {showFilter && (
-          <EventFilterBox
+      <LocationHeader bgColor="#5d3ede" />
+      <main>
+        <section className={styles.search_event}>
+          <SearchFilterBar
+            onHandleShowFilterBox={handleShowFilterBox}
             eventFilter={eventFilter}
             eventFilterDispatch={eventFilterDispatch}
-            onHandleShowFilterBox={handleShowFilterBox}
           />
-        )}
-      </section>
-      {children}
+          <CategoryScrollBar eventFilter={eventFilter} eventFilterDispatch={eventFilterDispatch} />
+        </section>
+        <section>
+          <CategoryOutput
+            viewEventData={viewEventData}
+            isLoading={isLoading}
+            eventFilter={eventFilter}
+          />
+        </section>
+        <section className={styles.filter_event}>
+          {showFilter && (
+            <EventFilterBox
+              eventFilter={eventFilter}
+              eventFilterDispatch={eventFilterDispatch}
+              onHandleShowFilterBox={handleShowFilterBox}
+            />
+          )}
+        </section>
+        {children}
+      </main>
     </>
   );
 };

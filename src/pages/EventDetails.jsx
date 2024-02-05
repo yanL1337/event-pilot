@@ -49,7 +49,11 @@ export function EventDetails() {
   // - fetch für Creator Daten
   useEffect(() => {
     async function getCreator() {
-      const record = await pb.collection("users").getOne(detailEvent.creator);
+
+
+
+      const record = await pb.collection('users').getOne(detailEvent.creator);
+
 
       setCreator(record);
     }
@@ -100,21 +104,23 @@ export function EventDetails() {
     // }
 
     const Mail = async () => {
-      await fetch(import.meta.env.VITE_BACKEND + "/sendmail", {
-        method: "POST",
+
+
+      await fetch(import.meta.env.VITE_BACKEND + '/sendmail', {
+        method: 'POST',
         body: JSON.stringify({
           email: pb.authStore.model.email,
           name: pb.authStore.model.firstname,
           event: detailEvent.name,
         }),
         headers: {
-          "content-type": "application/json",
+          'content-type': 'application/json',
         },
       });
     };
     const registerUser = async () => {
-      await pb.collection("events").update(detailEvent.id, {
-        "registeredUser+": [pb.authStore.model.id],
+      await pb.collection('events').update(detailEvent.id, {
+        'registeredUser+': [pb.authStore.model.id],
       });
     };
     const registerUseratUser = async () => {

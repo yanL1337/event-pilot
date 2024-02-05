@@ -18,9 +18,10 @@ import {
   faThumbsUp,
   faUpload,
 } from '@fortawesome/free-solid-svg-icons';
+import { germanCities } from '../../utils/data';
 
 const AddEventForm = () => {
-  // reduce
+  const [citySuggestions, setCitySuggestion] = useState([]);
   const [eventData, eventFormDispatch] = useReducer(reducer, initialEventState);
   const [addSuccess, setAddSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -83,6 +84,23 @@ const AddEventForm = () => {
     }
 
     eventFormDispatch({ type: 'SET_FIELD', field: e.target.name, value: e.target.value });
+
+    if (e.target.name === 'location') {
+      handleCitySuggestionClick(e.target.name, e.target.value);
+    }
+  };
+
+  const handleCitySuggestionClick = (field, value) => {
+    eventFormDispatch({ type: 'SET_FIELD', field: field, value: value });
+
+    if (field === 'location' && value.length > 0) {
+      const regex = new RegExp(`^${value}`, 'i');
+
+      const filteredSuggestions = germanCities.sort().filter((v) => regex.test(v));
+      setCitySuggestion(filteredSuggestions);
+    } else {
+      setCitySuggestion([]);
+    }
   };
 
   const resetForm = () => {
@@ -234,6 +252,39 @@ const AddEventForm = () => {
                 className={styles.fields}
               />
             </div>
+            {citySuggestions.length > 0 && (
+              <ul
+                style={{
+                  position: 'absolute',
+                  width: '100%',
+                  top: '95%',
+                  height: '300px',
+                  overflow: 'scroll',
+                  zIndex: '10',
+                }}
+              >
+                {citySuggestions.map((suggestion, index) => (
+                  <li
+                    key={index}
+                    onClick={() => {
+                      handleCitySuggestionClick('location', suggestion);
+                      setCitySuggestion([]);
+                    }}
+                    style={{
+                      width: '100%',
+                      backgroundColor: '#00ECAA',
+                      fontSize: '1.25rem',
+                      border: '1px solid lightgray',
+                      padding: '10px',
+                      color: 'white',
+                      fontWeight: '800',
+                    }}
+                  >
+                    {suggestion}
+                  </li>
+                ))}
+              </ul>
+            )}
             <div className={styles.error_wrapper}>
               {eventData.errors && eventData.errors.location && (
                 <span className={styles.errormessage}>{eventData.errors.location}</span>
@@ -250,7 +301,7 @@ const AddEventForm = () => {
                   height: '30px',
                   position: 'absolute',
                   left: '16px',
-                  top: '10%',
+                  top: '7%',
                 }}
               />
               <textarea

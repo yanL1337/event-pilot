@@ -129,4 +129,5 @@ export const germanCities = [
   'Schwäbisch Gmünd, Germany',
   'Friedrichshafen, Germany',
   'Neubrandenburg, Germany',
+  'Werl, Germany',
 ];
