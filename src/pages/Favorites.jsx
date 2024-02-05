@@ -20,8 +20,13 @@ export function Favorites({ children }) {
 
   useEffect(() => {
     fetchFavoriteData();
+
+    // Wir holen uns nur die registered Events wenn wir noch keine haben
+    // if (registeredEvents.length === 0) {
     fetchRegisteredEventsData();
-  }, []);
+    // }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [toggleButton]);
 
   const fetchFavoriteData = async () => {
     setIsLoading(true);
@@ -43,11 +48,14 @@ export function Favorites({ children }) {
   };
 
   const fetchRegisteredEventsData = async () => {
+    setIsLoading(true);
     const response = await getRegisteredEventsByUser();
 
     if (response.length > 0) {
       setRegisteredEvents(response);
     }
+
+    setIsLoading(false);
   };
 
   const handleToggleButton = (value) => {
@@ -77,41 +85,39 @@ export function Favorites({ children }) {
             <>
               {toggleButton === 'up' &&
               favEvents.upComingEvents &&
-              favEvents.upComingEvents.length > 0 ? (
-                favEvents.upComingEvents.map((event) => (
-                  <OutputItem
-                    data={event}
-                    key={event.id}
-                    isOnFavSite={true}
-                    registeredEvents={registeredEvents}
-                  />
-                ))
-              ) : toggleButton === 'past' &&
-                favEvents.pastEvents &&
-                favEvents.pastEvents.length > 0 ? (
-                favEvents.pastEvents.map((event) => (
-                  <OutputItem
-                    data={event}
-                    key={event.id}
-                    isOnFavSite={true}
-                    registeredEvents={registeredEvents}
-                  />
-                ))
-              ) : (
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginTop: '30%',
-                    gap: '20px',
-                  }}
-                >
-                  <h2>No Upcoming Events</h2>
-                  <p>There are no events yet!</p>
-                </div>
-              )}
+              favEvents.upComingEvents.length > 0
+                ? favEvents.upComingEvents.map((event) => (
+                    <OutputItem
+                      data={event}
+                      key={event.id}
+                      isOnFavSite={true}
+                      registeredEvents={registeredEvents}
+                    />
+                  ))
+                : toggleButton === 'registered' && registeredEvents && registeredEvents.length > 0
+                ? registeredEvents.map((event) => (
+                    <OutputItem
+                      data={event}
+                      key={event.id}
+                      isOnFavSite={true}
+                      registeredEvents={registeredEvents}
+                    />
+                  ))
+                : !isLoading && (
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginTop: '30%',
+                        gap: '20px',
+                      }}
+                    >
+                      <h2>No Upcoming Events</h2>
+                      <p>There are no events yet!</p>
+                    </div>
+                  )}
             </>
           )}
         </article>

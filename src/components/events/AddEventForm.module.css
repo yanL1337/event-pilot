@@ -6,13 +6,20 @@
 
 .section > article > form > div input,
 .section > article > form > div select {
-  padding: 5px;
-  width: 100%;
   margin-bottom: 5px;
 }
 
 .button {
   padding: 5px;
+}
+
+.fields {
+  font-size: 1.75rem;
+  box-shadow: 1px 1px 20px rgb(221, 219, 219);
+  padding: 20px 0 20px 60px;
+  border: none;
+  width: 100%;
+  border-radius: 15px;
 }
 
 div > .button {
@@ -74,6 +81,49 @@ div > .button {
   color: white;
   font-size: 2rem;
   font-weight: bold;
+}
+
+.imagePreview {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.imagePreview p {
+  position: absolute;
+  color: var(--firstFontColor);
+  font-weight: 800;
+  font-size: 1.75rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--selectedColor);
+  padding: 5px;
+  border-radius: 15px;
+}
+
+.imagePreview img {
+  height: 300px;
+  object-fit: cover;
+}
+
+input[type='file'] {
+  display: none;
+}
+
+.custom_file_upload {
+  display: inline-block;
+  padding: 20px 12px;
+
+  cursor: pointer;
+  display: flex;
+  font-size: 1.75rem;
+  width: 100%;
+  justify-content: center;
+  gap: 16px;
+  align-items: center;
+  border-radius: 15px;
+  box-shadow: 1px 1px 20px rgb(221, 219, 219);
 }
 
 @keyframes zoomIn {
