@@ -17,7 +17,7 @@ export function Comment({ singleComment }) {
     getWriter();
   }, [singleComment]);
 
-  if (singleComment) {
+  if (singleComment && writer) {
     return (
       <section className={style.wrapper}>
         <div className={style.flexdiv}>

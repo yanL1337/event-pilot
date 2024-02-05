@@ -47,6 +47,7 @@ export function CreatorProfil() {
     async function getComments() {
       const commentList = await pb.collection("reviews").getList(1, 20, {
         filter: `creator_id="${creator?.id}"`,
+        sort: "-created",
       });
       setComments(commentList);
     }

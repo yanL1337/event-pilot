@@ -3,16 +3,17 @@ import { useState, useEffect, useRef } from "react";
 import pb from "../lib/pocketbase";
 import style from "./css/Review.module.css";
 import { Header } from "../components/header/Header";
+import { Rating } from "react-simple-star-rating";
 
 export function Review() {
   const [creator, setCreator] = useState([]);
+  const [rating, setRating] = useState(0);
   const { id } = useParams();
 
   const navigate = useNavigate();
 
-  //   Refs
+  //   Ref
   const commentRef = useRef();
-  const ratingRef = useRef();
 
   //   * Welcher Creator soll bewertet werden? - id anhand useParams
   useEffect(() => {
@@ -29,7 +30,7 @@ export function Review() {
       comment: commentRef.current.value,
       creator_id: id,
       writer: pb.authStore.model.id,
-      rating: ratingRef.current.value,
+      rating: rating,
     };
     try {
       await pb.collection("reviews").create(review);
@@ -37,6 +38,11 @@ export function Review() {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  // - Sterne Rating
+  const handleRating = (rate) => {
+    setRating(rate);
   };
 
   if (creator) {
@@ -54,8 +60,11 @@ export function Review() {
             />
           </div>
           <div>
-            <label className={style.labelrating}>Rating</label>
-            <input type="number" min="0" max="5" ref={ratingRef} />
+            <Rating
+              onClick={handleRating}
+              fillColor="#00ECAA"
+              className={style.stars}
+            />
             <div className={style.commentdiv}>
               <label className={style.label}>★ Your Review</label>
               <input type="text" ref={commentRef} className={style.input} />

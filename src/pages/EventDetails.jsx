@@ -8,6 +8,7 @@ import { formatDateToString } from "../utils/helperFunction";
 
 export function EventDetails() {
   const [detailEvent, setDetailEvent] = useState([]);
+  const [registered, setRegistered] = useState([]);
   const [creator, setCreator] = useState([]);
   const { id } = useParams();
 
@@ -19,33 +20,44 @@ export function EventDetails() {
         .then((data) => setDetailEvent(data));
     };
     getDetailEvent();
+    console.log("USER:", detailEvent.registeredUser);
   }, []);
 
   // - fetch für Creator Daten
   useEffect(() => {
     async function getCreator() {
       const record = await pb.collection("users").getOne(detailEvent.creator);
-      console.log(record);
       setCreator(record);
     }
     getCreator();
   }, [detailEvent]);
 
   //   * Bestätigungsmail senden, wenn man sich für das Event registriert
-  const sendMail = async () => {
-    console.log("sendmail function");
-    await fetch(import.meta.env.VITE_BACKEND + "/sendmail", {
-      method: "POST",
-      body: JSON.stringify({
-        email: pb.authStore.model.email,
-        name: pb.authStore.model.firstname,
-        event: detailEvent.name,
-      }),
-      headers: {
-        "content-type": "application/json",
-      },
-    });
+  const sendMail = () => {
+    const Mail = async () => {
+      console.log("sendmail function");
+      await fetch(import.meta.env.VITE_BACKEND + "/sendmail", {
+        method: "POST",
+        body: JSON.stringify({
+          email: pb.authStore.model.email,
+          name: pb.authStore.model.firstname,
+          event: detailEvent.name,
+        }),
+        headers: {
+          "content-type": "application/json",
+        },
+      });
+    };
+    const registerUser = async () => {
+      await pb.collection("events").update(detailEvent.id, {
+        "registeredUser+": [pb.authStore.model.id],
+      });
+    };
+    Mail();
+    registerUser();
   };
+
+  console.log(detailEvent);
 
   if (detailEvent && creator) {
     return (
@@ -66,10 +78,10 @@ export function EventDetails() {
           <h1>Event Details</h1>
         </div>
 
-        {detailEvent.registeredUser >= 0 && (
+        {detailEvent.registeredUser?.length >= 0 && (
           <div className={style.registered}>
             <img src="../images/Group.png" alt="" />
-            <p>{detailEvent.registeredUser.length} registered</p>
+            <p>{detailEvent.registeredUser?.length} registered</p>
           </div>
         )}
 
