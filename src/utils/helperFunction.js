@@ -106,3 +106,17 @@ export const getEndOfCurrentWeek = (now) => {
 
   return endOfWeek;
 };
+
+export const displayFavMessage = (message, setFavMessage, favMessageTimer) => {
+  setFavMessage(message);
+
+  // Wir löschen wieder den Timer wenn eine neue message reinkommt
+  if (favMessageTimer.current) {
+    clearTimeout(favMessageTimer.current);
+  }
+
+  favMessageTimer.current = setTimeout(() => {
+    setFavMessage(null);
+    favMessageTimer.current = null;
+  }, 3000);
+};
