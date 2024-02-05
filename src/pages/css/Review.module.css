@@ -82,6 +82,7 @@
   border-radius: 15px;
   color: #848484;
   padding: 5%;
+  margin-bottom: 30px;
 }
 
 .commentdiv {
@@ -90,4 +91,8 @@
 
 .labelrating {
   color: white;
+}
+
+.stars {
+  margin-bottom: 0 auto 30px auto;
 }
