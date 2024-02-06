@@ -54,7 +54,6 @@ export function Home({ children }) {
         ))}
       </Slider>
 
-      <button onClick={onRecordAfterCreateRequest}> Klick me</button>
       <div style={{ marginTop: "20px" }}>
         <p>Nearby you</p>
         <Link to="/">See all</Link>
