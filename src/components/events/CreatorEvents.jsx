@@ -14,6 +14,7 @@ export function CreatorEvent({ singleEvent }) {
       to={`/eventdetails/${singleEvent.id}`}
     >
       <img
+        className={style.img}
         src={`${
           createImagePath(singleEvent.image, singleEvent.id)
             ? createImagePath(singleEvent.image, singleEvent.id)

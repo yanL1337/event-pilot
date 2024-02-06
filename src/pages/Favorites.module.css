@@ -1,3 +1,8 @@
+.wrapper {
+  width: 85%;
+  margin: 0 auto;
+}
+
 .favorite_section {
   display: flex;
   flex-direction: column;

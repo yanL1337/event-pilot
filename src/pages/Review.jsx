@@ -82,7 +82,7 @@ export function Review() {
         <Header
           headertext={`Review ${creator.firstname} ${creator.lastname}`}
         />
-        <main className={style.wrapper}>
+        <main className={style.wrapper1}>
           <div>
             <img
               className={style.creatorprofil_img}
