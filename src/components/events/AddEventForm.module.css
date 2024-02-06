@@ -6,13 +6,20 @@
 
 .section > article > form > div input,
 .section > article > form > div select {
-  padding: 5px;
-  width: 100%;
   margin-bottom: 5px;
 }
 
 .button {
   padding: 5px;
+}
+
+.fields {
+  font-size: 1.75rem;
+  box-shadow: 1px 1px 20px rgb(221, 219, 219);
+  padding: 20px 0 20px 60px;
+  border: none;
+  width: 100%;
+  border-radius: 15px;
 }
 
 div > .button {
@@ -27,6 +34,7 @@ div > .button {
   text-align: center;
   background-color: pink;
   padding: 3.5px;
+  font-size: 1.25rem;
   position: absolute;
 }
 
@@ -35,7 +43,7 @@ div > .button {
 }
 
 .successmessage_wrapper {
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   top: 0;
   background-color: rgba(0, 0, 0, 0.25);
@@ -43,18 +51,28 @@ div > .button {
 }
 
 .successmessage_wrapper > div {
-  top: 40%;
-  left: 17%;
+  padding: 25px;
+  width: 375px;
+  height: 150px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   position: absolute;
 }
 
+.successmessage_box_elements {
+  font-size: 1.5rem;
+  color: var(--linkColor);
+  font-weight: 800;
+}
+
 .successmessage_box {
+  animation: zoomIn 0.4s linear;
   display: flex;
   flex-direction: column;
   gap: 12px;
   justify-content: center;
   align-items: center;
-
   background-color: var(--selectedColor);
   width: 250px;
   height: 100px;
@@ -63,4 +81,56 @@ div > .button {
   color: white;
   font-size: 2rem;
   font-weight: bold;
+}
+
+.imagePreview {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.imagePreview p {
+  position: absolute;
+  color: var(--firstFontColor);
+  font-weight: 800;
+  font-size: 1.75rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--selectedColor);
+  padding: 5px;
+  border-radius: 15px;
+}
+
+.imagePreview img {
+  height: 300px;
+  object-fit: cover;
+}
+
+input[type='file'] {
+  display: none;
+}
+
+.custom_file_upload {
+  display: inline-block;
+  padding: 20px 12px;
+
+  cursor: pointer;
+  display: flex;
+  font-size: 1.75rem;
+  width: 100%;
+  justify-content: center;
+  gap: 16px;
+  align-items: center;
+  border-radius: 15px;
+  box-shadow: 1px 1px 20px rgb(221, 219, 219);
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import pb from '../lib/pocketbase';
+import { formatDateToPB, getEndOfCurrentWeek } from './helperFunction';
 
 /* POCKETBASE */
 
@@ -41,8 +42,6 @@ export const viewEventByFilter = async (filter) => {
   // Wir erstellen uns einen queryFilterBuilder
   const filterString = queryBuilder(filter);
 
-  console.log(filterString);
-
   // Wenn wir nix im Filter haben rufen wir alle Daten wieder ab?...
   if (!filterString) {
     return await viewAllEvents();
@@ -53,7 +52,6 @@ export const viewEventByFilter = async (filter) => {
     // query builder einbauen
     const records = await pb.collection('events').getFullList({
       filter: filterString,
-      // filter: '(category="Sport")&&location="Essen, Germany"',
     });
 
     return records;
@@ -104,21 +102,81 @@ const queryBuilder = (filter) => {
       // für category müssen wir den string mit or operatoren verknüpfen und in Klammern setzten
       const arrayFilter = '(' + value.map((item) => `${key}="${item}"`).join('||') + ')';
       queryParams.push(arrayFilter);
-    } else if ((value && value.length > 0) || value.value) {
+    } else if ((value && value.length > 0) || value.type) {
       switch (key) {
         case 'date':
           {
             if (value.type === 'equal') {
-              const valueFilter = `${key}="${value.value}"`;
+              const date = new Date(value.value);
+              const startDate = date.toISOString();
+              date.setSeconds(date.getSeconds() + 1);
+              const endDate = date.toISOString();
+
+              const valueFilter = `${key}>="${formatDateToPB(
+                startDate
+              )}" && ${key}<="${formatDateToPB(endDate)}"`;
+
+              queryParams.push(valueFilter);
+            }
+
+            if (value.type === 'today') {
+              // jetziges Datum / Uhrzeit
+              const date = new Date();
+              const startDate = date.toISOString();
+              // erzeugen das Ende des Tages
+              date.setHours(23, 59, 59, 999);
+              const endDate = date.toISOString();
+
+              const valueFilter = `${key}>="${formatDateToPB(
+                startDate
+              )}" && ${key} <=  "${formatDateToPB(endDate)}"`;
+              queryParams.push(valueFilter);
+            }
+
+            if (value.type === 'tomorrow') {
+              // Erzeugen morgigen StartTag
+              const date = new Date();
+              date.setDate(date.getDate() + 1);
+              // Setze die Uhrzeit auf 00:00:00 für morgen
+              date.setHours(0, 0, 0, 0);
+              const startDate = date.toISOString();
+
+              // erzeugen das Ende des Tages
+              date.setHours(23, 59, 59, 999);
+              const endDate = date.toISOString();
+
+              const valueFilter = `${key}>="${formatDateToPB(
+                startDate
+              )}" && ${key} <=  "${formatDateToPB(endDate)}"`;
+              queryParams.push(valueFilter);
+            }
+
+            if (value.type === 'week') {
+              // jetziges Datum / Uhrzeit
+              const date = new Date();
+              const startDate = date.toISOString();
+
+              // erzeugen Ende der Woche => Sonntag 23:59::59 lokale Zeit => in pb hinterlegt als 22:59:59 utc
+              const endDate = getEndOfCurrentWeek(date).toISOString();
+
+              const valueFilter = `${key}>="${formatDateToPB(
+                startDate
+              )}" && ${key} <=  "${formatDateToPB(endDate)}"`;
               queryParams.push(valueFilter);
             }
           }
           break;
 
-        default:
-          // Hie kommen alle anderen Werte rein
+        case 'name':
           {
-            console.log('default');
+            const valueFilter = `${key}~"${value}"`;
+            queryParams.push(valueFilter);
+          }
+          break;
+
+        default:
+          // Hier kommen alle anderen Werte rein
+          {
             // Ganz normal den Wert setzen
             const valueFilter = `${key}="${value}"`;
             queryParams.push(valueFilter);
@@ -131,4 +189,84 @@ const queryBuilder = (filter) => {
 
   // Wir verknüpfen die queries dann mit dem und operator und returnen den Rotz
   return queryParams.join('&&');
+};
+
+export const addEventFavorites = async (favId) => {
+  const userId = pb.authStore.model.id;
+  // Holen uns die Daten vom user
+  const user = await pb.collection('users').getOne(userId);
+
+  const hasFavorite = user.favoriteEvents.filter((eventId) => eventId === favId);
+
+  try {
+    if (hasFavorite.length > 0) {
+      await pb.collection('users').update(userId, { 'favoriteEvents-': [favId] });
+
+      return false;
+    } else {
+      await pb.collection('users').update(userId, { 'favoriteEvents+': [favId] });
+      return true;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getEventFavorites = async () => {
+  try {
+    const userId = pb.authStore.model.id;
+
+    const record = await pb.collection('users').getOne(userId, {
+      expand: 'favoriteEvents',
+    });
+
+    return record.favoriteEvents;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const getEventFavoritesData = async () => {
+  try {
+    // holen uns erstmal alle fav ids
+    const favIds = await getEventFavorites();
+    const returnFavArr = [];
+
+    const allExistingEvents = await pb.collection('events').getFullList();
+
+    for (const eventObj of allExistingEvents) {
+      favIds.forEach((fav) => {
+        if (fav === eventObj.id) {
+          returnFavArr.push(eventObj);
+        }
+      });
+    }
+
+    return returnFavArr;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getRegisteredEventsByUser = async () => {
+  try {
+    const userId = pb.authStore.model.id;
+
+    const registeredEvents = await pb.collection('users').getOne(userId, {
+      expand: 'registeredUsers',
+      fields: 'registeredEvents',
+    });
+
+    let detailedEvents = [];
+
+    for (const eventID of registeredEvents.registeredEvents) {
+      const detail = await pb.collection('events').getOne(eventID);
+
+      detailedEvents.push(detail);
+    }
+
+    return detailedEvents;
+  } catch (error) {
+    console.log(error);
+  }
 };

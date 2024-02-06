@@ -1,54 +1,170 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import pb from "../lib/pocketbase";
 import FallbackLoadingScreen from "../components/loading/FallbackLoadingScreen";
 import style from "./css/EventDetails.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { formatDateToString } from "../utils/helperFunction";
+import { displayFavMessage, formatDateToString } from "../utils/helperFunction";
+import { addEventFavorites, getEventFavorites } from "../utils/fetchData";
+import { SetFavoriteMessageContext } from "../context/context";
+import { faBookmark } from "@fortawesome/free-solid-svg-icons";
 
 export function EventDetails() {
   const [detailEvent, setDetailEvent] = useState([]);
+  const [registered, setRegistered] = useState([]);
   const [creator, setCreator] = useState([]);
+  const [eventFavorite, setEventFavorite] = useState(null);
+  const [angemeldet, setAngemeldet] = useState();
+
+  const favMessageTimer = useRef(null);
+
   const { id } = useParams();
+
+  const { setFavMessage } = useContext(SetFavoriteMessageContext);
 
   // - fetch für die Eventdaten
   useEffect(() => {
     const getDetailEvent = async () => {
       await fetch(pb.baseUrl + "/api/collections/events/records/" + id)
         .then((response) => response.json())
-        .then((data) => setDetailEvent(data));
+        .then((data) => {
+          setDetailEvent(data);
+        });
     };
+
     getDetailEvent();
+
+    getFavByUser();
+
+    return () => {
+      const cleanUpRef = favMessageTimer;
+      if (cleanUpRef.current) {
+        clearTimeout(cleanUpRef.current);
+        setFavMessage(null);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // - fetch für Creator Daten
   useEffect(() => {
     async function getCreator() {
-      const record = await pb.collection("users").getOne(detailEvent.creator);
-      console.log(record);
+
+
+
+      const record = await pb.collection('users').getOne(detailEvent.creator);
+
+
       setCreator(record);
     }
     getCreator();
+    // Holen uns die Favs aus DB
   }, [detailEvent]);
 
-  console.log("Creator: ", creator);
+  console.log(detailEvent);
 
-  // console.log("Detailevent: ", detailEvent);
+  // - ich schaue ob der User schon für das Event registriert ist
 
-  //   * Bestätigungsmail senden, wenn man sich für das Event registriert
-  const sendMail = async () => {
-    console.log("sendmail function");
-    await fetch(import.meta.env.VITE_BACKEND + "/sendmail", {
-      method: "POST",
-      body: JSON.stringify({
-        email: pb.authStore.model.email,
-        name: pb.authStore.model.firstname,
-        event: detailEvent.name,
-      }),
-      headers: {
-        "content-type": "application/json",
-      },
+  // useEffect(() => {
+  //   const isRegistered = async () => {
+  //     const records = await pb.collection("events").getFullList();
+
+  //     records?.forEach((user) =>
+  //       user == pb.authStore.model.id
+  //         ? setAngemeldet(true)
+  //         : setAngemeldet(false)
+  //     );
+
+  //     console.log("Ist angemeldet?", angemeldet);
+  //   };
+  //   isRegistered();
+  // }, [registered, detailEvent]);
+
+  //   * Bestätigungsmail senden und Banner, wenn man sich für das Event registriert
+
+  const register = () => {
+    setRegistered(pb.authStore.model.id);
+
+    console.log("Registered:", registered);
+
+    // if (registered.length > 0) {
+    //   console.log("Ich bin im if");
+    //   displayFavMessage(
+    //     `Du hast dich für das Event "${detailEvent?.name}" angemeldet.`,
+    //     setFavMessage,
+    //     favMessageTimer
+    //   );
+    // } else {
+    //   console.log("Ich bin im else");
+    //   displayFavMessage(
+    //     `Du hast dich von dem Event "${detailEvent?.name}" abgemeldet.`,
+    //     setFavMessage,
+    //     favMessageTimer
+    //   );
+    // }
+
+    const Mail = async () => {
+
+
+      await fetch(import.meta.env.VITE_BACKEND + '/sendmail', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: pb.authStore.model.email,
+          name: pb.authStore.model.firstname,
+          event: detailEvent.name,
+        }),
+        headers: {
+          'content-type': 'application/json',
+        },
+      });
+    };
+    const registerUser = async () => {
+      await pb.collection('events').update(detailEvent.id, {
+        'registeredUser+': [pb.authStore.model.id],
+      });
+    };
+    const registerUseratUser = async () => {
+      await pb.collection("users").update(pb.authStore.model.id, {
+        "registeredEvents+": [detailEvent.id],
+      });
+    };
+    Mail();
+    registerUser();
+    registerUseratUser();
+  };
+
+  const toggleFavorites = async (favId, eventName) => {
+    setEventFavorite((cur) => {
+      const fav = cur === favId ? null : favId;
+
+      // message einblenden
+      if (fav) {
+        displayFavMessage(
+          `${eventName} wurde als Favoriten hinzugefügt`,
+          setFavMessage,
+          favMessageTimer
+        );
+      } else {
+        displayFavMessage(
+          `${eventName} wurde aus den Favoriten entfernt`,
+          setFavMessage,
+          favMessageTimer
+        );
+      }
+
+      return fav;
     });
+
+    // persistieren
+    await addEventFavorites(favId);
+  };
+
+  const getFavByUser = async () => {
+    const response = await getEventFavorites();
+    if (response) {
+      const favId = response.filter((fav) => fav === id).join("");
+      setEventFavorite(favId);
+    }
   };
 
   if (detailEvent && creator) {
@@ -61,19 +177,34 @@ export function EventDetails() {
         />
         <div className={style.eventDetails}>
           <Link to="/event/search">←</Link>
-          <button className={style.bookmark}>
-            <FontAwesomeIcon
-              icon={["far", "bookmark"]}
-              style={{ color: "#63E6BE", height: "25px" }}
-            />
-          </button>
+          {eventFavorite === detailEvent.id ? (
+            <button
+              className={style.bookmark}
+              onClick={() => toggleFavorites(detailEvent.id, detailEvent.name)}
+            >
+              <FontAwesomeIcon
+                icon={faBookmark}
+                style={{ color: "#63E6BE", height: "20px", width: "20px" }}
+              />
+            </button>
+          ) : (
+            <button
+              className={style.bookmark}
+              onClick={() => toggleFavorites(detailEvent.id, detailEvent.name)}
+            >
+              <FontAwesomeIcon
+                icon={["far", "bookmark"]}
+                style={{ color: "#63E6BE", height: "25px" }}
+              />
+            </button>
+          )}
           <h1>Event Details</h1>
         </div>
 
-        {detailEvent.registeredUser >= 0 && (
+        {detailEvent.registeredUser?.length >= 0 && (
           <div className={style.registered}>
             <img src="../images/Group.png" alt="" />
-            <p>{detailEvent.registeredUser.length} registered</p>
+            <p>{detailEvent.registeredUser?.length} registered</p>
           </div>
         )}
 
@@ -109,7 +240,7 @@ export function EventDetails() {
             <p>{detailEvent.description}</p>
           </div>
 
-          <button className={style.register} onClick={sendMail}>
+          <button className={style.register} onClick={register}>
             REGISTER
           </button>
         </section>

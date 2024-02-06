@@ -1,0 +1,102 @@
+.ratingCard {
+  box-shadow: 0 0 10px #a6a6a6;
+  margin: 10px auto;
+  border-radius: 15px;
+  padding: 5%;
+}
+
+.stars {
+  color: #00ecaa;
+  font-size: 1.9rem;
+  margin-bottom: 10px;
+}
+
+.profilpic {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.flexdiv {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flexdiv h3 {
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 1.6rem;
+}
+
+.flexdiv div {
+  display: flex;
+  align-items: center;
+}
+
+.date {
+  color: #a6a6a6;
+}
+
+.creatorprofil_img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin: 0 auto 30px auto;
+  display: block;
+}
+
+.button {
+  background-color: #5d3ede;
+  display: block;
+  color: white;
+  font-size: 1.6rem;
+  border: none;
+  width: 90%;
+  padding: 20px 0;
+  border-radius: 10px;
+  margin: 0 auto;
+}
+
+.label {
+  color: #a6a6a6;
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 100;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.wrapper1 {
+  width: 85%;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.input {
+  width: 100%;
+  border: none;
+  box-shadow: 0 0 10px #a6a6a6;
+  height: 30vh;
+  border-radius: 15px;
+  color: #848484;
+  padding: 5%;
+  margin-bottom: 30px;
+}
+
+.commentdiv {
+  position: relative;
+}
+
+.labelrating {
+  color: white;
+}
+
+.stars {
+  margin-bottom: 0 auto 30px auto;
+}
+
+.comment {
+  font-size: 1.4rem;
+}

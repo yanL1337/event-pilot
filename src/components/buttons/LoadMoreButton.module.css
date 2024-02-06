@@ -1,0 +1,9 @@
+.loadmore_button {
+  background-color: var(--selectedColor);
+  color: white;
+  font-weight: 800;
+  font-size: 1.75rem;
+  border: none;
+  padding: 15px;
+  border-radius: 10px;
+}

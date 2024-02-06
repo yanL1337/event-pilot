@@ -8,13 +8,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "./CreatorEvent.module.css";
 
 export function CreatorEvent({ singleEvent }) {
-  console.log(singleEvent);
   return (
     <Link
       className={style.categoryOutput_box}
       to={`/eventdetails/${singleEvent.id}`}
     >
       <img
+        className={style.img}
         src={`${
           createImagePath(singleEvent.image, singleEvent.id)
             ? createImagePath(singleEvent.image, singleEvent.id)

@@ -10,31 +10,29 @@ const CategoryScrollBar = ({ eventFilter, eventFilterDispatch }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
+  const [dragStartTimestamp, setDragStartTimestamp] = useState(null);
 
-  // Ist die Schwelle ab wann man ein drag Event registriert wird
-  const DRAG_THRESHOLD = 10;
+  const DRAG_THRESHOLD = 5;
+  const CLICK_THRESHOLD_MS = 200;
 
-  /* DRAG FUNKTIONALITÄT EVENTUELL SPÄTER AUSLAGERN */
-  const startDragging = (e) => {
-    // Überprüfen ob desktop oder touchscreen/mobile
-    const initialPosition = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
-    // Wir hauen den dragging state erstmal auf false
-    setIsDragging(false);
+  const handlePointerDown = (e) => {
+    e.preventDefault();
+    const initialPosition = e.pageX || e.touches[0].pageX;
     setStartX(initialPosition - scrollContainerRef.current.offsetLeft);
     setScrollLeft(scrollContainerRef.current.scrollLeft);
+    setDragStartTimestamp(Date.now());
+
+    scrollContainerRef.current.setPointerCapture(e.pointerId);
+    scrollContainerRef.current.classList.add('grabbing');
   };
 
-  const stopDragging = () => {
-    setIsDragging(false);
-  };
+  const handlePointerMove = (e) => {
+    if (!dragStartTimestamp) return;
+    const currentPosition = e.pageX || e.touches[0].pageX;
+    const walk = (currentPosition - startX) * 2;
 
-  const onDrag = (e) => {
-    // Überprüfen ob desktop oder touchscreen
-    const currentPosition = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
-    const walk = (currentPosition - startX) * 1;
-
-    // Wir überprüfen ob die Schwelle überschritten wird / wird sie nicht überschritten handelt es sich um ein click Event
-    if (!isDragging && Math.abs(currentPosition - startX) > DRAG_THRESHOLD) {
+    const elapsedTime = Date.now() - dragStartTimestamp;
+    if (elapsedTime > CLICK_THRESHOLD_MS || Math.abs(walk) > DRAG_THRESHOLD) {
       setIsDragging(true);
     }
 
@@ -42,6 +40,17 @@ const CategoryScrollBar = ({ eventFilter, eventFilterDispatch }) => {
       e.preventDefault();
       scrollContainerRef.current.scrollLeft = scrollLeft - walk;
     }
+  };
+
+  const handlePointerUp = () => {
+    const elapsedTime = Date.now() - dragStartTimestamp;
+    if (elapsedTime <= CLICK_THRESHOLD_MS && !isDragging) {
+      // wird als click dann behandelt
+    }
+
+    setIsDragging(false);
+    scrollContainerRef.current.classList.remove('grabbing');
+    setDragStartTimestamp(null);
   };
 
   const selectSingleCategory = (category) => {
@@ -62,13 +71,10 @@ const CategoryScrollBar = ({ eventFilter, eventFilterDispatch }) => {
       <div
         ref={scrollContainerRef}
         className={`${styles.scrollContainer} ${isDragging ? 'grabbing' : ''}`}
-        onMouseDown={startDragging}
-        onMouseUp={stopDragging}
-        onMouseLeave={stopDragging}
-        onMouseMove={onDrag}
-        onTouchStart={startDragging}
-        onTouchEnd={stopDragging}
-        onTouchMove={onDrag}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
       >
         {getCategories().map((category) => {
           return (

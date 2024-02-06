@@ -1,20 +1,21 @@
 import PropTypes from 'prop-types';
-import { getCategories, getCategoryIcons, lockLastDays } from '../../../utils/helperFunction';
+import { getCategories, getCategoryIcons, lockLastDays } from '../../../../utils/helperFunction';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarDays, faLocationDot } from '@fortawesome/free-solid-svg-icons';
 
 /* CSS */
 import styles from './EventFilterBox.module.css';
-import { useEffect, useRef } from 'react';
-import { getCityFromLocation } from '../../../utils/geoLocation';
-import DynamicTriggerButton from '../../buttons/DynamicTriggerButton';
+import { useEffect, useRef, useState } from 'react';
+import { getCityFromLocation } from '../../../../utils/geoLocation';
+import DynamicTriggerButton from '../../../buttons/DynamicTriggerButton';
+import { germanCities } from '../../../../utils/data';
 
 const EventFilterBox = ({ eventFilter, eventFilterDispatch, onHandleShowFilterBox }) => {
+  const [citySuggestions, setCitySuggestion] = useState([]);
+
   const dateInputRef = useRef(null);
 
   useEffect(() => {
-    // Hier führen wir den Resetbutton noch aus
-
     // Hole Location und sette den state
     getCityFromLocation().then((city) => {
       if (city) {
@@ -34,7 +35,26 @@ const EventFilterBox = ({ eventFilter, eventFilterDispatch, onHandleShowFilterBo
       eventFilterDispatch({ type: 'TOGGLE_ARRAY_MULTIPLE_ITEM', field: field, value: value });
       return;
     }
+
+    if (field === 'date' && value.type !== 'equal') {
+      eventFilterDispatch({ type: 'TOGGLE_OBJECT', field: field, value: value });
+      return;
+    }
+    // Wenn wir das Date field clearn müssen wir den Wert wieder löschen da wir trotzdem ein Object erhalten nur mit leeren value, am besten mit dem Toggle
+    if (field === 'date' && value.type === 'equal' && value.value === '') {
+      eventFilterDispatch({ type: 'TOGGLE_OBJECT', field: field, value: value });
+      return;
+    }
     eventFilterDispatch({ type: 'TOGGLE_FIELD', field: field, value: value });
+
+    if (field === 'location' && value.length > 0) {
+      const regex = new RegExp(`^${value}`, 'i');
+
+      const filteredSuggestions = germanCities.sort().filter((v) => regex.test(v));
+      setCitySuggestion(filteredSuggestions);
+    } else {
+      setCitySuggestion([]);
+    }
   };
 
   const resetFilter = () => {
@@ -154,6 +174,38 @@ const EventFilterBox = ({ eventFilter, eventFilterDispatch, onHandleShowFilterBo
             />
             <div className={styles.box_location_arrow}>{'>'}</div>
           </div>
+          {citySuggestions.length > 0 && (
+            <ul
+              style={{
+                position: 'absolute',
+                width: '100%',
+                top: '95%',
+                height: '300px',
+                overflow: 'scroll',
+              }}
+            >
+              {citySuggestions.map((suggestion, index) => (
+                <li
+                  key={index}
+                  onClick={() => {
+                    handleFilterClicks('location', suggestion);
+                    setCitySuggestion([]);
+                  }}
+                  style={{
+                    width: '100%',
+                    backgroundColor: '#00ECAA',
+                    fontSize: '1.25rem',
+                    border: '1px solid lightgray',
+                    padding: '10px',
+                    color: 'white',
+                    fontWeight: '800',
+                  }}
+                >
+                  {suggestion}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
         <div className={styles.trigger_buttons}>
           <button className={styles.resetButton} onClick={resetFilter}>

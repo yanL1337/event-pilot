@@ -2,138 +2,250 @@ import React, { useEffect, useState } from "react";
 import pb from "../lib/pocketbase.js";
 import editProfile from "/images/EditIcon.svg";
 import submitEdit from "/images/Arrow.svg";
+import Following from "../components/following/Following.jsx";
+import Interests from "../components/interests/Interests.jsx";
+import { CreatorEvent } from "../components/events/CreatorEvents.jsx";
+import { OwnEvent } from "../components/events/OwnEvent.jsx";
+import { Header } from "../components/header/Header.jsx";
+import style from "./css/UserProfil.module.css";
 
 export const UserProfile = ({ children }) => {
   const [user, setUser] = useState();
-  const [following, setFollowing] = useState();
   const [edit, setEdit] = useState(false);
+  const [changes, setChanges] = useState({});
+  const [state, setState] = useState("about");
+  const [ownEvents, setOwnEvents] = useState([]);
+  const [colorAbout, setColorAbout] = useState(true);
+  const [colorEvents, setColorEvents] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
-      const record = await pb.collection("users").getOne(pb.authStore.model.id);
-      setUser(record);
+      try {
+        const record = await pb
+          .collection("users")
+          .getOne(pb.authStore.model.id);
+        setUser(record);
+        setChanges(record);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     getUser();
-    //console.log(user);
   }, []);
 
-  useEffect(() => {
-    let count = 0;
-    const getFollowing = async () => {
-      const records = await pb.collection("users").getFullList();
-
-      records.forEach((userRecord) =>
-        userRecord?.follower.forEach((follower) =>
-          follower == user?.id ? count++ : null
-        )
-      );
-      setFollowing(count);
-    };
-    getFollowing();
-  }, [user]);
-
-  const editUser = () => {
-    setEdit((prev) => !prev);
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setChanges((prev) => ({ ...prev, [name]: value }));
   };
 
-  console.log(edit);
+  const submitChanges = async (event) => {
+    event.preventDefault();
+    const formData = new FormData();
 
-  return (
-    <div style={{}}>
-      <div
-        style={{
-          padding: "5vh 10vw",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        {!edit ? (
-          <>
-            <div className="top-bar">
-              <div className="name">
-                {" "}
-                {`${user?.firstname} ${user?.lastname}`}
-              </div>
-            </div>
-            <img
-              className="image"
-              alt="Image"
-              src={`https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage}`}
-            />
-            <div
-              onClick={() => setEdit(true)}
-              style={{
-                borderRadius: "10px",
-                border: "1.5px solid var(--4, #777BF3)",
-                display: "flex",
-                alignItems: "center",
-                width: "30vw",
-                padding: "1vh 1vw",
-              }}
-            >
-              <img className="icon" alt="Icon" src={editProfile} />
-              <p className="d">Edit Profile</p>
-            </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "5vw",
-              }}
-            >
-              <div style={{ textAlign: "center" }}>
-                <div className="text-wrapper-3">Following</div>
-                <div className="text-wrapper-4">{following}</div>
-              </div>
-              <div style={{ textAlign: "center" }}>
-                <div className="text-wrapper-3">Followers</div>
-                <div className="text-wrapper-4">{user?.follower.length}</div>
-              </div>
-            </div>
-            <div className="about-me">
-              <p className="p">
-                <span className="span">{user?.description}</span>
-              </p>
-              <div className="headline">About Me</div>
-            </div>
-            <div className="interests">
-              <div className="interests-2">{""}</div>
-            </div>
-          </>
-        ) : (
-          <>
-            <img
-              className="image"
-              alt="Image"
-              src={`https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage}`}
-            />
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <input placeholder={user.firstname} />
-              <input placeholder={user.lastname} />
-            </div>
+    formData.append("firstname", changes.firstname);
+    formData.append("lastname", changes.lastname);
+    formData.append("description", changes.description);
+    const fileInput = document.querySelector('input[type="file"]');
 
-            <div className="about-me">
-              <div className="headline">About Me</div>
-              <p className="p">
-                <span className="span">{user?.description}</span>
-              </p>
-            </div>
-            <div className="interests">
-              <div className="interests-2">{""}</div>
-            </div>
-            <div
-              style={{ display: "flex", alignItems: "center" }}
-              onClick={() => setEdit(false)}
-            >
-              <p>Save changes</p>
-              <img src={submitEdit} alt="" />
-            </div>
-          </>
-        )}
-      </div>
-      {children}
-    </div>
-  );
+    if (fileInput && fileInput.files[0]) {
+      formData.append("profilImage", fileInput.files[0]);
+    }
+
+    for (let item of changes.interests) {
+      console.log(item);
+      formData.append("interests", item);
+    }
+
+    //formData.append("interests", changes.interests);
+    try {
+      const record = await pb.collection("users").update(user.id, formData);
+      setUser(record);
+      setEdit(false);
+    } catch (error) {
+      console.error("Failed to update", error);
+    }
+  };
+
+  // ##############################
+  function about() {
+    setState("about");
+    setColorAbout(true);
+    setColorEvents(false);
+  }
+  function events() {
+    setState("events");
+    setColorAbout(false);
+    setColorEvents(true);
+  }
+
+  useEffect(() => {
+    async function getOwnEvents() {
+      const ownEvents = await pb.collection("events").getFullList({
+        filter: `creator="${pb.authStore.model.id}"`,
+      });
+      setOwnEvents(ownEvents);
+    }
+    getOwnEvents();
+  }, []);
+
+  console.log(user);
+
+  //* wird angezeigt, wenn About ausgewählt ist
+  if (state === "about" && user) {
+    return (
+      <>
+        <section className={style.wrapper}>
+          {!edit ? (
+            <>
+              <Header headertext={`${user.firstname} ${user.lastname}`} />
+              <img
+                className={style.profilimg}
+                src={`https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage}`}
+              />
+
+              <div className={style.followdiv}>
+                <div className={style.follow}>
+                  <Following user={user} />
+                  <p className={style.light}>Following</p>
+                </div>
+                <div>
+                  <p>{user?.follower.length}</p>
+                  <p className={style.light}>Followers</p>
+                </div>
+              </div>
+              <div className={style.tabs}>
+                <button
+                  className={colorAbout ? style.activeTab : null}
+                  onClick={about}
+                >
+                  ABOUT
+                </button>
+                <button
+                  className={colorEvents ? style.activeTab : null}
+                  onClick={events}
+                >
+                  EVENTS
+                </button>
+              </div>
+
+              <div className={style.aboutme}>About Me</div>
+              <p className={style.description}>{user?.description}</p>
+
+              <Interests user={user} edit={edit} />
+              <div className={style.editbutton} onClick={() => setEdit(true)}>
+                <img className="icon" alt="Icon" src={editProfile} />
+                <p className="d">Edit Profile</p>
+              </div>
+            </>
+          ) : (
+            //* wird beim EditProfil Button angezeigt
+            //submitChanges, changes, handleInputChange
+            <>
+              <Header headertext={`Edit Profile`} />
+              <form onSubmit={submitChanges}>
+                <div className={style.editimg}>
+                  <img
+                    className={style.profilimgedit}
+                    src={`https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage}`}
+                  />
+                  <div className={style.imgupload}>
+                    <label htmlFor="file-input">
+                      <img
+                        style={{ width: "7vw", cursor: "pointer" }}
+                        src={editProfile}
+                      />
+                    </label>
+                    <input
+                      style={{ display: "none" }}
+                      name="profilImage"
+                      id="file-input"
+                      type="file"
+                    />
+                  </div>
+                </div>
+
+                <input
+                  className={style.input}
+                  name="firstname"
+                  placeholder="First Name"
+                  value={changes.firstname || ""}
+                  onChange={handleInputChange}
+                />
+                <input
+                  className={style.input}
+                  name="lastname"
+                  placeholder="Last Name"
+                  value={changes.lastname || ""}
+                  onChange={handleInputChange}
+                />
+
+                <textarea
+                  style={{ height: "10vh", width: "70vw" }}
+                  name="description"
+                  placeholder="About me"
+                  value={changes.description || ""}
+                  onChange={handleInputChange}
+                />
+
+                <Interests
+                  changes={changes}
+                  setChanges={setChanges}
+                  edit={edit}
+                />
+                <button
+                  type="submit"
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <p>Save changes</p>
+                  <img src={submitEdit} alt="" />
+                </button>
+              </form>
+            </>
+          )}
+        </section>
+        {children}
+      </>
+    );
+    // * wird bei Events angezeigt
+  } else if (user) {
+    return (
+      <section className={style.wrapper}>
+        <Header headertext={`${user.firstname} ${user.lastname}`} />
+        <img
+          className={style.profilimg}
+          src={`https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage}`}
+        />
+
+        <div className={style.followdiv}>
+          <div className={style.follow}>
+            <Following user={user} />
+            <p className={style.light}>Following</p>
+          </div>
+          <div>
+            <p>{user?.follower.length}</p>
+            <p className={style.light}>Followers</p>
+          </div>
+        </div>
+        <div className={style.tabs}>
+          <button
+            className={colorAbout ? style.activeTab : null}
+            onClick={about}
+          >
+            ABOUT
+          </button>
+          <button
+            className={colorEvents ? style.activeTab : null}
+            onClick={events}
+          >
+            EVENTS
+          </button>
+        </div>
+        {ownEvents.map((singleEvent) => {
+          return <OwnEvent singleEvent={singleEvent} />;
+        })}
+        {children}
+      </section>
+    );
+  }
 };

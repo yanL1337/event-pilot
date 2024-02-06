@@ -9,7 +9,7 @@ export function Loadingscreen() {
   useEffect(() => {
     setTimeout(() => {
       setLoading(true);
-    }, 10);
+    }, 2000);
   }, []);
   return (
     <section className={style.section}>
