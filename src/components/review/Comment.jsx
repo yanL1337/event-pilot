@@ -34,7 +34,7 @@ export function Comment({ singleComment }) {
           </p>
         </div>
         <Rating />
-        <p>{singleComment.comment}</p>
+        <p className={style.comment}>{singleComment.comment}</p>
       </section>
     );
   } else {

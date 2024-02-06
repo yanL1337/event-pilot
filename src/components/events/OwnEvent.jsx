@@ -14,7 +14,7 @@ export function OwnEvent({ singleEvent }) {
     console.log("Event abgesagt!!!!!");
   }
   return (
-    <>
+    <section className={style.wrapper}>
       <Link
         className={style.categoryOutput_box}
         to={`/eventdetails/${singleEvent.id}`}
@@ -39,7 +39,9 @@ export function OwnEvent({ singleEvent }) {
           </div>
         </div>
       </Link>
-      <button onClick={deleteEvent}>Delete Event</button>
-    </>
+      <button className={style.deletebutton} onClick={deleteEvent}>
+        ✘
+      </button>
+    </section>
   );
 }

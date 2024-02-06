@@ -120,7 +120,7 @@ export function CreatorProfil() {
   if (creator) {
     if (state === "about") {
       return (
-        <main>
+        <main className={style.wrapper}>
           <Header headertext={creator.firstname} />
 
           <img
@@ -128,8 +128,16 @@ export function CreatorProfil() {
             src={`${pb.baseUrl}/api/files/${creator.collectionId}/${creator.id}/${creator.profilImage}`}
             alt="Profilbild des Creators"
           />
-          <p>Follower {creator.follower?.length}</p>
-          <p>Following {following}</p>
+          <div className={style.followdiv}>
+            <div className={style.follow}>
+              <p>{following}</p>
+              <p className={style.light}>Following</p>
+            </div>
+            <div>
+              <p>{creator.follower?.length}</p>
+              <p className={style.light}>Followers</p>
+            </div>
+          </div>
           <div className={style.button}>
             <button
               className={
@@ -163,20 +171,28 @@ export function CreatorProfil() {
             </button>
           </div>
 
-          <p>{creator.description}</p>
+          <p className={style.description}>{creator.description}</p>
         </main>
       );
     } else if (state === "events") {
       return (
-        <main>
+        <main className={style.wrapper}>
           <Header headertext={creator.firstname} />
           <img
             className={style.creatorprofil_img}
             src={`${pb.baseUrl}/api/files/${creator.collectionId}/${creator.id}/${creator.profilImage}`}
             alt="Profilbild des Creators"
           />
-          <p>Follower {creator.follower?.length}</p>
-          <p>Following {following}</p>
+          <div className={style.followdiv}>
+            <div className={style.follow}>
+              <p>{following}</p>
+              <p className={style.light}>Following</p>
+            </div>
+            <div>
+              <p>{creator.follower?.length}</p>
+              <p className={style.light}>Followers</p>
+            </div>
+          </div>
           <div className={style.button}>
             <button
               className={
@@ -217,15 +233,23 @@ export function CreatorProfil() {
       );
     } else if (state === "reviews") {
       return (
-        <main>
+        <main className={style.wrapper}>
           <Header headertext={creator.firstname} />
           <img
             className={style.creatorprofil_img}
             src={`${pb.baseUrl}/api/files/${creator.collectionId}/${creator.id}/${creator.profilImage}`}
             alt="Profilbild des Creators"
           />
-          <p>Follower {creator.follower?.length}</p>
-          <p>Following {following}</p>
+          <div className={style.followdiv}>
+            <div className={style.follow}>
+              <p>{following}</p>
+              <p className={style.light}>Following</p>
+            </div>
+            <div>
+              <p>{creator.follower?.length}</p>
+              <p className={style.light}>Followers</p>
+            </div>
+          </div>
           <div className={style.button}>
             <button
               className={

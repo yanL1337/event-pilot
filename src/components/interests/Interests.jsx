@@ -1,4 +1,5 @@
 import AddInterest from "./AddInterest";
+import style from "../../pages/css/UserProfil.module.css";
 
 const Interests = ({ user, changes, edit, setChanges }) => {
   const removeInterest = (selected) => {
@@ -17,23 +18,12 @@ const Interests = ({ user, changes, edit, setChanges }) => {
   };
 
   return (
-    <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "start" }}
-    >
-      <p>Interests</p>
-      <div style={{ display: "flex", gap: "1vw" }}>
+    <article>
+      <p className={style.aboutme}>Interests</p>
+      <div className={style.aroundinterests}>
         {(edit ? changes?.interests || [] : user?.interests || []).map(
           (interest, index) => (
-            <div
-              key={index}
-              style={{
-                backgroundColor: "#5D3EDE",
-                color: "white",
-                padding: "2vw",
-                borderRadius: "20px",
-                display: "flex",
-              }}
-            >
+            <div key={index} className={style.interests}>
               {interest}
               {edit && (
                 <div
@@ -52,7 +42,7 @@ const Interests = ({ user, changes, edit, setChanges }) => {
         )}
       </div>
       {edit && <AddInterest addInterest={addInterest} />}
-    </div>
+    </article>
   );
 };
 
