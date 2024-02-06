@@ -81,7 +81,7 @@ export const UserProfile = ({ children }) => {
       setOwnEvents(ownEvents);
     }
     getOwnEvents();
-  }, [ownEvents]);
+  }, []);
 
   console.log(user);
 
