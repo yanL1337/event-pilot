@@ -19,7 +19,7 @@ import { Favorites } from "./pages/Favorites";
 import { Review } from "./pages/Review";
 import { SetFavoriteMessageContext } from "./context/context";
 import FavoriteTriggerMessage from "./components/general/FavoriteTriggerMessage";
-import { ThemeContext } from "./context/Context";
+import { ThemeContext } from "./context/context";
 import "./App.css";
 
 pb.autoCancellation(false);
