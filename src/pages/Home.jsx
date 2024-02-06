@@ -9,7 +9,6 @@ import "slick-carousel/slick/slick-theme.css";
 export function Home({ children }) {
   const [events, setEvents] = useState([]);
 
-  console.log("hshhs");
   useEffect(() => {
     const getEvents = async () => {
       const events = await pb
