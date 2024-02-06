@@ -24,11 +24,12 @@ export function Home({ children }) {
     dots: false,
     infinite: true,
     speed: 600,
-    slidesToShow: 2,
+    slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 4000,
-    centerMode: true,
+    //margin: "150px",
+    // centerMode: true,
     cssEase: "linear",
   };
 
@@ -39,22 +40,21 @@ export function Home({ children }) {
         <p>Upcoming Events</p>
         <Link to="/event/search">See all</Link>
       </div>
-      <Slider {...settings}>
+      <Slider style={{ display: "flex", gap: "100px" }} {...settings}>
         {events?.map((event) => (
           <div key={event.id}>
-            <Link to={`/eventdetails/${event.id}`}>
-              <OutputItem
-                data={event}
-                allFavorites={[]}
-                registeredEvents={[]}
-                favMessageTimer={{}}
-                isOnFavSite={false}
-              />
-            </Link>
+            <OutputItem
+              data={event}
+              allFavorites={[]}
+              registeredEvents={[]}
+              favMessageTimer={{}}
+              isOnFavSite={false}
+            />
           </div>
         ))}
       </Slider>
 
+      <button onClick={onRecordAfterCreateRequest}> Klick me</button>
       <div style={{ marginTop: "20px" }}>
         <p>Nearby you</p>
         <Link to="/">See all</Link>
