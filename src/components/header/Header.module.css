@@ -9,7 +9,7 @@
 
 .header p {
   font-weight: 500;
-  font-size: 1.6rem;
+  font-size: 2.4rem;
 }
 
 .header a {
@@ -18,4 +18,15 @@
   border: none;
   text-decoration: none;
   font-weight: 400;
+}
+
+.button {
+  color: #a6a6a6;
+  height: 25px;
+  padding: 5px 7.5px 5px 7.5px;
+}
+
+.border {
+  background-color: transparent;
+  border: none;
 }

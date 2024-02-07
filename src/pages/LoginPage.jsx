@@ -1,10 +1,9 @@
-import { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import pb from '../lib/pocketbase.js';
-import { useNavigate } from 'react-router-dom';
-import DynamicTriggerButton from '../components/buttons/DynamicTriggerButton.jsx';
+import { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
+import pb from "../lib/pocketbase.js";
+import { useNavigate } from "react-router-dom";
+import DynamicTriggerButton from "../components/buttons/DynamicTriggerButton.jsx";
 import style from "./css/Login.module.css";
-
 
 const LoginPage = () => {
   const emailRef = useRef();
@@ -14,21 +13,23 @@ const LoginPage = () => {
   const sendData = async () => {
     try {
       const authData = await pb
-        .collection('users')
+        .collection("users")
         .authWithPassword(emailRef.current.value, passRef.current.value);
-      navigate('/home');
+      navigate("/home");
     } catch (error) {
       console.log(error);
     }
   };
 
-
   return (
-    <section>
+    <section className={style.wrapper}>
       <div>
         <img className={style.imglogo} src="../images/Logo.png" alt="E" />
-        <h1 className={style.event}>Event</h1>
-        <h2 className={style.pilot}>Pilot</h2>
+        <div className={style.headline}>
+          <h1 className={style.event}>Event</h1>
+          <h2 className={style.pilot}>Pilot</h2>
+        </div>
+        <p className={style.signin}>Sign In</p>
       </div>
 
       <div>
@@ -39,14 +40,13 @@ const LoginPage = () => {
           placeholder="Email Address"
         />
         <input
-          className={style.logininput}
+          className={style.logininputlast}
           ref={passRef}
           type="password"
           placeholder="Password"
         />
 
         <div>
-
           <DynamicTriggerButton hasArrow={true} onTriggerEventFn={sendData}>
             SIGN IN
           </DynamicTriggerButton>
@@ -55,7 +55,6 @@ const LoginPage = () => {
         <Link className={style.link} to={"/register"} href="#">
           Don&apos;t have an account?
         </Link>
-
       </div>
     </section>
   );

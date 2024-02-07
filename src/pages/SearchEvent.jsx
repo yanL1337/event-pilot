@@ -1,18 +1,21 @@
-import PropTypes from 'prop-types';
-import { useEffect, useReducer, useState } from 'react';
-import CategoryOutput from '../components/events/search/CategoryOutput';
-import CategoryScrollBar from '../components/events/search/CategoryScrollBar';
-import SearchFilterBar from '../components/events/search/SearchFilterBar';
+import PropTypes from "prop-types";
+import { useEffect, useReducer, useState } from "react";
+import CategoryOutput from "../components/events/search/CategoryOutput";
+import CategoryScrollBar from "../components/events/search/CategoryScrollBar";
+import SearchFilterBar from "../components/events/search/SearchFilterBar";
 
 /* CSS */
-import styles from './css/SearchEvent.module.css';
-import { viewAllEvents, viewEventByFilter } from '../utils/fetchData';
-import { initialEventFilterState, reducer } from '../utils/stateHandler';
-import EventFilterBox from '../components/events/search/filter/EventFilterBox';
-import LocationHeader from '../components/header/LocationHeader';
+import styles from "./css/SearchEvent.module.css";
+import { viewAllEvents, viewEventByFilter } from "../utils/fetchData";
+import { initialEventFilterState, reducer } from "../utils/stateHandler";
+import EventFilterBox from "../components/events/search/filter/EventFilterBox";
+import LocationHeader from "../components/header/LocationHeader";
 
 const SearchEvent = ({ children }) => {
-  const [eventFilter, eventFilterDispatch] = useReducer(reducer, initialEventFilterState);
+  const [eventFilter, eventFilterDispatch] = useReducer(
+    reducer,
+    initialEventFilterState
+  );
   const [viewEventData, setViewEventData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
@@ -63,7 +66,10 @@ const SearchEvent = ({ children }) => {
             eventFilter={eventFilter}
             eventFilterDispatch={eventFilterDispatch}
           />
-          <CategoryScrollBar eventFilter={eventFilter} eventFilterDispatch={eventFilterDispatch} />
+          <CategoryScrollBar
+            eventFilter={eventFilter}
+            eventFilterDispatch={eventFilterDispatch}
+          />
         </section>
         <section>
           <CategoryOutput

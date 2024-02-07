@@ -1,12 +1,8 @@
 .section {
   font-size: 1.5rem;
-  margin-top: 50px;
   position: relative;
-}
-
-.section > article > form > div input,
-.section > article > form > div select {
-  margin-bottom: 5px;
+  width: 85%;
+  margin: 0 auto 0 auto;
 }
 
 .button {
@@ -20,6 +16,8 @@
   border: none;
   width: 100%;
   border-radius: 15px;
+  margin: 0 auto 20px auto;
+  display: block;
 }
 
 div > .button {
@@ -107,7 +105,7 @@ div > .button {
   object-fit: cover;
 }
 
-input[type='file'] {
+input[type="file"] {
   display: none;
 }
 
@@ -124,6 +122,16 @@ input[type='file'] {
   align-items: center;
   border-radius: 15px;
   box-shadow: 1px 1px 20px rgb(221, 219, 219);
+}
+
+.wrapperdiv {
+  display: "flex";
+  gap: 12px;
+  align-items: center;
+}
+
+.uploadfile {
+  margin-bottom: 3ßpx;
 }
 
 @keyframes zoomIn {

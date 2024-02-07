@@ -1,24 +1,28 @@
-import { useEffect, useReducer, useState } from 'react';
-import { initialEventState, reducer, validateEventForm } from '../../utils/stateHandler';
-import { getCityFromLocation } from '../../utils/geoLocation';
-import { getCategories, lockLastDays } from '../../utils/helperFunction';
-import useLocalStorage from '../../hooks/useLocalStorage';
+import { useEffect, useReducer, useState } from "react";
+import {
+  initialEventState,
+  reducer,
+  validateEventForm,
+} from "../../utils/stateHandler";
+import { getCityFromLocation } from "../../utils/geoLocation";
+import { getCategories, lockLastDays } from "../../utils/helperFunction";
+import useLocalStorage from "../../hooks/useLocalStorage";
 
 /* CSS */
-import styles from './AddEventForm.module.css';
-import { createEventByUser } from '../../utils/fetchData';
-import { Link } from 'react-router-dom';
-import LoadingElement from '../loading/LoadingElement';
-import DynamicTriggerButton from '../buttons/DynamicTriggerButton';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import styles from "./AddEventForm.module.css";
+import { createEventByUser } from "../../utils/fetchData";
+import { Link } from "react-router-dom";
+import LoadingElement from "../loading/LoadingElement";
+import DynamicTriggerButton from "../buttons/DynamicTriggerButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBarsStaggered,
   faCalendarDays,
   faLocationDot,
   faThumbsUp,
   faUpload,
-} from '@fortawesome/free-solid-svg-icons';
-import { germanCities } from '../../utils/data';
+} from "@fortawesome/free-solid-svg-icons";
+import { germanCities } from "../../utils/data";
 
 const AddEventForm = () => {
   const [citySuggestions, setCitySuggestion] = useState([]);
@@ -26,18 +30,26 @@ const AddEventForm = () => {
   const [addSuccess, setAddSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const userDataAuth = useLocalStorage('pocketbase_auth', null);
+  const userDataAuth = useLocalStorage("pocketbase_auth", null);
 
   useEffect(() => {
     // Hole Location und sette den state
     getCityFromLocation().then((city) => {
       if (city) {
-        eventFormDispatch({ type: 'SET_FIELD', field: 'location', value: city });
+        eventFormDispatch({
+          type: "SET_FIELD",
+          field: "location",
+          value: city,
+        });
       }
     });
 
     // Setzen den Creator
-    eventFormDispatch({ type: 'SET_FIELD', field: 'creator', value: userDataAuth[0].model.id });
+    eventFormDispatch({
+      type: "SET_FIELD",
+      field: "creator",
+      value: userDataAuth[0].model.id,
+    });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -47,7 +59,7 @@ const AddEventForm = () => {
     setIsLoading(true);
 
     // Wir clearn erstmal unsere Errors
-    eventFormDispatch({ type: 'SET_ERROR', errors: {} });
+    eventFormDispatch({ type: "SET_ERROR", errors: {} });
 
     // Wir validieren auf empty
     const formErrors = validateEventForm(eventData);
@@ -55,7 +67,7 @@ const AddEventForm = () => {
     // Falls empty füllen wir unseren Error State
     if (Object.keys(formErrors).length > 0) {
       setIsLoading(false);
-      eventFormDispatch({ type: 'SET_ERROR', errors: formErrors });
+      eventFormDispatch({ type: "SET_ERROR", errors: formErrors });
       return;
     }
 
@@ -71,8 +83,12 @@ const AddEventForm = () => {
 
   const handleChangeEventFormData = (e) => {
     // Die File müssen wir anders behandeln
-    if (e.target.name === 'image') {
-      eventFormDispatch({ type: 'SET_FIELD', field: e.target.name, value: e.target.files[0] });
+    if (e.target.name === "image") {
+      eventFormDispatch({
+        type: "SET_FIELD",
+        field: e.target.name,
+        value: e.target.files[0],
+      });
 
       // Wir müssen die upload datei anzeigen lassen hinter dem Button
       const file = e.target.files[0];
@@ -83,20 +99,26 @@ const AddEventForm = () => {
       return;
     }
 
-    eventFormDispatch({ type: 'SET_FIELD', field: e.target.name, value: e.target.value });
+    eventFormDispatch({
+      type: "SET_FIELD",
+      field: e.target.name,
+      value: e.target.value,
+    });
 
-    if (e.target.name === 'location') {
+    if (e.target.name === "location") {
       handleCitySuggestionClick(e.target.name, e.target.value);
     }
   };
 
   const handleCitySuggestionClick = (field, value) => {
-    eventFormDispatch({ type: 'SET_FIELD', field: field, value: value });
+    eventFormDispatch({ type: "SET_FIELD", field: field, value: value });
 
-    if (field === 'location' && value.length > 0) {
-      const regex = new RegExp(`^${value}`, 'i');
+    if (field === "location" && value.length > 0) {
+      const regex = new RegExp(`^${value}`, "i");
 
-      const filteredSuggestions = germanCities.sort().filter((v) => regex.test(v));
+      const filteredSuggestions = germanCities
+        .sort()
+        .filter((v) => regex.test(v));
       setCitySuggestion(filteredSuggestions);
     } else {
       setCitySuggestion([]);
@@ -105,7 +127,7 @@ const AddEventForm = () => {
 
   const resetForm = () => {
     // Clearn State
-    eventFormDispatch({ type: 'RESET_FORM_STATE' });
+    eventFormDispatch({ type: "RESET_FORM_STATE" });
     // clearn Image
     handleClearImage();
     setAddSuccess(false);
@@ -114,31 +136,31 @@ const AddEventForm = () => {
   const handleClearImage = () => {
     setSelectedImage(null);
     // Wir hauen das Bild wieder raus
-    document.getElementById('image').value = '';
-    eventFormDispatch({ type: 'SET_FIELD', field: 'image', value: '' });
+    document.getElementById("image").value = "";
+    eventFormDispatch({ type: "SET_FIELD", field: "image", value: "" });
   };
 
   return (
     <section className={styles.section}>
-      <article
-        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100vw' }}
-      >
-        <form
-          onSubmit={onSubmitForm}
-          style={{ display: 'flex', flexDirection: 'column', gap: '32px', width: '100%' }}
-        >
-          <div style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
-            <label htmlFor="name"></label>
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+      <article>
+        <form onSubmit={onSubmitForm}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              position: "relative",
+            }}
+          >
+            <div className={styles.wrapperdiv}>
               <FontAwesomeIcon
                 icon={faBarsStaggered}
                 style={{
-                  color: 'gray',
-                  height: '30px',
-                  position: 'absolute',
+                  color: "gray",
+                  height: "30px",
+                  position: "absolute",
 
-                  left: '16px',
-                  top: '22.5%',
+                  left: "16px",
+                  top: "22.5%",
                 }}
               />
               <input
@@ -153,21 +175,29 @@ const AddEventForm = () => {
             </div>
             <div className={styles.error_wrapper}>
               {eventData.errors && eventData.errors.name && (
-                <span className={styles.errormessage}>{eventData.errors.name}</span>
+                <span className={styles.errormessage}>
+                  {eventData.errors.name}
+                </span>
               )}
             </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              position: "relative",
+            }}
+          >
             <label htmlFor="category"></label>
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
               <FontAwesomeIcon
                 icon={faBarsStaggered}
                 style={{
-                  color: 'gray',
-                  height: '30px',
-                  position: 'absolute',
-                  left: '16px',
-                  top: '22.5%',
+                  color: "gray",
+                  height: "30px",
+                  position: "absolute",
+                  left: "16px",
+                  top: "22.5%",
                 }}
               />
               <select
@@ -188,21 +218,29 @@ const AddEventForm = () => {
             </div>
             <div className={styles.error_wrapper}>
               {eventData.errors && eventData.errors.category && (
-                <span className={styles.errormessage}>{eventData.errors.category}</span>
+                <span className={styles.errormessage}>
+                  {eventData.errors.category}
+                </span>
               )}
             </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              position: "relative",
+            }}
+          >
             <label htmlFor="date"></label>
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
               <FontAwesomeIcon
                 icon={faCalendarDays}
                 style={{
-                  color: 'gray',
-                  height: '30px',
-                  position: 'absolute',
-                  left: '16px',
-                  top: '22.5%',
+                  color: "gray",
+                  height: "30px",
+                  position: "absolute",
+                  left: "16px",
+                  top: "22.5%",
                 }}
               />
               <input
@@ -218,26 +256,38 @@ const AddEventForm = () => {
             </div>
             <div className={styles.error_wrapper}>
               {eventData.errors && eventData.errors.date && (
-                <span className={styles.errormessage}>{eventData.errors.date}</span>
+                <span className={styles.errormessage}>
+                  {eventData.errors.date}
+                </span>
               )}
             </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              position: "relative",
+            }}
+          >
             <label htmlFor="location"></label>
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
               <FontAwesomeIcon
                 icon={faLocationDot}
                 style={{
-                  color: 'gray',
-                  height: '30px',
-                  position: 'absolute',
-                  left: '16px',
-                  top: '22.5%',
+                  color: "gray",
+                  height: "30px",
+                  position: "absolute",
+                  left: "16px",
+                  top: "22.5%",
                 }}
                 onClick={() => {
                   getCityFromLocation().then((city) => {
                     if (city) {
-                      eventFormDispatch({ type: 'SET_FIELD', field: 'location', value: city });
+                      eventFormDispatch({
+                        type: "SET_FIELD",
+                        field: "location",
+                        value: city,
+                      });
                     }
                   });
                 }}
@@ -255,29 +305,29 @@ const AddEventForm = () => {
             {citySuggestions.length > 0 && (
               <ul
                 style={{
-                  position: 'absolute',
-                  width: '100%',
-                  top: '95%',
-                  height: '300px',
-                  overflow: 'scroll',
-                  zIndex: '10',
+                  position: "absolute",
+                  width: "100%",
+                  top: "95%",
+                  height: "300px",
+                  overflow: "scroll",
+                  zIndex: "10",
                 }}
               >
                 {citySuggestions.map((suggestion, index) => (
                   <li
                     key={index}
                     onClick={() => {
-                      handleCitySuggestionClick('location', suggestion);
+                      handleCitySuggestionClick("location", suggestion);
                       setCitySuggestion([]);
                     }}
                     style={{
-                      width: '100%',
-                      backgroundColor: '#00ECAA',
-                      fontSize: '1.25rem',
-                      border: '1px solid lightgray',
-                      padding: '10px',
-                      color: 'white',
-                      fontWeight: '800',
+                      width: "100%",
+                      backgroundColor: "#00ECAA",
+                      fontSize: "1.25rem",
+                      border: "1px solid lightgray",
+                      padding: "10px",
+                      color: "white",
+                      fontWeight: "800",
                     }}
                   >
                     {suggestion}
@@ -287,21 +337,29 @@ const AddEventForm = () => {
             )}
             <div className={styles.error_wrapper}>
               {eventData.errors && eventData.errors.location && (
-                <span className={styles.errormessage}>{eventData.errors.location}</span>
+                <span className={styles.errormessage}>
+                  {eventData.errors.location}
+                </span>
               )}
             </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              position: "relative",
+            }}
+          >
             <label htmlFor="description"></label>
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
               <FontAwesomeIcon
                 icon={faBarsStaggered}
                 style={{
-                  color: 'gray',
-                  height: '30px',
-                  position: 'absolute',
-                  left: '16px',
-                  top: '7%',
+                  color: "gray",
+                  height: "30px",
+                  position: "absolute",
+                  left: "16px",
+                  top: "7%",
                 }}
               />
               <textarea
@@ -319,26 +377,39 @@ const AddEventForm = () => {
 
             <div className={styles.error_wrapper}>
               {eventData.errors && eventData.errors.description && (
-                <span className={styles.errormessage}>{eventData.errors.description}</span>
+                <span className={styles.errormessage}>
+                  {eventData.errors.description}
+                </span>
               )}
             </div>
           </div>
           <div>
             <label htmlFor="image" className={styles.custom_file_upload}>
-              <FontAwesomeIcon icon={faUpload} style={{ color: 'gray', height: '30px' }} />
+              <FontAwesomeIcon
+                icon={faUpload}
+                style={{ color: "gray", height: "30px" }}
+              />
               <span> Event Image Upload</span>
             </label>
-            <input type="file" name="image" id="image" onChange={handleChangeEventFormData} />
+            <input
+              className={styles.uploadfile}
+              type="file"
+              name="image"
+              id="image"
+              onChange={handleChangeEventFormData}
+            />
             {selectedImage && (
               <div className={styles.imagePreview}>
                 <p onClick={handleClearImage}>Clear Image</p>
-                <img src={selectedImage} alt="Event" style={{ width: '100%', marginTop: '10px' }} />
+                <img src={selectedImage} alt="Event" />
               </div>
             )}
           </div>
           <div className={styles.error_wrapper}>
             {eventData.errors && eventData.errors.creator && (
-              <span className={styles.errormessage}>{eventData.errors.creator}</span>
+              <span className={styles.errormessage}>
+                {eventData.errors.creator}
+              </span>
             )}
           </div>
           {!isLoading ? (
@@ -353,11 +424,14 @@ const AddEventForm = () => {
           <div className={styles.successmessage_box}>
             <FontAwesomeIcon icon={faThumbsUp} />
             <p>Sie haben das Event erfolgreich angelegt</p>
-            <div style={{ display: 'flex', gap: '12px' }}>
+            <div style={{ display: "flex", gap: "12px" }}>
               <Link to="/home" className={styles.successmessage_box_elements}>
                 Zurück zu Events
               </Link>
-              <p className={styles.successmessage_box_elements} onClick={resetForm}>
+              <p
+                className={styles.successmessage_box_elements}
+                onClick={resetForm}
+              >
                 Neues Event anlegen
               </p>
             </div>

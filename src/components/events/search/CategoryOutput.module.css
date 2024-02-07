@@ -4,7 +4,9 @@
   gap: 32px;
   margin-top: 7.5%;
   font-size: 1.5rem;
-  margin-bottom: 150px;
+
+  width: 100%;
+  margin: 0 auto 150px auto;
 }
 
 .pin_list {
