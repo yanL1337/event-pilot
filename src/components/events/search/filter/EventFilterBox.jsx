@@ -261,7 +261,6 @@ const EventFilterBox = ({
                     fontWeight: "100",
                     padding: "10px",
                     color: "#A6A6A6",
-                    fontWeight: "800",
                   }}
                 >
                   {suggestion}
