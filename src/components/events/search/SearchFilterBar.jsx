@@ -21,10 +21,11 @@ const SearchFilterBar = ({ onHandleShowFilterBox, eventFilter, eventFilterDispat
     <article className={`${styles.searchbar_article}`}>
       <div className={`${styles.searchbar}`}>
         <FontAwesomeIcon icon={faMagnifyingGlass} className={`${styles.search_icon}`} />
+
         <label htmlFor="searchEvent"></label>
         <input
           type="text"
-          placeholder="| Search..."
+          placeholder="Search..."
           className={`${styles.search_input}`}
           value={eventFilter.name}
           onChange={(e) => setName(e.target.value)}
