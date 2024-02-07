@@ -1,9 +1,9 @@
 // import Geocoder from 'node-geocoder';
 
-const getCurrentPosition = () => {
+export const getCurrentPosition = () => {
   return new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
-      reject(new Error('Geolocation wird nicht unterstützt'));
+      reject(new Error("Geolocation wird nicht unterstützt"));
     } else {
       // Wir returnen die aktuellen Koordinaten des Browsers
       navigator.geolocation.getCurrentPosition(resolve, reject);
@@ -11,7 +11,7 @@ const getCurrentPosition = () => {
   });
 };
 
-const getCityFromCoordinates = async (latitude, longitude) => {
+export const getCityFromCoordinates = async (latitude, longitude) => {
   // Wir nutzen die kostenlose openstretmap api
   const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
 
@@ -23,7 +23,7 @@ const getCityFromCoordinates = async (latitude, longitude) => {
       throw new Error();
     }
 
-    let returnString = '';
+    let returnString = "";
     if (data.address.city) {
       returnString = `${data.address.city}, ${data.address.country}`;
     } else if (data.address.town) {
@@ -41,7 +41,10 @@ const getCityFromCoordinates = async (latitude, longitude) => {
 export const getCityFromLocation = async () => {
   try {
     const position = await getCurrentPosition();
-    const city = await getCityFromCoordinates(position.coords.latitude, position.coords.longitude);
+    const city = await getCityFromCoordinates(
+      position.coords.latitude,
+      position.coords.longitude
+    );
 
     if (!city) {
       throw new Error();
