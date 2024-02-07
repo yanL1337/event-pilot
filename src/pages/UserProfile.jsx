@@ -143,12 +143,9 @@ export const UserProfile = ({ children }) => {
                     <label htmlFor="file-input">
                       <img style={{ width: '7vw', cursor: 'pointer' }} src={editProfile} />
                     </label>
-                    <input
-                      style={{ display: 'none' }}
-                      name="profilImage"
-                      id="file-input"
-                      type="file"
-                    />
+
+                    <input name="profilImage" id="file-input" type="file" />
+
                   </div>
                 </div>
 
@@ -168,17 +165,25 @@ export const UserProfile = ({ children }) => {
                 />
 
                 <textarea
-                  style={{ height: '10vh', width: '70vw' }}
+
+                  className={style.textinput}
+
+             
+
                   name="description"
                   placeholder="About me"
                   value={changes.description || ''}
                   onChange={handleInputChange}
                 />
 
-                <Interests changes={changes} setChanges={setChanges} edit={edit} />
-                <button type="submit" style={{ display: 'flex', alignItems: 'center' }}>
+                <Interests
+                  changes={changes}
+                  setChanges={setChanges}
+                  edit={edit}
+                />
+                <button className={style.savebutton} type="submit">
+
                   <p>Save changes</p>
-                  <img src={submitEdit} alt="" />
                 </button>
               </form>
             </>
