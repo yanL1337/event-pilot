@@ -15,8 +15,17 @@ export function Home({ children }) {
   const [events, setEvents] = useState([]);
   const [userLoc, setUserLoc] = useState([]);
   const [nearby, setNearby] = useState([]);
+  const [user, setUser] = useState(null);
 
   const [randomEvent, setRandomEvent] = useState();
+
+  useEffect(() => {
+    const getUser = async () => {
+      const user = await pb.collection("users").getOne(pb.authStore.model.id);
+      setUser(user);
+    };
+    getUser();
+  }, []);
 
   useEffect(() => {
     const getEvents = async () => {
@@ -27,8 +36,6 @@ export function Home({ children }) {
       //console.log(events);
     };
     getEvents();
-
-    //setRandomEvent(events[Math.floor(Math.random() * 10)]);
   }, []);
 
   useEffect(() => {
@@ -44,7 +51,8 @@ export function Home({ children }) {
     getLoc();
     //hier eigentlich userLoc
     setNearby(events?.filter((ev) => ev?.location.includes("Düsseldorf")));
-  }, [userLoc]);
+    setRandomEvent(events[Math.floor(Math.random() * 10)]);
+  }, [events]);
 
   const settings = {
     dots: false,
@@ -63,51 +71,67 @@ export function Home({ children }) {
     <>
       <LocationHeader logo={"/images/Logo.png"} bgColor={"#5D3EDE"} />
 
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          fontSize: "16px",
+        }}
+      >
         <p>Upcoming Events</p>
         <Link to="/event/search">See all</Link>
       </div>
       <Slider {...settings}>
-        {events?.map((event) => (
-          <div key={event.id} style={{ width: 300, padding: "0 15px" }}>
-            <OutputItem
-              data={event}
-              allFavorites={[]}
-              registeredEvents={[]}
-              favMessageTimer={{}}
-              isOnFavSite={false}
-            />
-          </div>
-        ))}
+        {user &&
+          events?.map((event) => (
+            <div key={event.id} style={{ width: 300, padding: "0 15px" }}>
+              <OutputItem
+                data={event}
+                allFavorites={user?.favoriteEvents || []}
+                registeredEvents={[]}
+                favMessageTimer={{}}
+                isOnFavSite={false}
+              />
+            </div>
+          ))}
       </Slider>
 
-      <div style={{ marginTop: "20px" }}>
+      <div
+        style={{
+          marginTop: "20px",
+          display: "flex",
+          justifyContent: "space-between",
+          fontSize: "16px",
+        }}
+      >
         <p>Nearby you</p>
         <Link to="/event/search">See all</Link>
       </div>
       <Slider {...settings}>
-        {nearby?.map((event) => (
-          <div key={event.id} style={{ width: 300, padding: "0 15px" }}>
-            <OutputItem
-              data={event}
-              allFavorites={[]}
-              registeredEvents={[]}
-              favMessageTimer={{}}
-              isOnFavSite={false}
-            />
-          </div>
-        ))}
+        {user &&
+          nearby?.map((event) => (
+            <div key={event.id} style={{ width: 300, padding: "0 15px" }}>
+              <OutputItem
+                data={event}
+                allFavorites={user?.favoriteEvents || []}
+                registeredEvents={[]}
+                favMessageTimer={{}}
+                isOnFavSite={false}
+              />
+            </div>
+          ))}
       </Slider>
 
-      {/* <div style={{ width: 300, padding: "0 15px" }}>
+      <p style={{ fontSize: "16px" }}>Random Event</p>
+      <div style={{ padding: "0 15px" }}>
         <OutputItem
-          data={events[2]}
-          allFavorites={[]}
+          data={randomEvent || {}}
+          allFavorites={user?.favoriteEvents || []}
           registeredEvents={[]}
           favMessageTimer={{}}
           isOnFavSite={false}
         />
-      </div> */}
+      </div>
 
       {children}
     </>
