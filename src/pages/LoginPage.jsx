@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import pb from "../lib/pocketbase.js";
 import { useNavigate } from "react-router-dom";
+import style from "./css/Login.module.css";
 
 const LoginPage = () => {
   const emailRef = useRef();
@@ -19,34 +20,41 @@ const LoginPage = () => {
     }
   };
 
-
-  //console.log(pb.authStore);
-
   return (
     <section>
       <div>
-        <img
-          style={{ width: "40vw" }}
-          src="https://tecdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
-          alt="Sample image"
-        />
+        <img className={style.imglogo} src="../images/Logo.png" alt="E" />
+        <h1 className={style.event}>Event</h1>
+        <h2 className={style.pilot}>Pilot</h2>
       </div>
 
       <div>
-        <input ref={emailRef} type="text" placeholder="Email Address" />
-        <input ref={passRef} type="password" placeholder="Password" />
+        <input
+          className={style.logininput}
+          ref={emailRef}
+          type="text"
+          placeholder="Email Address"
+        />
+        <input
+          className={style.logininput}
+          ref={passRef}
+          type="password"
+          placeholder="Password"
+        />
 
         <div>
-          <button onClick={sendData} type="submit">
-            Login
+          <button
+            className={style.loginbutton}
+            onClick={sendData}
+            type="submit"
+          >
+            Sign In
           </button>
         </div>
-        <div>
+
+        <Link className={style.link} to={"/register"} href="#">
           Don&apos;t have an account?
-          <Link to={"/register"} href="#">
-            Register
-          </Link>
-        </div>
+        </Link>
       </div>
     </section>
   );
