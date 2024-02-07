@@ -15,7 +15,7 @@
 .favorite_section {
   display: flex;
   flex-direction: column;
-  gap: 50px;
+  gap: 25px;
   height: 85vh;
   overflow: scroll;
 }
@@ -54,4 +54,5 @@
 
 .favorite_button_wrapper {
   margin-top: auto;
+  padding-bottom: 15vh;
 }

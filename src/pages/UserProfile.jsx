@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { useEffect, useRef, useState } from 'react';
 import pb from '../lib/pocketbase.js';
 import editProfile from '/images/EditIcon.svg';
-import submitEdit from '/images/Arrow.svg';
 import Following from '../components/following/Following.jsx';
 import Interests from '../components/interests/Interests.jsx';
-import { CreatorEvent } from '../components/events/CreatorEvents.jsx';
 import { OwnEvent } from '../components/events/OwnEvent.jsx';
 import { Header } from '../components/header/Header.jsx';
 import style from './css/UserProfil.module.css';
@@ -17,6 +16,8 @@ export const UserProfile = ({ children }) => {
   const [ownEvents, setOwnEvents] = useState([]);
   const [colorAbout, setColorAbout] = useState(true);
   const [colorEvents, setColorEvents] = useState(false);
+
+  const favMessageTimer = useRef(null);
 
   useEffect(() => {
     const getUser = async () => {
@@ -87,6 +88,12 @@ export const UserProfile = ({ children }) => {
     getOwnEvents();
   }, []);
 
+  const deleteEvents = (eventId) => {
+    const updateEvents = ownEvents.filter((event) => event.id !== eventId);
+
+    setOwnEvents(updateEvents);
+  };
+
   //* wird angezeigt, wenn About ausgewählt ist
   if (state === 'about' && user) {
     return (
@@ -145,7 +152,6 @@ export const UserProfile = ({ children }) => {
                     </label>
 
                     <input name="profilImage" id="file-input" type="file" />
-
                   </div>
                 </div>
 
@@ -165,24 +171,15 @@ export const UserProfile = ({ children }) => {
                 />
 
                 <textarea
-
                   className={style.textinput}
-
-             
-
                   name="description"
                   placeholder="About me"
                   value={changes.description || ''}
                   onChange={handleInputChange}
                 />
 
-                <Interests
-                  changes={changes}
-                  setChanges={setChanges}
-                  edit={edit}
-                />
+                <Interests changes={changes} setChanges={setChanges} edit={edit} />
                 <button className={style.savebutton} type="submit">
-
                   <p>Save changes</p>
                 </button>
               </form>
@@ -221,10 +218,21 @@ export const UserProfile = ({ children }) => {
           </button>
         </div>
         {ownEvents.map((singleEvent) => {
-          return <OwnEvent singleEvent={singleEvent} />;
+          return (
+            <OwnEvent
+              singleEvent={singleEvent}
+              favMessageTimer={favMessageTimer}
+              onDeleteEvents={deleteEvents}
+              key={crypto.randomUUID()}
+            />
+          );
         })}
         {children}
       </section>
     );
   }
+};
+
+UserProfile.propTypes = {
+  children: PropTypes.object,
 };

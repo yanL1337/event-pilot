@@ -270,3 +270,36 @@ export const getRegisteredEventsByUser = async () => {
     console.log(error);
   }
 };
+
+export const addRegisteredEvents = async (registeredId) => {
+  const userId = pb.authStore.model.id;
+  // Holen uns die Daten vom user
+  const user = await pb.collection('users').getOne(userId);
+
+  const hasRegistered = user.registeredEvents.filter((eventId) => eventId === registeredId);
+
+  try {
+    if (hasRegistered.length > 0) {
+      await pb.collection('events').update(registeredId, {
+        'registeredUser-': [userId],
+      });
+
+      await pb.collection('users').update(userId, {
+        'registeredEvents-': [registeredId],
+      });
+
+      return false;
+    } else {
+      await pb.collection('events').update(registeredId, {
+        'registeredUser+': [userId],
+      });
+
+      await pb.collection('users').update(userId, {
+        'registeredEvents+': [registeredId],
+      });
+      return true;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};

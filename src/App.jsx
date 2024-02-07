@@ -87,9 +87,11 @@ function App() {
                       <Route
                         path="/user"
                         element={
-                          <UserProfile>
-                            <Navbar activeName="profile" />
-                          </UserProfile>
+                          <SetFavoriteMessageContext.Provider value={{ favMessage, setFavMessage }}>
+                            <UserProfile>
+                              <Navbar activeName="profile" />
+                            </UserProfile>
+                          </SetFavoriteMessageContext.Provider>
                         }
                       />
                       <Route path="/creator/:id" element={<CreatorProfil />} />
