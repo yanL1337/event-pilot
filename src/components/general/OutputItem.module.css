@@ -25,6 +25,14 @@
   width: 100%;
 }
 
+.item_box_info h2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .item_box_info p {
   color: #5d3ede;
   font-size: 1.2rem;

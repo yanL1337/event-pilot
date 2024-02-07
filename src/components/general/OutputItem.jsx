@@ -1,16 +1,30 @@
-import PropTypes from 'prop-types';
-import { createImagePath, displayFavMessage, formatDateToString } from '../../utils/helperFunction';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBookmark, faCircleCheck, faLocationDot } from '@fortawesome/free-solid-svg-icons';
+import PropTypes from "prop-types";
+import {
+  createImagePath,
+  displayFavMessage,
+  formatDateToString,
+} from "../../utils/helperFunction";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBookmark,
+  faCircleCheck,
+  faLocationDot,
+} from "@fortawesome/free-solid-svg-icons";
 
 /* CSS */
-import styles from './OutputItem.module.css';
-import { Link } from 'react-router-dom';
-import { useContext, useEffect, useState } from 'react';
-import { addEventFavorites } from '../../utils/fetchData';
-import { SetFavoriteMessageContext } from '../../context/context';
+import styles from "./OutputItem.module.css";
+import { Link } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { addEventFavorites } from "../../utils/fetchData";
+import { SetFavoriteMessageContext } from "../../context/context";
 
-const OutputItem = ({ data, allFavorites, favMessageTimer, isOnFavSite, registeredEvents }) => {
+const OutputItem = ({
+  data,
+  allFavorites,
+  favMessageTimer,
+  isOnFavSite,
+  registeredEvents,
+}) => {
   const [eventFavorite, setEventFavorite] = useState(null);
 
   const { setFavMessage } = useContext(SetFavoriteMessageContext);
@@ -21,12 +35,12 @@ const OutputItem = ({ data, allFavorites, favMessageTimer, isOnFavSite, register
     }
 
     // Registrierte Events holen
-    const favId = allFavorites.filter((fav) => fav === data.id).join('');
+    const favId = allFavorites.filter((fav) => fav === data.id).join("");
 
     setEventFavorite(favId);
     console.log();
 
-    if (window.location.pathname !== '/event/search') {
+    if (window.location.pathname !== "/event/search") {
       return () => {
         const cleanUpRef = favMessageTimer;
         if (cleanUpRef.current) {
@@ -49,14 +63,14 @@ const OutputItem = ({ data, allFavorites, favMessageTimer, isOnFavSite, register
           `${eventName} wurde als Favoriten hinzugefügt`,
           setFavMessage,
           favMessageTimer,
-          'favorites'
+          "favorites"
         );
       } else {
         displayFavMessage(
           `${eventName} wurde aus den Favoriten entfernt`,
           setFavMessage,
           favMessageTimer,
-          'favorites'
+          "favorites"
         );
       }
 
@@ -73,7 +87,7 @@ const OutputItem = ({ data, allFavorites, favMessageTimer, isOnFavSite, register
         src={`${
           createImagePath(data.image, data.id)
             ? createImagePath(data.image, data.id)
-            : '/images/No_image_available.svg.png'
+            : "/images/No_image_available.svg.png"
         }`}
         alt="event image"
       />
@@ -82,7 +96,7 @@ const OutputItem = ({ data, allFavorites, favMessageTimer, isOnFavSite, register
         <Link to={`/eventdetails/${data.id}`}>
           <h2>{data.name}</h2>
         </Link>
-        <div className={styles.item_location} style={{ marginTop: 'auto' }}>
+        <div className={styles.item_location} style={{ marginTop: "auto" }}>
           <FontAwesomeIcon icon={faLocationDot} />
           <span>{data.location}</span>
         </div>
@@ -92,19 +106,19 @@ const OutputItem = ({ data, allFavorites, favMessageTimer, isOnFavSite, register
           registeredEvents.some((regEv) => regEv.id === data.id) && (
             <FontAwesomeIcon
               icon={faCircleCheck}
-              style={{ color: '#63E6BE', height: '20px', width: '20px' }}
+              style={{ color: "#63E6BE", height: "20px", width: "20px" }}
             />
           )
         ) : eventFavorite === data.id ? (
           <FontAwesomeIcon
             icon={faBookmark}
-            style={{ color: '#63E6BE', height: '20px', width: '20px' }}
+            style={{ color: "#63E6BE", height: "20px", width: "20px" }}
             onClick={() => toggleFavorites(data.id, data.name)}
           />
         ) : (
           <FontAwesomeIcon
-            icon={['far', 'bookmark']}
-            style={{ color: '#63E6BE', height: '20px', width: '20px' }}
+            icon={["far", "bookmark"]}
+            style={{ color: "#63E6BE", height: "20px", width: "20px" }}
             onClick={() => toggleFavorites(data.id, data.name)}
           />
         )}
