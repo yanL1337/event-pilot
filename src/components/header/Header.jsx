@@ -3,6 +3,11 @@ import style from "./Header.module.css";
 import { useContext } from "react";
 import { ThemeContext } from "../../context/context";
 import pb from "../../lib/pocketbase";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowRightFromBracket,
+  faMoon,
+} from "@fortawesome/free-solid-svg-icons";
 
 export function Header({ headertext }) {
   const navigate = useNavigate();
@@ -22,10 +27,17 @@ export function Header({ headertext }) {
   return (
     <header className={style.header}>
       <Link to="/home">←</Link>
-      <p>{headertext}</p>
+      <p className={style.headertext}>{headertext}</p>
       <div>
-        <button onClick={toggleDarkmode}>darkmode</button>
-        <button onClick={logout}>logout</button>
+        <button className={style.border} onClick={toggleDarkmode}>
+          <FontAwesomeIcon icon={faMoon} className={style.button} />
+        </button>
+        <button className={style.border} onClick={logout}>
+          <FontAwesomeIcon
+            icon={faArrowRightFromBracket}
+            className={style.button}
+          />
+        </button>
       </div>
     </header>
   );

@@ -12,7 +12,8 @@
 
 .header_article {
   width: 100%;
-  padding-top: 5%;
+  height: 10vh;
+  padding-top: 2%;
   display: flex;
   gap: 5px;
   flex-direction: column;
@@ -23,4 +24,6 @@
 .header_article div {
   font-size: 1.5rem;
   color: white;
+  font-family: inter;
+  font-weight: 200;
 }

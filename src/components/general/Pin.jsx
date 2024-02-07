@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 /* CSS */
-import styles from './Pin.module.css';
+import styles from "./Pin.module.css";
 
 const Pin = ({ isEditable, value, triggerFn }) => {
   return (
@@ -9,14 +9,7 @@ const Pin = ({ isEditable, value, triggerFn }) => {
       {value && (
         <p className={styles.pin}>
           <span>{value} </span>
-          {isEditable && (
-            <span
-              style={{ color: '#00ECAA', fontWeight: '800', fontSize: '1.75rem' }}
-              onClick={triggerFn}
-            >
-              x
-            </span>
-          )}
+          {isEditable && <span onClick={triggerFn}>x</span>}
         </p>
       )}
     </>
