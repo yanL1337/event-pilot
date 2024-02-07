@@ -1,34 +1,45 @@
-import { useState, useEffect, useContext, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
-import pb from "../lib/pocketbase";
-import FallbackLoadingScreen from "../components/loading/FallbackLoadingScreen";
-import style from "./css/EventDetails.module.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { displayFavMessage, formatDateToString } from "../utils/helperFunction";
-import { addEventFavorites, getEventFavorites } from "../utils/fetchData";
-import { SetFavoriteMessageContext } from "../context/context";
-import { faBookmark } from "@fortawesome/free-solid-svg-icons";
+import { useState, useEffect, useContext, useRef } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import pb from '../lib/pocketbase';
+import FallbackLoadingScreen from '../components/loading/FallbackLoadingScreen';
+import style from './css/EventDetails.module.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { displayFavMessage, formatDateToString } from '../utils/helperFunction';
+import { addEventFavorites, addRegisteredEvents, getEventFavorites } from '../utils/fetchData';
+import { SetFavoriteMessageContext } from '../context/context';
+import { faBookmark } from '@fortawesome/free-solid-svg-icons';
+import DynamicTriggerButton from '../components/buttons/DynamicTriggerButton';
 
 export function EventDetails() {
   const [detailEvent, setDetailEvent] = useState([]);
-  const [registered, setRegistered] = useState([]);
+  const [registered, setRegistered] = useState(false);
   const [creator, setCreator] = useState([]);
   const [eventFavorite, setEventFavorite] = useState(null);
-  const [angemeldet, setAngemeldet] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+  const [registeredUserCount, setRegisteredUserCount] = useState(0);
+  const [initialLoad, setInitialLoad] = useState(true);
 
   const favMessageTimer = useRef(null);
-
   const { id } = useParams();
-
   const { setFavMessage } = useContext(SetFavoriteMessageContext);
 
   // - fetch für die Eventdaten
   useEffect(() => {
     const getDetailEvent = async () => {
-      await fetch(pb.baseUrl + "/api/collections/events/records/" + id)
+      setIsLoading(true);
+      await fetch(pb.baseUrl + '/api/collections/events/records/' + id)
         .then((response) => response.json())
         .then((data) => {
+          // Wir setten die Event details
           setDetailEvent(data);
+          // Wir setten die Registered User Anzahl
+          setRegisteredUserCount(data.registeredUser?.length);
+
+          // Wir checken ab ob user schon registriert ist
+          const hasRegistered = data.registeredUser.some((id) => id === pb.authStore.model.id);
+
+          setRegistered(hasRegistered);
+          setIsLoading(false);
         });
     };
 
@@ -49,63 +60,44 @@ export function EventDetails() {
   // - fetch für Creator Daten
   useEffect(() => {
     async function getCreator() {
-
-
-
       const record = await pb.collection('users').getOne(detailEvent.creator);
 
-
       setCreator(record);
+      setInitialLoad(false);
     }
     getCreator();
     // Holen uns die Favs aus DB
   }, [detailEvent]);
 
-  console.log(detailEvent);
+  useEffect(() => {
+    // Die Meldung nicht beim neuladen des Components erscheinen
+    if (registered && !initialLoad) {
+      displayFavMessage(
+        `Sie haben sich an ${detailEvent.name} angemeldet`,
+        setFavMessage,
+        favMessageTimer,
+        'registerEvent'
+      );
+      setRegisteredUserCount((count) => count + 1);
+    } else if (!registered && !initialLoad) {
+      displayFavMessage(
+        `Sie haben sich an ${detailEvent.name} abgemeldet`,
+        setFavMessage,
+        favMessageTimer,
+        'deleteEvent'
+      );
+      setRegisteredUserCount((count) => count - 1);
+    }
 
-  // - ich schaue ob der User schon für das Event registriert ist
-
-  // useEffect(() => {
-  //   const isRegistered = async () => {
-  //     const records = await pb.collection("events").getFullList();
-
-  //     records?.forEach((user) =>
-  //       user == pb.authStore.model.id
-  //         ? setAngemeldet(true)
-  //         : setAngemeldet(false)
-  //     );
-
-  //     console.log("Ist angemeldet?", angemeldet);
-  //   };
-  //   isRegistered();
-  // }, [registered, detailEvent]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [registered]);
 
   //   * Bestätigungsmail senden und Banner, wenn man sich für das Event registriert
 
-  const register = () => {
-    setRegistered(pb.authStore.model.id);
-
-    console.log("Registered:", registered);
-
-    // if (registered.length > 0) {
-    //   console.log("Ich bin im if");
-    //   displayFavMessage(
-    //     `Du hast dich für das Event "${detailEvent?.name}" angemeldet.`,
-    //     setFavMessage,
-    //     favMessageTimer
-    //   );
-    // } else {
-    //   console.log("Ich bin im else");
-    //   displayFavMessage(
-    //     `Du hast dich von dem Event "${detailEvent?.name}" abgemeldet.`,
-    //     setFavMessage,
-    //     favMessageTimer
-    //   );
-    // }
+  const register = async () => {
+    setRegistered((cur) => !cur);
 
     const Mail = async () => {
-
-
       await fetch(import.meta.env.VITE_BACKEND + '/sendmail', {
         method: 'POST',
         body: JSON.stringify({
@@ -118,19 +110,12 @@ export function EventDetails() {
         },
       });
     };
-    const registerUser = async () => {
-      await pb.collection('events').update(detailEvent.id, {
-        'registeredUser+': [pb.authStore.model.id],
-      });
-    };
-    const registerUseratUser = async () => {
-      await pb.collection("users").update(pb.authStore.model.id, {
-        "registeredEvents+": [detailEvent.id],
-      });
-    };
-    Mail();
-    registerUser();
-    registerUseratUser();
+
+    const response = await addRegisteredEvents(detailEvent.id);
+
+    if (response) {
+      Mail();
+    }
   };
 
   const toggleFavorites = async (favId, eventName) => {
@@ -142,13 +127,15 @@ export function EventDetails() {
         displayFavMessage(
           `${eventName} wurde als Favoriten hinzugefügt`,
           setFavMessage,
-          favMessageTimer
+          favMessageTimer,
+          'favorites'
         );
       } else {
         displayFavMessage(
           `${eventName} wurde aus den Favoriten entfernt`,
           setFavMessage,
-          favMessageTimer
+          favMessageTimer,
+          'favorites'
         );
       }
 
@@ -162,21 +149,34 @@ export function EventDetails() {
   const getFavByUser = async () => {
     const response = await getEventFavorites();
     if (response) {
-      const favId = response.filter((fav) => fav === id).join("");
+      const favId = response.filter((fav) => fav === id).join('');
       setEventFavorite(favId);
     }
   };
 
-  if (detailEvent && creator) {
+  if (detailEvent && creator && !isLoading) {
     return (
       <main className={style.main}>
         <img
           className={style.img}
-          src={`${pb.baseUrl}/api/files/${detailEvent.collectionId}/${detailEvent.id}/${detailEvent.image}`}
+          src={`${
+            detailEvent.image
+              ? pb.baseUrl +
+                '/api/files/' +
+                detailEvent.collectionId +
+                '/' +
+                detailEvent.id +
+                '/' +
+                detailEvent.image
+              : '/images/No_image_available.svg.png'
+          }`}
           alt="Image"
         />
         <div className={style.eventDetails}>
-          <Link to="/event/search">←</Link>
+          <Link to="/event/search" style={{ fontSize: '2rem' }}>
+            ←
+          </Link>
+          <h1 style={{ color: 'black' }}>Event Details</h1>
           {eventFavorite === detailEvent.id ? (
             <button
               className={style.bookmark}
@@ -184,7 +184,7 @@ export function EventDetails() {
             >
               <FontAwesomeIcon
                 icon={faBookmark}
-                style={{ color: "#63E6BE", height: "20px", width: "20px" }}
+                style={{ color: '#63E6BE', height: '20px', width: '20px' }}
               />
             </button>
           ) : (
@@ -193,18 +193,17 @@ export function EventDetails() {
               onClick={() => toggleFavorites(detailEvent.id, detailEvent.name)}
             >
               <FontAwesomeIcon
-                icon={["far", "bookmark"]}
-                style={{ color: "#63E6BE", height: "25px" }}
+                icon={['far', 'bookmark']}
+                style={{ color: '#63E6BE', height: '25px' }}
               />
             </button>
           )}
-          <h1>Event Details</h1>
         </div>
 
         {detailEvent.registeredUser?.length >= 0 && (
           <div className={style.registered}>
             <img src="../images/Group.png" alt="" />
-            <p>{detailEvent.registeredUser?.length} registered</p>
+            <p>{registeredUserCount} registered</p>
           </div>
         )}
 
@@ -224,7 +223,17 @@ export function EventDetails() {
           <Link className={style.creator} to={`/creator/${creator.id}`}>
             <div className={style.creatordiv}>
               <img
-                src={`${pb.baseUrl}/api/files/${creator.collectionId}/${creator.id}/${creator.profilImage}`}
+                src={`${
+                  creator.profilImage
+                    ? pb.baseUrl +
+                      '/api/files/' +
+                      creator.collectionId +
+                      '/' +
+                      creator.id +
+                      '/' +
+                      creator.profilImage
+                    : '/images/No_image_available.svg.png'
+                }`}
                 alt="Profilbild des Creators"
               />
               <div className={style.creatorname}>
@@ -240,9 +249,13 @@ export function EventDetails() {
             <p>{detailEvent.description}</p>
           </div>
 
-          <button className={style.register} onClick={register}>
-            REGISTER
-          </button>
+          <DynamicTriggerButton
+            className={style.register}
+            hasArrow={true}
+            onTriggerEventFn={register}
+          >
+            {registered ? 'UNREGISTER' : 'REGISTER'}
+          </DynamicTriggerButton>
         </section>
       </main>
     );
