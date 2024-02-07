@@ -140,6 +140,7 @@ const EventFilterBox = ({ eventFilter, eventFilterDispatch, onHandleShowFilterBo
               <input
                 type="datetime-local"
                 ref={dateInputRef}
+                className={styles.event_date_input}
                 {...lockLastDays()}
                 style={{ position: 'absolute', left: 0, zIndex: '-1' }}
                 onChange={(e) =>

@@ -82,7 +82,9 @@ const CategoryOutput = ({ viewEventData, isLoading, eventFilter }) => {
       ) : (
         <p>Keine Events gefunden</p>
       )}
-      {next < viewEventData?.length && <LoadMoreButton handleMoreEvents={handleMoreEvents} />}
+      {next < viewEventData?.length && !isLoading && (
+        <LoadMoreButton handleMoreEvents={handleMoreEvents} />
+      )}
     </article>
   );
 };
