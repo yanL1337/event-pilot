@@ -11,12 +11,13 @@
   animation: fadeInFromBottom 0.4s ease-out forwards;
   display: flex;
   flex-direction: column;
-  gap: 10%;
+  gap: 6%;
   align-items: center;
   border-radius: 15px;
   margin-top: auto;
   height: 76vh;
   width: 100vw;
+  padding-top: 5%;
   background-color: white;
   overflow: auto;
   padding-bottom: 100px;
@@ -39,6 +40,15 @@
   flex-direction: column;
   gap: 12px;
   position: relative;
+}
+
+.event_date_input {
+  box-shadow: none;
+  position: absolute;
+  width: 31%;
+  left: 0;
+  top: 0;
+  z-index: -1;
 }
 
 .isButtonClicked {
@@ -89,7 +99,7 @@
 
 .date_button {
   background-color: white;
-  padding: 15px;
+  padding: 17px;
   width: 31%;
   border: 2px solid var(--firstBoxShadowColor);
   border-radius: 10px;
@@ -111,7 +121,9 @@
   padding: 7% 0 7% 5%;
   width: 100%;
   border: none;
+  box-shadow: none;
   font-size: 2rem;
+  margin: 0;
 }
 
 .box_location input[type='text']:focus {

@@ -9,6 +9,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
+  cursor: pointer;
 }
 
 .trigger_button div {
