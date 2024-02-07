@@ -48,13 +48,15 @@ const OutputItem = ({ data, allFavorites, favMessageTimer, isOnFavSite, register
         displayFavMessage(
           `${eventName} wurde als Favoriten hinzugefügt`,
           setFavMessage,
-          favMessageTimer
+          favMessageTimer,
+          'favorites'
         );
       } else {
         displayFavMessage(
           `${eventName} wurde aus den Favoriten entfernt`,
           setFavMessage,
-          favMessageTimer
+          favMessageTimer,
+          'favorites'
         );
       }
 

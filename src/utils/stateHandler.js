@@ -91,6 +91,7 @@ export const reducer = (state, action) => {
     case 'RESET_FORM_STATE':
       return {
         ...initialEventState,
+        location: state.location,
         creator: state.creator,
       };
     case 'SET_ERROR':

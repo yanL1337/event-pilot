@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import pb from "../lib/pocketbase.js";
-import editProfile from "/images/EditIcon.svg";
-import submitEdit from "/images/Arrow.svg";
-import Following from "../components/following/Following.jsx";
-import Interests from "../components/interests/Interests.jsx";
-import { CreatorEvent } from "../components/events/CreatorEvents.jsx";
-import { OwnEvent } from "../components/events/OwnEvent.jsx";
-import { Header } from "../components/header/Header.jsx";
-import style from "./css/UserProfil.module.css";
+import PropTypes from 'prop-types';
+import { useEffect, useRef, useState } from 'react';
+import pb from '../lib/pocketbase.js';
+import editProfile from '/images/EditIcon.svg';
+import Following from '../components/following/Following.jsx';
+import Interests from '../components/interests/Interests.jsx';
+import { OwnEvent } from '../components/events/OwnEvent.jsx';
+import { Header } from '../components/header/Header.jsx';
+import style from './css/UserProfil.module.css';
+
 
 export const UserProfile = ({ children }) => {
   const [user, setUser] = useState();
@@ -17,6 +17,8 @@ export const UserProfile = ({ children }) => {
   const [ownEvents, setOwnEvents] = useState([]);
   const [colorAbout, setColorAbout] = useState(true);
   const [colorEvents, setColorEvents] = useState(false);
+
+  const favMessageTimer = useRef(null);
 
   useEffect(() => {
     const getUser = async () => {
@@ -88,6 +90,12 @@ export const UserProfile = ({ children }) => {
     }
     getOwnEvents();
   }, []);
+
+  const deleteEvents = (eventId) => {
+    const updateEvents = ownEvents.filter((event) => event.id !== eventId);
+
+    setOwnEvents(updateEvents);
+  };
 
   //* wird angezeigt, wenn About ausgewählt ist
   if (state === "about" && user) {
@@ -182,11 +190,7 @@ export const UserProfile = ({ children }) => {
                   onChange={handleInputChange}
                 />
 
-                <Interests
-                  changes={changes}
-                  setChanges={setChanges}
-                  edit={edit}
-                />
+                <Interests changes={changes} setChanges={setChanges} edit={edit} />
                 <button className={style.savebutton} type="submit">
                   <p>Save changes</p>
                 </button>
@@ -231,9 +235,17 @@ export const UserProfile = ({ children }) => {
             EVENTS
           </button>
         </div>
+
         {ownEvents.length > 0 ? (
           ownEvents?.map((singleEvent) => {
-            return <OwnEvent singleEvent={singleEvent} />;
+                      return (
+            <OwnEvent
+              singleEvent={singleEvent}
+              favMessageTimer={favMessageTimer}
+              onDeleteEvents={deleteEvents}
+              key={crypto.randomUUID()}
+            />
+          )
           })
         ) : (
           <div
@@ -249,8 +261,13 @@ export const UserProfile = ({ children }) => {
             <h2>You aren’t hosting any events yet</h2>
           </div>
         )}
+
         {children}
       </section>
     );
   }
+};
+
+UserProfile.propTypes = {
+  children: PropTypes.object,
 };
