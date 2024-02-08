@@ -9,7 +9,6 @@ import { addEventFavorites, addRegisteredEvents, getEventFavorites } from '../ut
 import { SetFavoriteMessageContext, ThemeContext } from '../context/context';
 import { faBookmark } from '@fortawesome/free-solid-svg-icons';
 import DynamicTriggerButton from '../components/buttons/DynamicTriggerButton';
-import { Header } from '../components/header/Header';
 import LoadingElement from '../components/loading/LoadingElement';
 
 export function EventDetails() {
@@ -158,8 +157,10 @@ export function EventDetails() {
 
   const getFavByUser = async () => {
     const response = await getEventFavorites();
+    const favArr = response.map((cur) => cur.id);
+
     if (response) {
-      const favId = response.filter((fav) => fav === id).join('');
+      const favId = favArr.filter((fav) => fav === id).join('');
       setEventFavorite(favId);
     }
   };
