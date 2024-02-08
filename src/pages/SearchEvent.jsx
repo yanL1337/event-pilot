@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useEffect, useReducer, useState } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
 import CategoryOutput from "../components/events/search/CategoryOutput";
 import CategoryScrollBar from "../components/events/search/CategoryScrollBar";
 import SearchFilterBar from "../components/events/search/SearchFilterBar";
@@ -10,6 +10,7 @@ import { viewAllEvents, viewEventByFilter } from "../utils/fetchData";
 import { initialEventFilterState, reducer } from "../utils/stateHandler";
 import EventFilterBox from "../components/events/search/filter/EventFilterBox";
 import LocationHeader from "../components/header/LocationHeader";
+import { useLocation } from "react-router-dom";
 
 const SearchEvent = ({ children }) => {
   const [eventFilter, eventFilterDispatch] = useReducer(
@@ -20,6 +21,7 @@ const SearchEvent = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     setIsLoading(true);
@@ -30,9 +32,20 @@ const SearchEvent = ({ children }) => {
     }
 
     if (isInitialLoad) {
-      fetchEventData(viewAllEvents);
-      setIsInitialLoad(false);
+      if (location && location.state) {
+        eventFilterDispatch({
+          type: "SET_FIELD",
+          field: "location",
+          value: location.state,
+        });
+
+        setIsInitialLoad(false);
+      } else {
+        fetchEventData(viewAllEvents);
+        setIsInitialLoad(false);
+      }
     } else {
+      location.state = null;
       fetchEventData(() => viewEventByFilter(eventFilter));
     }
     return;
