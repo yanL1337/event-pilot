@@ -1,24 +1,21 @@
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 /* CSS */
 
-import { useEffect, useState } from "react";
-import {
-  getEventFavoritesData,
-  getRegisteredEventsByUser,
-} from "../utils/fetchData";
-import LoadingElement from "../components/loading/LoadingElement";
-import OutputItem from "../components/general/OutputItem";
-import DynamicTriggerButton from "../components/buttons/DynamicTriggerButton";
-import { useNavigate } from "react-router-dom";
-import ToggleFavoritesBar from "../components/events/favorites/ToggleFavoritesBar";
-import LoadMoreButton from "../components/buttons/LoadMoreButton";
-import style from "./css/Favorites.module.css";
+import { useEffect, useState } from 'react';
+import { getEventFavoritesData, getRegisteredEventsByUser } from '../utils/fetchData';
+import LoadingElement from '../components/loading/LoadingElement';
+import OutputItem from '../components/general/OutputItem';
+import DynamicTriggerButton from '../components/buttons/DynamicTriggerButton';
+import { useNavigate } from 'react-router-dom';
+import ToggleFavoritesBar from '../components/events/favorites/ToggleFavoritesBar';
+import LoadMoreButton from '../components/buttons/LoadMoreButton';
+import style from './css/Favorites.module.css';
 
 const eventsPerRow = 6;
 
 export function Favorites({ children }) {
-  const [toggleButton, setToggleButton] = useState("up");
+  const [toggleButton, setToggleButton] = useState('up');
   const [isLoading, setIsLoading] = useState(false);
   const [favEvents, setFavEvents] = useState({});
   const [registeredEvents, setRegisteredEvents] = useState([]);
@@ -27,10 +24,7 @@ export function Favorites({ children }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (
-      (favEvents.length === 0 || registeredEvents.length === 0) &&
-      !isLoading
-    ) {
+    if ((favEvents.length === 0 || registeredEvents.length === 0) && !isLoading) {
       fetchFavoriteData();
     }
 
@@ -43,12 +37,8 @@ export function Favorites({ children }) {
 
     if (response.length > 0) {
       // Wir erstellen nun aus response ein upcoming und ein past Event array
-      const pastEvents = response.filter(
-        (events) => new Date(events.date) < new Date()
-      );
-      const upComingEvents = response.filter(
-        (events) => new Date(events.date) >= new Date()
-      );
+      const pastEvents = response.filter((events) => new Date(events.date) < new Date());
+      const upComingEvents = response.filter((events) => new Date(events.date) >= new Date());
 
       setFavEvents(() => ({ pastEvents, upComingEvents }));
     }
@@ -60,7 +50,7 @@ export function Favorites({ children }) {
   const fetchRegisteredEventsData = async () => {
     const response = await getRegisteredEventsByUser();
 
-    if (response.length > 0) {
+    if (response && response.length > 0) {
       setRegisteredEvents(response);
     }
 
@@ -75,7 +65,7 @@ export function Favorites({ children }) {
   };
 
   const navigateToSearchEvents = () => {
-    navigate("/event/search");
+    navigate('/event/search');
   };
 
   const handleMoreEvents = () => {
@@ -89,7 +79,7 @@ export function Favorites({ children }) {
           <section>
             <article className={style.header_article}>
               <h2 className={style.headline}>
-                {toggleButton === "up" ? "LIKED EVENTS" : "REGISTERED EVENTS"}
+                {toggleButton === 'up' ? 'LIKED EVENTS' : 'REGISTERED EVENTS'}
               </h2>
             </article>
           </section>
@@ -105,12 +95,12 @@ export function Favorites({ children }) {
             </article>
             <article className={style.favorite_output_wrapper}>
               {isLoading ? (
-                <div style={{ marginTop: "200px" }}>
+                <div style={{ marginTop: '200px' }}>
                   <LoadingElement />
                 </div>
               ) : (
                 <>
-                  {toggleButton === "up" &&
+                  {toggleButton === 'up' &&
                   favEvents.upComingEvents &&
                   favEvents.upComingEvents.length > 0 ? (
                     <>
@@ -126,7 +116,7 @@ export function Favorites({ children }) {
                         <LoadMoreButton handleMoreEvents={handleMoreEvents} />
                       )}
                     </>
-                  ) : toggleButton === "registered" &&
+                  ) : toggleButton === 'registered' &&
                     registeredEvents &&
                     registeredEvents.length > 0 ? (
                     <>
@@ -145,12 +135,12 @@ export function Favorites({ children }) {
                   ) : (
                     <div
                       style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        marginTop: "30%",
-                        gap: "20px",
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginTop: '30%',
+                        gap: '20px',
                       }}
                     >
                       <h2>No Upcoming Events</h2>
@@ -161,10 +151,7 @@ export function Favorites({ children }) {
               )}
             </article>
             <article className={style.favorite_button_wrapper}>
-              <DynamicTriggerButton
-                hasArrow={true}
-                onTriggerEventFn={navigateToSearchEvents}
-              >
+              <DynamicTriggerButton hasArrow={true} onTriggerEventFn={navigateToSearchEvents}>
                 SEARCH EVENTS
               </DynamicTriggerButton>
             </article>
