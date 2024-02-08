@@ -9,13 +9,15 @@ import { addEventFavorites, addRegisteredEvents, getEventFavorites } from '../ut
 import { SetFavoriteMessageContext } from '../context/context';
 import { faBookmark } from '@fortawesome/free-solid-svg-icons';
 import DynamicTriggerButton from '../components/buttons/DynamicTriggerButton';
+import LoadingElement from '../components/loading/LoadingElement';
 
 export function EventDetails() {
-  const [detailEvent, setDetailEvent] = useState([]);
+  const [detailEvent, setDetailEvent] = useState(null);
   const [registered, setRegistered] = useState(false);
   const [creator, setCreator] = useState([]);
   const [eventFavorite, setEventFavorite] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingRegister, setIsLoadingRegister] = useState(false);
   const [registeredUserCount, setRegisteredUserCount] = useState(0);
   const [initialLoad, setInitialLoad] = useState(true);
 
@@ -65,7 +67,11 @@ export function EventDetails() {
       setCreator(record);
       setInitialLoad(false);
     }
-    getCreator();
+
+    if (detailEvent) {
+      getCreator();
+    }
+
     // Holen uns die Favs aus DB
   }, [detailEvent]);
 
@@ -73,7 +79,7 @@ export function EventDetails() {
     // Die Meldung nicht beim neuladen des Components erscheinen
     if (registered && !initialLoad) {
       displayFavMessage(
-        `Sie haben sich an ${detailEvent.name} angemeldet`,
+        `You have registered with ${detailEvent.name}`,
         setFavMessage,
         favMessageTimer,
         'registerEvent'
@@ -81,7 +87,7 @@ export function EventDetails() {
       setRegisteredUserCount((count) => count + 1);
     } else if (!registered && !initialLoad) {
       displayFavMessage(
-        `Sie haben sich an ${detailEvent.name} abgemeldet`,
+        `You have logged out by ${detailEvent.name}`,
         setFavMessage,
         favMessageTimer,
         'deleteEvent'
@@ -95,6 +101,7 @@ export function EventDetails() {
   //   * Bestätigungsmail senden und Banner, wenn man sich für das Event registriert
 
   const register = async () => {
+    setIsLoadingRegister(true);
     setRegistered((cur) => !cur);
 
     const Mail = async () => {
@@ -116,6 +123,7 @@ export function EventDetails() {
     if (response) {
       Mail();
     }
+    setIsLoadingRegister(false);
   };
 
   const toggleFavorites = async (favId, eventName) => {
@@ -125,14 +133,14 @@ export function EventDetails() {
       // message einblenden
       if (fav) {
         displayFavMessage(
-          `${eventName} wurde als Favoriten hinzugefügt`,
+          `${eventName} was added as a favorite`,
           setFavMessage,
           favMessageTimer,
           'favorites'
         );
       } else {
         displayFavMessage(
-          `${eventName} wurde aus den Favoriten entfernt`,
+          `${eventName} has been removed from favorites`,
           setFavMessage,
           favMessageTimer,
           'favorites'
@@ -249,13 +257,17 @@ export function EventDetails() {
             <p>{detailEvent.description}</p>
           </div>
 
-          <DynamicTriggerButton
-            className={style.register}
-            hasArrow={true}
-            onTriggerEventFn={register}
-          >
-            {registered ? 'UNREGISTER' : 'REGISTER'}
-          </DynamicTriggerButton>
+          {!isLoadingRegister ? (
+            <DynamicTriggerButton
+              className={style.register}
+              hasArrow={true}
+              onTriggerEventFn={register}
+            >
+              {registered ? 'UNREGISTER' : 'REGISTER'}
+            </DynamicTriggerButton>
+          ) : (
+            <LoadingElement />
+          )}
         </section>
       </main>
     );

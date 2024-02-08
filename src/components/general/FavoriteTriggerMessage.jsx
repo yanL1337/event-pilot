@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 /* CSS */
 import styles from './FavoriteTriggerMessage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faCircleCheck, faUserMinus, faUserPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 const FavoriteTriggerMessage = ({ favMessage }) => {
   return (
@@ -21,6 +21,18 @@ const FavoriteTriggerMessage = ({ favMessage }) => {
       {favMessage.type === 'registerEvent' && (
         <FontAwesomeIcon
           icon={faCircleCheck}
+          style={{ color: 'white', height: '20px', width: '20px' }}
+        />
+      )}
+      {favMessage.type === 'unfollow' && (
+        <FontAwesomeIcon
+          icon={faUserMinus}
+          style={{ color: 'white', height: '20px', width: '20px' }}
+        />
+      )}
+      {favMessage.type === 'follow' && (
+        <FontAwesomeIcon
+          icon={faUserPlus}
           style={{ color: 'white', height: '20px', width: '20px' }}
         />
       )}

@@ -1,15 +1,17 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useState, useEffect, useRef, useContext } from "react";
-import pb from "../lib/pocketbase";
-import style from "./css/Review.module.css";
-import { Header } from "../components/header/Header";
-import { Rating } from "react-simple-star-rating";
-import { displayFavMessage } from "../utils/helperFunction";
-import { SetFavoriteMessageContext } from "../context/context";
+import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef, useContext } from 'react';
+import pb from '../lib/pocketbase';
+import style from './css/Review.module.css';
+import { Header } from '../components/header/Header';
+import { Rating } from 'react-simple-star-rating';
+import { displayFavMessage } from '../utils/helperFunction';
+import { SetFavoriteMessageContext } from '../context/context';
+import LoadingElement from '../components/loading/LoadingElement';
 
 export function Review() {
   const [creator, setCreator] = useState([]);
   const [rating, setRating] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const { id } = useParams();
 
   const navigate = useNavigate();
@@ -23,7 +25,7 @@ export function Review() {
   //   * Welcher Creator soll bewertet werden? - id anhand useParams
   useEffect(() => {
     async function getCreator() {
-      const record = await pb.collection("users").getOne(id);
+      const record = await pb.collection('users').getOne(id);
       setCreator(record);
     }
     getCreator();
@@ -35,7 +37,7 @@ export function Review() {
         setFavMessage(null);
       }
     };
-  }, []);
+  }, [id]);
 
   //   - Review in db speichern
   const sendReview = async () => {
@@ -46,28 +48,20 @@ export function Review() {
       rating: rating,
     };
     try {
-      const response = await pb.collection("reviews").create(review);
-
-      console.log(response);
+      setIsLoading(true);
+      const response = await pb.collection('reviews').create(review);
 
       if (response.rating > 0 && response.rating < 6) {
-        displayFavMessage(
-          `Deine Review wurde gespeichert`,
-          setFavMessage,
-          favMessageTimer
-        );
+        displayFavMessage(`Your review has been saved`, setFavMessage, favMessageTimer);
       } else {
-        displayFavMessage(
-          `Upps, deine Review konnte nicht gespeichert werden.`,
-          setFavMessage,
-          favMessageTimer
-        );
+        displayFavMessage(`Oops, your review couldn't be saved.`, setFavMessage, favMessageTimer);
       }
     } catch (error) {
       console.log(error);
     }
     setTimeout(() => {
-      navigate(`/creator/${id}`);
+      setIsLoading(false);
+      navigate(`/creator/${id}`, { state: 'review' });
     }, 1500);
   };
 
@@ -79,9 +73,7 @@ export function Review() {
   if (creator) {
     return (
       <>
-        <Header
-          headertext={`Review ${creator.firstname} ${creator.lastname}`}
-        />
+        <Header headertext={`Review ${creator.firstname} ${creator.lastname}`} />
         <main className={style.wrapper1}>
           <div>
             <img
@@ -91,19 +83,19 @@ export function Review() {
             />
           </div>
           <div>
-            <Rating
-              onClick={handleRating}
-              fillColor="#00ECAA"
-              className={style.stars}
-            />
+            <Rating onClick={handleRating} fillColor="#00ECAA" className={style.stars} />
             <div className={style.commentdiv}>
               <label className={style.label}>★ Your Review</label>
               <input type="text" ref={commentRef} className={style.input} />
             </div>
           </div>
-          <button className={style.button} onClick={sendReview}>
-            SUBMIT
-          </button>
+          {!isLoading ? (
+            <button className={style.button} onClick={sendReview}>
+              SUBMIT
+            </button>
+          ) : (
+            <LoadingElement />
+          )}
         </main>
       </>
     );
