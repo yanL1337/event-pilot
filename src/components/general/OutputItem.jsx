@@ -39,7 +39,6 @@ const OutputItem = ({
     const favId = allFavorites.filter((fav) => fav === data.id).join("");
 
     setEventFavorite(favId);
-    console.log();
 
     if (window.location.pathname !== "/event/search") {
       return () => {
@@ -74,7 +73,7 @@ const OutputItem = ({
           "favorites"
         );
       }
-
+      console.log(fav);
       return fav;
     });
 

@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import pb from "../lib/pocketbase";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import OutputItem from "../components/general/OutputItem";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -9,17 +9,20 @@ import LocationHeader from "../components/header/LocationHeader";
 import {
   getCurrentPosition,
   getCityFromCoordinates,
+  getCityFromLocation,
 } from "../utils/geoLocation";
 import style from "./css/Home.module.css";
 import OutputHome from "../components/general/OutputHome";
 import FallbackLoadingScreen from "../components/loading/FallbackLoadingScreen";
+
 
 export function Home({ children }) {
   const [events, setEvents] = useState([]);
   const [userLoc, setUserLoc] = useState([]);
   const [nearby, setNearby] = useState([]);
   const [user, setUser] = useState(null);
-
+  const navigate = useNavigate();
+  const favContext = useRef(null);
   const [randomEvent, setRandomEvent] = useState();
 
   useEffect(() => {
@@ -43,19 +46,24 @@ export function Home({ children }) {
 
   useEffect(() => {
     const getLoc = async () => {
-      getCurrentPosition().then((data) =>
-        getCityFromCoordinates(
-          data.coords.latitude,
-          data.coords.longitude
-        ).then((data) => setUserLoc(data.split(",")[0]))
+      getCityFromLocation().then((city) =>
+        setNearby(events?.filter((ev) => ev?.location == city))
       );
     };
 
     getLoc();
     //hier eigentlich userLoc
-    setNearby(events?.filter((ev) => ev?.location.includes("Düsseldorf")));
+
     setRandomEvent(events[Math.floor(Math.random() * 10)]);
   }, [events]);
+
+  const navigateToNearbyEvent = () => {
+    getCityFromLocation().then((city) =>
+      navigate("/event/search", {
+        state: city,
+      })
+    );
+  };
 
   const settings = {
     dots: false,
@@ -70,61 +78,69 @@ export function Home({ children }) {
     cssEase: "linear",
   };
 
+
   if (events && user && randomEvent) {
-    return (
-      <>
-        <LocationHeader
+  return (
+    <>
+       <LocationHeader
           logo={"/images/Logo.png"}
           bgColor={"transparent"}
-          fontcolor={"#876AFD"}
-        />
+          fontcolor={"#876AFD"}/>
         <section className={style.wrapper}>
-          <div className={style.flex}>
-            <h3>Upcoming Events</h3>
-            <Link to="/event/search">See all</Link>
-          </div>
-          <Slider {...settings}>
-            {user &&
-              events?.map((event) => (
-                <div key={event.id}>
-                  <OutputHome
-                    data={event}
-                    allFavorites={user?.favoriteEvents || []}
-                    registeredEvents={[]}
-                    favMessageTimer={{}}
-                    isOnFavSite={false}
-                  />
-                </div>
-              ))}
-          </Slider>
+      <div
+  className={style.flex}
+     
+      >
+        <h3>Upcoming Events</h3>
+        <Link to="/event/search">See all</Link>
+      </div>
+      <Slider {...settings}>
+        {user &&
+          events?.map((event) => (
+            <div key={event.id}>
+              <OutputHome
+                data={event}
+                allFavorites={user?.favoriteEvents || []}
+                registeredEvents={[]}
+                favMessageTimer={favContext}
+                isOnFavSite={false}
+              />
+            </div>
+          ))}
+      </Slider>
 
-          <div className={style.flex}>
-            <h3>Nearby you</h3>
-            <Link to="/event/search">See all</Link>
-          </div>
-          <Slider {...settings}>
-            {user &&
-              nearby?.map((event) => (
-                <div key={event.id}>
-                  <OutputHome
-                    data={event}
-                    allFavorites={user?.favoriteEvents || []}
-                    registeredEvents={[]}
-                    favMessageTimer={{}}
-                    isOnFavSite={false}
-                  />
-                </div>
-              ))}
-          </Slider>
+      <div
+         className={style.flex}
+      >
+        <h3>Nearby you</h3>
+        <p onClick={navigateToNearbyEvent}>See all</p>
+      </div>
+      <Slider {...settings}>
+        {user &&
+          nearby?.map((event) => (
+            <div key={event.id}>
+              <OutputHome
+                data={event}
+                allFavorites={user?.favoriteEvents || []}
+                registeredEvents={[]}
+                favMessageTimer={favContext}
+                isOnFavSite={false}
+              />
+            </div>
+          ))}
+      </Slider>
 
-          <div className={style.random}>
-            <OutputItem
-              data={randomEvent || {}}
-              allFavorites={user?.favoriteEvents || []}
-              registeredEvents={[]}
-              favMessageTimer={{}}
-              isOnFavSite={false}
-            />
+      
+      <div  className={style.random}>
+        <OutputItem
+          data={randomEvent || {}}
+          allFavorites={user?.favoriteEvents || []}
+          registeredEvents={[]}
+          favMessageTimer={{}}
+          isOnFavSite={false}
+
+        />
+
           </div>
         </section>
         {children}
