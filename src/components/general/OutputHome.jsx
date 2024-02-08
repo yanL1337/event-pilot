@@ -12,13 +12,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 /* CSS */
-import styles from "./OutputItem.module.css";
+import styles from "./OutputHome.module.css";
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { addEventFavorites } from "../../utils/fetchData";
 import { SetFavoriteMessageContext, ThemeContext } from "../../context/context";
 
-const OutputItem = ({
+const OutputHome = ({
   data,
   allFavorites,
   favMessageTimer,
@@ -39,6 +39,7 @@ const OutputItem = ({
     const favId = allFavorites.filter((fav) => fav === data.id).join("");
 
     setEventFavorite(favId);
+    console.log();
 
     if (window.location.pathname !== "/event/search") {
       return () => {
@@ -73,7 +74,7 @@ const OutputItem = ({
           "favorites"
         );
       }
-      console.log(fav);
+
       return fav;
     });
 
@@ -131,7 +132,7 @@ const OutputItem = ({
   );
 };
 
-OutputItem.propTypes = {
+OutputHome.propTypes = {
   data: PropTypes.object,
   allFavorites: PropTypes.array,
   favMessageTimer: PropTypes.object,
@@ -139,4 +140,4 @@ OutputItem.propTypes = {
   registeredEvents: PropTypes.array,
 };
 
-export default OutputItem;
+export default OutputHome;

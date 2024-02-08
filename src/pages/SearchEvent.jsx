@@ -71,7 +71,7 @@ const SearchEvent = ({ children }) => {
 
   return (
     <>
-      <LocationHeader bgColor="#5d3ede" />
+      <LocationHeader bgColor="#5d3ede" fontcolor="#fff" />
       <main>
         <section className={styles.search_event}>
           <SearchFilterBar

@@ -11,7 +11,10 @@ import {
   getCityFromCoordinates,
   getCityFromLocation,
 } from "../utils/geoLocation";
-import { SetFavoriteMessageContext } from "../context/context";
+import style from "./css/Home.module.css";
+import OutputHome from "../components/general/OutputHome";
+import FallbackLoadingScreen from "../components/loading/FallbackLoadingScreen";
+
 
 export function Home({ children }) {
   const [events, setEvents] = useState([]);
@@ -69,31 +72,33 @@ export function Home({ children }) {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 4000,
+    autoplaySpeed: 6000,
     variableWidth: true,
-    //centerMode: true,
+    centerMode: true,
     cssEase: "linear",
   };
 
+
+  if (events && user && randomEvent) {
   return (
     <>
-      <LocationHeader logo={"/images/Logo.png"} bgColor={"#5D3EDE"} />
-
+       <LocationHeader
+          logo={"/images/Logo.png"}
+          bgColor={"transparent"}
+          fontcolor={"#876AFD"}/>
+        <section className={style.wrapper}>
       <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          fontSize: "16px",
-        }}
+  className={style.flex}
+     
       >
-        <p>Upcoming Events</p>
+        <h3>Upcoming Events</h3>
         <Link to="/event/search">See all</Link>
       </div>
       <Slider {...settings}>
         {user &&
           events?.map((event) => (
             <div key={event.id}>
-              <OutputItem
+              <OutputHome
                 data={event}
                 allFavorites={user?.favoriteEvents || []}
                 registeredEvents={[]}
@@ -105,21 +110,16 @@ export function Home({ children }) {
       </Slider>
 
       <div
-        style={{
-          marginTop: "20px",
-          display: "flex",
-          justifyContent: "space-between",
-          fontSize: "16px",
-        }}
+         className={style.flex}
       >
-        <p>Nearby you</p>
+        <h3>Nearby you</h3>
         <p onClick={navigateToNearbyEvent}>See all</p>
       </div>
       <Slider {...settings}>
         {user &&
           nearby?.map((event) => (
             <div key={event.id}>
-              <OutputItem
+              <OutputHome
                 data={event}
                 allFavorites={user?.favoriteEvents || []}
                 registeredEvents={[]}
@@ -130,18 +130,23 @@ export function Home({ children }) {
           ))}
       </Slider>
 
-      <p style={{ fontSize: "16px" }}>Random Event</p>
-      <div style={{ padding: "0 15px" }}>
+      
+      <div  className={style.random}>
         <OutputItem
           data={randomEvent || {}}
           allFavorites={user?.favoriteEvents || []}
           registeredEvents={[]}
           favMessageTimer={{}}
           isOnFavSite={false}
-        />
-      </div>
 
-      {children}
-    </>
-  );
+        />
+
+          </div>
+        </section>
+        {children}
+      </>
+    );
+  } else {
+    return <FallbackLoadingScreen />;
+  }
 }
