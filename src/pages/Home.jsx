@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import pb from "../lib/pocketbase";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import OutputItem from "../components/general/OutputItem";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -9,14 +9,17 @@ import LocationHeader from "../components/header/LocationHeader";
 import {
   getCurrentPosition,
   getCityFromCoordinates,
+  getCityFromLocation,
 } from "../utils/geoLocation";
+import { SetFavoriteMessageContext } from "../context/context";
 
 export function Home({ children }) {
   const [events, setEvents] = useState([]);
   const [userLoc, setUserLoc] = useState([]);
   const [nearby, setNearby] = useState([]);
   const [user, setUser] = useState(null);
-
+  const navigate = useNavigate();
+  const favContext = useRef(null);
   const [randomEvent, setRandomEvent] = useState();
 
   useEffect(() => {
@@ -40,19 +43,24 @@ export function Home({ children }) {
 
   useEffect(() => {
     const getLoc = async () => {
-      getCurrentPosition().then((data) =>
-        getCityFromCoordinates(
-          data.coords.latitude,
-          data.coords.longitude
-        ).then((data) => setUserLoc(data.split(",")[0]))
+      getCityFromLocation().then((city) =>
+        setNearby(events?.filter((ev) => ev?.location == city))
       );
     };
 
     getLoc();
     //hier eigentlich userLoc
-    setNearby(events?.filter((ev) => ev?.location.includes("Düsseldorf")));
+
     setRandomEvent(events[Math.floor(Math.random() * 10)]);
   }, [events]);
+
+  const navigateToNearbyEvent = () => {
+    getCityFromLocation().then((city) =>
+      navigate("/event/search", {
+        state: city,
+      })
+    );
+  };
 
   const settings = {
     dots: false,
@@ -84,12 +92,12 @@ export function Home({ children }) {
       <Slider {...settings}>
         {user &&
           events?.map((event) => (
-            <div key={event.id} style={{ width: 300, padding: "0 15px" }}>
+            <div key={event.id}>
               <OutputItem
                 data={event}
                 allFavorites={user?.favoriteEvents || []}
                 registeredEvents={[]}
-                favMessageTimer={{}}
+                favMessageTimer={favContext}
                 isOnFavSite={false}
               />
             </div>
@@ -105,17 +113,17 @@ export function Home({ children }) {
         }}
       >
         <p>Nearby you</p>
-        <Link to="/event/search">See all</Link>
+        <p onClick={navigateToNearbyEvent}>See all</p>
       </div>
       <Slider {...settings}>
         {user &&
           nearby?.map((event) => (
-            <div key={event.id} style={{ width: 300, padding: "0 15px" }}>
+            <div key={event.id}>
               <OutputItem
                 data={event}
                 allFavorites={user?.favoriteEvents || []}
                 registeredEvents={[]}
-                favMessageTimer={{}}
+                favMessageTimer={favContext}
                 isOnFavSite={false}
               />
             </div>
