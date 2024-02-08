@@ -103,7 +103,7 @@ export function Review() {
               />
               <div className={style.commentdiv}>
                 {/* <label className={style.label}>★ Your Review</label> */}
-                //#######
+
                 <textarea
                   type="text"
                   placeholder="★ Your Review"
