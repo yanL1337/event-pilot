@@ -9,13 +9,16 @@ import { Header } from "../components/header/Header.jsx";
 import style from "./css/UserProfil.module.css";
 import { ThemeContext } from "../context/context";
 import FallbackLoadingScreen from "../components/loading/FallbackLoadingScreen.jsx";
+import FlipMove from 'react-flip-move';
+
+
 
 export const UserProfile = ({ children }) => {
   const { theme } = useContext(ThemeContext);
   const [user, setUser] = useState();
   const [edit, setEdit] = useState(false);
   const [changes, setChanges] = useState({});
-  const [state, setState] = useState("about");
+  const [state, setState] = useState('about');
   const [ownEvents, setOwnEvents] = useState([]);
   const [colorAbout, setColorAbout] = useState(true);
   const [colorEvents, setColorEvents] = useState(false);
@@ -25,9 +28,7 @@ export const UserProfile = ({ children }) => {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const record = await pb
-          .collection("users")
-          .getOne(pb.authStore.model.id);
+        const record = await pb.collection('users').getOne(pb.authStore.model.id);
         setUser(record);
         setChanges(record);
       } catch (error) {
@@ -47,45 +48,51 @@ export const UserProfile = ({ children }) => {
     event.preventDefault();
     const formData = new FormData();
 
-    formData.append("firstname", changes.firstname);
-    formData.append("lastname", changes.lastname);
-    formData.append("description", changes.description);
+    formData.append('firstname', changes.firstname);
+    formData.append('lastname', changes.lastname);
+    formData.append('description', changes.description);
     const fileInput = document.querySelector('input[type="file"]');
 
     if (fileInput && fileInput.files[0]) {
-      formData.append("profilImage", fileInput.files[0]);
+      formData.append('profilImage', fileInput.files[0]);
     }
 
     for (let item of changes.interests) {
       console.log(item);
-      formData.append("interests", item);
+      formData.append('interests', item);
     }
 
     //formData.append("interests", changes.interests);
     try {
-      const record = await pb.collection("users").update(user.id, formData);
+      const record = await pb.collection('users').update(user.id, formData);
       setUser(record);
       setEdit(false);
     } catch (error) {
-      console.error("Failed to update", error);
+      console.error('Failed to update', error);
     }
   };
 
+  const [file, setFile] = useState();
+  function handleChange(e) {
+    console.log(e.target.files);
+    setFile(URL.createObjectURL(e.target.files[0]));
+  }
+
   // ##############################
   function about() {
-    setState("about");
+    setState('about');
     setColorAbout(true);
     setColorEvents(false);
   }
   function events() {
-    setState("events");
+    setState('events');
     setColorAbout(false);
     setColorEvents(true);
   }
 
   useEffect(() => {
     async function getOwnEvents() {
-      const ownEvents = await pb.collection("events").getFullList({
+      const ownEvents = await pb.collection('events').getFullList({
         filter: `creator="${pb.authStore.model.id}"`,
       });
       setOwnEvents(ownEvents);
@@ -100,7 +107,7 @@ export const UserProfile = ({ children }) => {
   };
 
   //* wird angezeigt, wenn About ausgewählt ist
-  if (state === "about" && user) {
+  if (state === 'about' && user) {
     return (
       <>
         <section className={style.wrapper}>
@@ -123,16 +130,10 @@ export const UserProfile = ({ children }) => {
                 </div>
               </div>
               <div className={style.tabs}>
-                <button
-                  className={colorAbout ? style.activeTab : null}
-                  onClick={about}
-                >
+                <button className={colorAbout ? style.activeTab : null} onClick={about}>
                   ABOUT
                 </button>
-                <button
-                  className={colorEvents ? style.activeTab : null}
-                  onClick={events}
-                >
+                <button className={colorEvents ? style.activeTab : null} onClick={events}>
                   EVENTS
                 </button>
               </div>
@@ -149,25 +150,33 @@ export const UserProfile = ({ children }) => {
           ) : (
             //* wird beim EditProfil Button angezeigt
             <>
-              <section className={theme ? style.dark : ""}>
-                <Header headertext={`Edit Profile`} />
-                <form onSubmit={submitChanges}>
-                  <div className={style.editimg}>
-                    <img
-                      className={style.profilimgedit}
-                      src={`https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage}`}
-                    />
-                    <div className={style.imgupload}>
-                      <label htmlFor="file-input">
-                        <img
-                          style={{ width: "7vw", cursor: "pointer" }}
-                          src={editProfile}
-                        />
-                      </label>
 
-                      <input name="profilImage" id="file-input" type="file" />
-                    </div>
+            <section className={theme ? style.dark : ""}>
+              <Header headertext={`Edit Profile`} />
+              <form onSubmit={submitChanges}>
+                <div className={style.editimg}>
+                  <img
+                    className={style.profilimgedit}
+                    src={
+                      file
+                        ? file
+                        : `https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage}`
+                    }
+                  />
+                  <div className={style.imgupload}>
+                    <label htmlFor="file-input">
+                      <img style={{ width: '7vw', cursor: 'pointer' }} src={editProfile} />
+                    </label>
+
+                    <input
+                      name="profilImage"
+                      onChange={handleChange}
+                      id="file-input"
+                      type="file"
+                    />
+
                   </div>
+
 
                   <input
                     className={style.input}
@@ -230,6 +239,7 @@ export const UserProfile = ({ children }) => {
               <p className={style.light}>Followers</p>
             </div>
           </div>
+
           <div className={style.tabs}>
             <button
               className={colorAbout ? style.activeTab : null}
@@ -244,6 +254,7 @@ export const UserProfile = ({ children }) => {
               EVENTS
             </button>
           </div>
+        <FlipMove>
 
           {ownEvents.length > 0 ? (
             ownEvents?.map((singleEvent) => {
@@ -252,7 +263,7 @@ export const UserProfile = ({ children }) => {
                   singleEvent={singleEvent}
                   favMessageTimer={favMessageTimer}
                   onDeleteEvents={deleteEvents}
-                  key={crypto.randomUUID()}
+                  key={singleEvent.id}
                 />
               );
             })
@@ -270,7 +281,10 @@ export const UserProfile = ({ children }) => {
               <h2>You aren’t hosting any events yet</h2>
             </div>
           )}
-        </section>{" "}
+
+            </FlipMove>
+        </section>
+
         {children}
       </>
     );

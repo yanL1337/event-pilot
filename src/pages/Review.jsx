@@ -1,16 +1,19 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useState, useEffect, useRef, useContext } from "react";
-import pb from "../lib/pocketbase";
-import style from "./css/Review.module.css";
-import { Header } from "../components/header/Header";
-import { Rating } from "react-simple-star-rating";
-import { displayFavMessage } from "../utils/helperFunction";
+import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef, useContext } from 'react';
+import pb from '../lib/pocketbase';
+import style from './css/Review.module.css';
+import { Header } from '../components/header/Header';
+import { Rating } from 'react-simple-star-rating';
+import { displayFavMessage } from '../utils/helperFunction';
 import { SetFavoriteMessageContext, ThemeContext } from "../context/context";
+import LoadingElement from '../components/loading/LoadingElement';
+
 
 export function Review() {
   const { theme } = useContext(ThemeContext);
   const [creator, setCreator] = useState([]);
   const [rating, setRating] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const { id } = useParams();
 
   const navigate = useNavigate();
@@ -24,7 +27,7 @@ export function Review() {
   //   * Welcher Creator soll bewertet werden? - id anhand useParams
   useEffect(() => {
     async function getCreator() {
-      const record = await pb.collection("users").getOne(id);
+      const record = await pb.collection('users').getOne(id);
       setCreator(record);
     }
     getCreator();
@@ -36,7 +39,7 @@ export function Review() {
         setFavMessage(null);
       }
     };
-  }, []);
+  }, [id]);
 
   //   - Review in db speichern
   const sendReview = async () => {
@@ -47,28 +50,20 @@ export function Review() {
       rating: rating,
     };
     try {
-      const response = await pb.collection("reviews").create(review);
-
-      console.log(response);
+      setIsLoading(true);
+      const response = await pb.collection('reviews').create(review);
 
       if (response.rating > 0 && response.rating < 6) {
-        displayFavMessage(
-          `Deine Review wurde gespeichert`,
-          setFavMessage,
-          favMessageTimer
-        );
+        displayFavMessage(`Your review has been saved`, setFavMessage, favMessageTimer);
       } else {
-        displayFavMessage(
-          `Upps, deine Review konnte nicht gespeichert werden.`,
-          setFavMessage,
-          favMessageTimer
-        );
+        displayFavMessage(`Oops, your review couldn't be saved.`, setFavMessage, favMessageTimer);
       }
     } catch (error) {
       console.log(error);
     }
     setTimeout(() => {
-      navigate(`/creator/${id}`);
+      setIsLoading(false);
+      navigate(`/creator/${id}`, { state: 'review' });
     }, 1500);
   };
 
@@ -79,7 +74,6 @@ export function Review() {
 
   if (creator) {
     return (
-      <>
         <section className={theme ? style.dark : null}>
           <article className={style.article}>
             <Header
@@ -105,13 +99,16 @@ export function Review() {
                   <input type="text" ref={commentRef} className={style.input} />
                 </div>
               </div>
-              <button className={style.button} onClick={sendReview}>
-                SUBMIT
-              </button>
+              {!isLoading ? (
+            <button className={style.button} onClick={sendReview}>
+              SUBMIT
+            </button>
+          ) : (
+            <LoadingElement />
+          )}
             </main>
           </article>
         </section>
-      </>
     );
   }
 }

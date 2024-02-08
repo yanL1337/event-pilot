@@ -18,6 +18,8 @@ import { useContext, useEffect, useState } from "react";
 import { addEventFavorites } from "../../utils/fetchData";
 import { SetFavoriteMessageContext, ThemeContext } from "../../context/context";
 
+
+
 const OutputItem = ({
   data,
   allFavorites,
@@ -60,14 +62,14 @@ const OutputItem = ({
       // message einblenden
       if (fav) {
         displayFavMessage(
-          `${eventName} wurde als Favoriten hinzugefügt`,
+          `${eventName} was added as a favorite`,
           setFavMessage,
           favMessageTimer,
           "favorites"
         );
       } else {
         displayFavMessage(
-          `${eventName} wurde aus den Favoriten entfernt`,
+          `${eventName} has been removed from favorites`,
           setFavMessage,
           favMessageTimer,
           "favorites"
@@ -84,6 +86,7 @@ const OutputItem = ({
   const { theme } = useContext(ThemeContext);
 
   return (
+
     <section className={theme ? styles.dark : ""}>
       <div className={styles.item_box}>
         <img
@@ -103,6 +106,7 @@ const OutputItem = ({
             <FontAwesomeIcon icon={faLocationDot} />
             <span>{data.location}</span>
           </div>
+
         </div>
         <div className={styles.item_favorite}>
           {isOnFavSite ? (
@@ -114,6 +118,7 @@ const OutputItem = ({
             )
           ) : eventFavorite === data.id ? (
             <FontAwesomeIcon
+
               icon={faBookmark}
               style={{ color: "#63E6BE", height: "20px", width: "20px" }}
               onClick={() => toggleFavorites(data.id, data.name)}

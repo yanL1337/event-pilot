@@ -1,11 +1,14 @@
-import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import pb from "../lib/pocketbase.js";
-import { useNavigate } from "react-router-dom";
-import DynamicTriggerButton from "../components/buttons/DynamicTriggerButton.jsx";
-import style from "./css/Login.module.css";
+import { useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import pb from '../lib/pocketbase.js';
+import { useNavigate } from 'react-router-dom';
+import DynamicTriggerButton from '../components/buttons/DynamicTriggerButton.jsx';
+import style from './css/Login.module.css';
+import LoadingElement from '../components/loading/LoadingElement.jsx';
+
 
 const LoginPage = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const emailRef = useRef();
   const passRef = useRef();
   const navigate = useNavigate();
@@ -13,12 +16,15 @@ const LoginPage = () => {
 
   const sendData = async () => {
     try {
-      const authData = await pb
-        .collection("users")
-        .authWithPassword(emailRef.current.value, passRef.current.value);
-      navigate("/home");
+      setIsLoading(true);
+      await pb.collection('users').authWithPassword(emailRef.current.value, passRef.current.value);
+      setIsLoading(false);
+      navigate('/home');
     } catch (error) {
+
       setFehlgeschlagen(true);
+      setIsLoading(false);
+      
       console.log(error);
     }
   };
@@ -47,7 +53,7 @@ const LoginPage = () => {
           type="password"
           placeholder="Password"
         />
-
+        
         {fehlgeschlagen ? (
           <p className={style.warning}>
             Oops, that went wrong, please check your email address and password.
@@ -55,12 +61,16 @@ const LoginPage = () => {
         ) : null}
 
         <div>
-          <DynamicTriggerButton hasArrow={true} onTriggerEventFn={sendData}>
-            SIGN IN
-          </DynamicTriggerButton>
+          {!isLoading ? (
+            <DynamicTriggerButton hasArrow={true} onTriggerEventFn={sendData}>
+              SIGN IN
+            </DynamicTriggerButton>
+          ) : (
+            <LoadingElement />
+          )}
         </div>
 
-        <Link className={style.link} to={"/register"} href="#">
+        <Link className={style.link} to={'/register'} href="#">
           Don&apos;t have an account?
         </Link>
       </div>

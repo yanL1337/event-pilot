@@ -5,6 +5,7 @@ const FallbackLoadingScreen = () => {
     <div className={styles.section}>
       <img src="/images/Logo.png" alt="is loading..." />
     </div>
+
   );
 };
 

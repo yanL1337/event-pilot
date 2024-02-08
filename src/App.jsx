@@ -94,7 +94,14 @@ function App() {
                           </SetFavoriteMessageContext.Provider>
                         }
                       />
-                      <Route path="/creator/:id" element={<CreatorProfil />} />
+                      <Route
+                        path="/creator/:id"
+                        element={
+                          <SetFavoriteMessageContext.Provider value={{ favMessage, setFavMessage }}>
+                            <CreatorProfil />
+                          </SetFavoriteMessageContext.Provider>
+                        }
+                      />
                       <Route
                         path="/review/:id"
                         element={

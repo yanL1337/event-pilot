@@ -10,19 +10,24 @@ import {
   faSun,
 } from "@fortawesome/free-solid-svg-icons";
 
+
 export function Header({ headertext }) {
   const navigate = useNavigate();
   const { theme, setTheme } = useContext(ThemeContext);
 
   const toggleDarkmode = () => {
-    console.log("Darkmode");
+    console.log('Darkmode');
     setTheme((mode) => !mode);
   };
 
   const logout = () => {
-    console.log("ausgeloggt");
+    console.log('ausgeloggt');
     pb.authStore.clear();
-    navigate("/");
+    navigate('/');
+  };
+
+  const navigateBack = () => {
+    navigate(-1);
   };
 
   return (
