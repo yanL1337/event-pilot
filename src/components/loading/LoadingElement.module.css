@@ -1,0 +1,19 @@
+.loadingelement {
+  position: fixed;
+  top: 45%;
+  left: 45%;
+  animation: event 2s infinite;
+}
+
+@keyframes event {
+  0% {
+    rotate: 0;
+  }
+
+  50% {
+    rotate: 0.5turn;
+  }
+  100% {
+    rotate: 1turn;
+  }
+}

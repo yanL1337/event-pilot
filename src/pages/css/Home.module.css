@@ -1,0 +1,41 @@
+.wrapper {
+  margin: 0 auto;
+  min-height: 100vh;
+  padding-top: 30px;
+  overflow: hidden;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+}
+
+.flex h3 {
+  font-size: 1.8rem;
+  margin-left: 7.5%;
+  margin-bottom: 10px;
+}
+
+.flex a {
+  font-size: 1.4rem;
+  font-weight: 100;
+  color: #848484;
+  margin-right: 7.5%;
+}
+
+.random {
+  margin-top: 10px;
+}
+
+.output {
+  flex-direction: column;
+}
+
+.nearby {
+  text-align: center;
+  font-size: 1.6rem;
+  margin: 20px auto 40px auto;
+  color: #876afd;
+  width: 85%;
+  font-weight: 100;
+}

@@ -1,22 +1,27 @@
-import PropTypes from 'prop-types';
-import { useEffect, useReducer, useState } from 'react';
-import CategoryOutput from '../components/events/search/CategoryOutput';
-import CategoryScrollBar from '../components/events/search/CategoryScrollBar';
-import SearchFilterBar from '../components/events/search/SearchFilterBar';
+import PropTypes from "prop-types";
+import { useCallback, useEffect, useReducer, useState } from "react";
+import CategoryOutput from "../components/events/search/CategoryOutput";
+import CategoryScrollBar from "../components/events/search/CategoryScrollBar";
+import SearchFilterBar from "../components/events/search/SearchFilterBar";
 
 /* CSS */
-import styles from './css/SearchEvent.module.css';
-import { viewAllEvents, viewEventByFilter } from '../utils/fetchData';
-import { initialEventFilterState, reducer } from '../utils/stateHandler';
-import EventFilterBox from '../components/events/search/filter/EventFilterBox';
-import LocationHeader from '../components/header/LocationHeader';
+import styles from "./css/SearchEvent.module.css";
+import { viewAllEvents, viewEventByFilter } from "../utils/fetchData";
+import { initialEventFilterState, reducer } from "../utils/stateHandler";
+import EventFilterBox from "../components/events/search/filter/EventFilterBox";
+import LocationHeader from "../components/header/LocationHeader";
+import { useLocation } from "react-router-dom";
 
 const SearchEvent = ({ children }) => {
-  const [eventFilter, eventFilterDispatch] = useReducer(reducer, initialEventFilterState);
+  const [eventFilter, eventFilterDispatch] = useReducer(
+    reducer,
+    initialEventFilterState
+  );
   const [viewEventData, setViewEventData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     setIsLoading(true);
@@ -27,9 +32,20 @@ const SearchEvent = ({ children }) => {
     }
 
     if (isInitialLoad) {
-      fetchEventData(viewAllEvents);
-      setIsInitialLoad(false);
+      if (location && location.state) {
+        eventFilterDispatch({
+          type: "SET_FIELD",
+          field: "location",
+          value: location.state,
+        });
+
+        setIsInitialLoad(false);
+      } else {
+        fetchEventData(viewAllEvents);
+        setIsInitialLoad(false);
+      }
     } else {
+      location.state = null;
       fetchEventData(() => viewEventByFilter(eventFilter));
     }
     return;
@@ -55,7 +71,7 @@ const SearchEvent = ({ children }) => {
 
   return (
     <>
-      <LocationHeader bgColor="#5d3ede" />
+      <LocationHeader bgColor="#5d3ede" fontcolor="#fff" />
       <main>
         <section className={styles.search_event}>
           <SearchFilterBar
@@ -63,7 +79,10 @@ const SearchEvent = ({ children }) => {
             eventFilter={eventFilter}
             eventFilterDispatch={eventFilterDispatch}
           />
-          <CategoryScrollBar eventFilter={eventFilter} eventFilterDispatch={eventFilterDispatch} />
+          <CategoryScrollBar
+            eventFilter={eventFilter}
+            eventFilterDispatch={eventFilterDispatch}
+          />
         </section>
         <section>
           <CategoryOutput

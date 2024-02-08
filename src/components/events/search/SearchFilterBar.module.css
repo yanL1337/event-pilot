@@ -12,18 +12,23 @@
 }
 
 .search_input {
-  padding: 7% 0 7% 15%;
+  padding: 5% 0 5% 15%;
   font-size: 2.5rem;
   border: none;
+  margin-left: 7.5%;
   width: 100%;
+  box-shadow: none;
   background-color: transparent;
   color: var(--firstBoxShadowColor);
 }
 
 .search_input::placeholder {
   color: var(--firstBoxShadowColor);
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 100;
+  opacity: 0.5;
+  font-family: inter;
+  font-weight: 200;
 }
 
 .search_input::-ms-input-placeholder {
@@ -34,10 +39,11 @@
 
 .search_icon {
   position: absolute;
-  left: 1%;
-  top: 32.5%;
+  left: 10%;
+  top: 20%;
   height: 25px;
   color: var(--firstBoxShadowColor);
+  opacity: 0.75;
 }
 
 .filterbar {
@@ -51,16 +57,19 @@
 }
 
 .filterbar_button {
-  padding: 0px 20px 0 20px;
+  padding: 0 20px 0 20px;
   display: flex;
   align-items: center;
   justify-content: space-around;
+  font-family: inter;
+  font-weight: 200;
   gap: 16px;
   height: 60px;
   border: none;
   border-radius: 10px;
   background-color: var(--firstButtonColor);
   color: white;
+  margin-right: 7.5%;
 }
 
 .filterbar_button > span {

@@ -9,12 +9,12 @@ export const initialEventState = {
   creator: '',
 
   eventErrors: {
-    name: 'Das Event brauch einen Namen',
-    date: 'Das Startdatum muss eingetragen werden',
+    name: 'The event needs a name',
+    date: 'The start date must be entered',
     category: 'Die Kategorie muss eingetragen werden',
-    location: 'Die Location des Event muss eingetragen werden',
-    description: 'Die Beschreibung muss eingetragen werden',
-    creator: 'Fehler, Ihre Userdaten konnten nicht abgerufen werden',
+    location: 'The category must be entered',
+    description: 'The description must be entered',
+    creator: 'Error, your user data could not be retrieved',
   },
 };
 
@@ -91,6 +91,7 @@ export const reducer = (state, action) => {
     case 'RESET_FORM_STATE':
       return {
         ...initialEventState,
+        location: state.location,
         creator: state.creator,
       };
     case 'SET_ERROR':

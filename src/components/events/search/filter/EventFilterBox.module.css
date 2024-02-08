@@ -2,7 +2,6 @@
   position: fixed;
   height: 100vh;
   top: 0;
-  background-color: rgba(122, 120, 120, 0.5);
   display: flex;
   align-items: flex-end;
 }
@@ -11,12 +10,13 @@
   animation: fadeInFromBottom 0.4s ease-out forwards;
   display: flex;
   flex-direction: column;
-  gap: 10%;
+  gap: 6%;
   align-items: center;
   border-radius: 15px;
   margin-top: auto;
   height: 76vh;
   width: 100vw;
+  padding-top: 5%;
   background-color: white;
   overflow: auto;
   padding-bottom: 100px;
@@ -24,13 +24,15 @@
 
 .filter_event_box p {
   font-size: 1.75rem;
-  font-weight: 700;
+  font-family: inter;
+  font-weight: 200;
 }
 
 .filter_event_box h2 {
   font-size: 2.5rem;
   margin-right: auto;
   padding-left: 2.5%;
+  font-weight: 300;
 }
 
 .event_box_content {
@@ -39,6 +41,15 @@
   flex-direction: column;
   gap: 12px;
   position: relative;
+}
+
+.event_date_input {
+  box-shadow: none;
+  position: absolute;
+  width: 31%;
+  left: 0;
+  top: 0;
+  z-index: -1;
 }
 
 .isButtonClicked {
@@ -55,6 +66,8 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
+  font-family: inter;
+  font-weight: 100;
 }
 
 .category_button_box {
@@ -66,11 +79,13 @@
 .category_button_box span {
   text-align: center;
   font-size: 1.5rem;
+  font-family: inter;
+  font-weight: 200;
 }
 
 .category_button {
   background-color: white;
-  border: 2px solid var(--firstBoxShadowColor);
+  border: 1px solid var(--firstBoxShadowColor);
   border-radius: 10px;
   padding: 10px;
   cursor: pointer;
@@ -89,20 +104,22 @@
 
 .date_button {
   background-color: white;
-  padding: 15px;
+  padding: 17px;
   width: 31%;
-  border: 2px solid var(--firstBoxShadowColor);
+  border: 1px solid var(--firstBoxShadowColor);
   border-radius: 10px;
   font-size: 1.5rem;
   cursor: pointer;
   text-align: center;
+  font-family: inter;
+  font-weight: 200;
 }
 
 .box_location {
   display: flex;
   align-items: center;
   position: relative;
-  border: 2px solid var(--firstBoxShadowColor);
+  border: 1px solid var(--firstBoxShadowColor);
   border-radius: 10px;
   padding: 0 2% 0 2%;
 }
@@ -111,24 +128,26 @@
   padding: 7% 0 7% 5%;
   width: 100%;
   border: none;
+  box-shadow: none;
   font-size: 2rem;
+  margin: 0;
 }
 
-.box_location input[type='text']:focus {
+.box_location input[type="text"]:focus {
   outline: none;
 }
 
 .box_location_icon {
   color: var(--firstButtonColor);
   height: 25px;
-  border: 7px solid var(--firstButtonColorOpacity);
+  border: 1px solid var(--firstButtonColorOpacity);
   padding: 5px 7.5px 5px 7.5px;
   border-radius: 15px;
 }
 
 .box_location_arrow {
   font-size: 3rem;
-  font-weight: 800;
+  font-weight: 500;
   color: var(--firstButtonColor);
 }
 
@@ -149,9 +168,32 @@
 
 .resetButton {
   background-color: white;
-  border: 2px solid var(--firstBoxShadowColor);
-  border-radius: 10px;
-  padding: 20px 10px 20px 10px;
+  border: 1px solid #a6a6a6;
+  border-radius: 15px;
+  font-family: inter;
+  font-weight: 200;
+  color: #a6a6a6;
+}
+
+.dark .filter_event_box {
+  background-color: rgb(36, 36, 36);
+}
+
+.dark .category_button {
+  background-color: rgb(36, 36, 36);
+}
+
+.dark .date_button {
+  background-color: rgb(36, 36, 36);
+  color: white;
+}
+
+.dark .box_location input {
+  background-color: rgb(36, 36, 36);
+}
+
+.dark .resetButton {
+  background-color: rgb(36, 36, 36);
 }
 
 @keyframes fadeInFromBottom {

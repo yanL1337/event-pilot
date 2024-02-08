@@ -79,3 +79,12 @@
   justify-content: center;
   align-items: center;
 }
+
+.dark .navbar {
+  background-color: rgb(36, 36, 36);
+  box-shadow: 0 0 10px #121212;
+}
+
+.dark .button {
+  box-shadow: 0 0 10px #121212;
+}

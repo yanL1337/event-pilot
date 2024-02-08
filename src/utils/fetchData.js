@@ -220,7 +220,7 @@ export const getEventFavorites = async () => {
       expand: 'favoriteEvents',
     });
 
-    return record.favoriteEvents;
+    return record.expand.favoriteEvents;
   } catch (error) {
     return null;
   }
@@ -229,18 +229,7 @@ export const getEventFavorites = async () => {
 export const getEventFavoritesData = async () => {
   try {
     // holen uns erstmal alle fav ids
-    const favIds = await getEventFavorites();
-    const returnFavArr = [];
-
-    const allExistingEvents = await pb.collection('events').getFullList();
-
-    for (const eventObj of allExistingEvents) {
-      favIds.forEach((fav) => {
-        if (fav === eventObj.id) {
-          returnFavArr.push(eventObj);
-        }
-      });
-    }
+    const returnFavArr = await getEventFavorites();
 
     return returnFavArr;
   } catch (error) {
@@ -253,19 +242,43 @@ export const getRegisteredEventsByUser = async () => {
     const userId = pb.authStore.model.id;
 
     const registeredEvents = await pb.collection('users').getOne(userId, {
-      expand: 'registeredUsers',
-      fields: 'registeredEvents',
+      expand: 'registeredEvents',
     });
 
-    let detailedEvents = [];
+    return registeredEvents.expand.registeredEvents;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-    for (const eventID of registeredEvents.registeredEvents) {
-      const detail = await pb.collection('events').getOne(eventID);
+export const addRegisteredEvents = async (registeredId) => {
+  const userId = pb.authStore.model.id;
+  // Holen uns die Daten vom user
+  const user = await pb.collection('users').getOne(userId);
 
-      detailedEvents.push(detail);
+  const hasRegistered = user.registeredEvents.filter((eventId) => eventId === registeredId);
+
+  try {
+    if (hasRegistered.length > 0) {
+      await pb.collection('events').update(registeredId, {
+        'registeredUser-': [userId],
+      });
+
+      await pb.collection('users').update(userId, {
+        'registeredEvents-': [registeredId],
+      });
+
+      return false;
+    } else {
+      await pb.collection('events').update(registeredId, {
+        'registeredUser+': [userId],
+      });
+
+      await pb.collection('users').update(userId, {
+        'registeredEvents+': [registeredId],
+      });
+      return true;
     }
-
-    return detailedEvents;
   } catch (error) {
     console.log(error);
   }

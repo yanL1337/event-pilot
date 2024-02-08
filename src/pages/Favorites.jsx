@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 
 /* CSS */
-import styles from './css/Favorites.module.css';
-import style from './css/CreatorProfile.module.css';
+
 import { useEffect, useState } from 'react';
 import { getEventFavoritesData, getRegisteredEventsByUser } from '../utils/fetchData';
 import LoadingElement from '../components/loading/LoadingElement';
@@ -11,6 +10,7 @@ import DynamicTriggerButton from '../components/buttons/DynamicTriggerButton';
 import { useNavigate } from 'react-router-dom';
 import ToggleFavoritesBar from '../components/events/favorites/ToggleFavoritesBar';
 import LoadMoreButton from '../components/buttons/LoadMoreButton';
+import style from './css/Favorites.module.css';
 
 const eventsPerRow = 6;
 
@@ -50,7 +50,7 @@ export function Favorites({ children }) {
   const fetchRegisteredEventsData = async () => {
     const response = await getRegisteredEventsByUser();
 
-    if (response.length > 0) {
+    if (response && response.length > 0) {
       setRegisteredEvents(response);
     }
 
@@ -77,21 +77,23 @@ export function Favorites({ children }) {
       <section className={style.wrapper}>
         <header>
           <section>
-            <article className={styles.header_article}>
-              <h2>{toggleButton === 'up' ? 'Liked Events' : 'Registered Events'}</h2>
+            <article className={style.header_article}>
+              <h2 className={style.headline}>
+                {toggleButton === 'up' ? 'LIKED EVENTS' : 'REGISTERED EVENTS'}
+              </h2>
             </article>
           </section>
         </header>
         <main>
-          <section className={styles.favorite_section}>
+          <section className={style.favorite_section}>
             <article>
               <ToggleFavoritesBar
-                styles={styles}
+                styles={style}
                 onHandleToggleButton={handleToggleButton}
                 toggleButton={toggleButton}
               />
             </article>
-            <article className={styles.favorite_output_wrapper}>
+            <article className={style.favorite_output_wrapper}>
               {isLoading ? (
                 <div style={{ marginTop: '200px' }}>
                   <LoadingElement />
@@ -148,7 +150,7 @@ export function Favorites({ children }) {
                 </>
               )}
             </article>
-            <article className={styles.favorite_button_wrapper}>
+            <article className={style.favorite_button_wrapper}>
               <DynamicTriggerButton hasArrow={true} onTriggerEventFn={navigateToSearchEvents}>
                 SEARCH EVENTS
               </DynamicTriggerButton>

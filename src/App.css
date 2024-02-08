@@ -4,3 +4,8 @@
   background-color: rgb(36, 36, 36);
   color: white;
 }
+
+.slick-slide {
+  margin: 0 3vw;
+  padding: 1vh 2vw;
+}

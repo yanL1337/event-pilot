@@ -5,11 +5,14 @@ import style from "./css/Review.module.css";
 import { Header } from "../components/header/Header";
 import { Rating } from "react-simple-star-rating";
 import { displayFavMessage } from "../utils/helperFunction";
-import { SetFavoriteMessageContext } from "../context/context";
+import { SetFavoriteMessageContext, ThemeContext } from "../context/context";
+import LoadingElement from "../components/loading/LoadingElement";
 
 export function Review() {
+  const { theme } = useContext(ThemeContext);
   const [creator, setCreator] = useState([]);
   const [rating, setRating] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const { id } = useParams();
 
   const navigate = useNavigate();
@@ -35,7 +38,7 @@ export function Review() {
         setFavMessage(null);
       }
     };
-  }, []);
+  }, [id]);
 
   //   - Review in db speichern
   const sendReview = async () => {
@@ -46,19 +49,18 @@ export function Review() {
       rating: rating,
     };
     try {
+      setIsLoading(true);
       const response = await pb.collection("reviews").create(review);
-
-      console.log(response);
 
       if (response.rating > 0 && response.rating < 6) {
         displayFavMessage(
-          `Deine Review wurde gespeichert`,
+          `Your review has been saved`,
           setFavMessage,
           favMessageTimer
         );
       } else {
         displayFavMessage(
-          `Upps, deine Review konnte nicht gespeichert werden.`,
+          `Oops, your review couldn't be saved.`,
           setFavMessage,
           favMessageTimer
         );
@@ -67,7 +69,8 @@ export function Review() {
       console.log(error);
     }
     setTimeout(() => {
-      navigate(`/creator/${id}`);
+      setIsLoading(false);
+      navigate(`/creator/${id}`, { state: "review" });
     }, 1500);
   };
 
@@ -78,34 +81,47 @@ export function Review() {
 
   if (creator) {
     return (
-      <>
-        <Header
-          headertext={`Review ${creator.firstname} ${creator.lastname}`}
-        />
-        <main className={style.wrapper1}>
-          <div>
-            <img
-              className={style.creatorprofil_img}
-              src={`${pb.baseUrl}/api/files/${creator.collectionId}/${creator.id}/${creator.profilImage}`}
-              alt="Profilbild"
-            />
-          </div>
-          <div>
-            <Rating
-              onClick={handleRating}
-              fillColor="#00ECAA"
-              className={style.stars}
-            />
-            <div className={style.commentdiv}>
-              <label className={style.label}>★ Your Review</label>
-              <input type="text" ref={commentRef} className={style.input} />
+      <section className={theme ? style.dark : null}>
+        <article className={style.article}>
+          <Header
+            headertext={`Review ${creator.firstname}`}
+            className={style.header}
+          />
+          <main className={style.wrapper1}>
+            <div>
+              <img
+                className={style.creatorprofil_img}
+                src={`${pb.baseUrl}/api/files/${creator.collectionId}/${creator.id}/${creator.profilImage}`}
+                alt="Profilbild"
+              />
             </div>
-          </div>
-          <button className={style.button} onClick={sendReview}>
-            SUBMIT
-          </button>
-        </main>
-      </>
+            <div>
+              <Rating
+                onClick={handleRating}
+                fillColor="#00ECAA"
+                className={style.stars}
+              />
+              <div className={style.commentdiv}>
+                {/* <label className={style.label}>★ Your Review</label> */}
+                //#######
+                <textarea
+                  type="text"
+                  placeholder="★ Your Review"
+                  ref={commentRef}
+                  className={style.input}
+                />
+              </div>
+            </div>
+            {!isLoading ? (
+              <button className={style.button} onClick={sendReview}>
+                SUBMIT
+              </button>
+            ) : (
+              <LoadingElement />
+            )}
+          </main>
+        </article>
+      </section>
     );
   }
 }

@@ -5,12 +5,28 @@
   z-index: -5;
 }
 
-.eventDetails {
+.main {
+  min-height: 100vh;
+}
+
+.eventDetails a {
   display: flex;
   align-items: center;
   gap: 10px;
   color: white;
-  margin: -65% 0 60% 5%;
+  position: absolute;
+  top: 1%;
+  left: 5%;
+}
+
+.eventDetails h1 {
+  position: absolute;
+  top: 1%;
+  left: 25%;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .bookmark {
@@ -28,7 +44,7 @@
   padding: 16px 20px;
   border-radius: 15px;
   box-shadow: 0 0 10px lightgray;
-
+  position: relative;
   font-weight: 500;
   font-size: 1.5rem;
   background-color: white;
@@ -140,4 +156,27 @@
   height: 75px;
   object-fit: cover;
   border-radius: 15px;
+}
+
+/* Darkmode */
+
+.dark .registered {
+  background-color: rgb(36, 36, 36);
+  box-shadow: 0 0 10px #121212;
+}
+
+.dark .eventname {
+  color: white;
+}
+
+.dark .creatorname p:nth-of-type(1) {
+  color: white;
+}
+
+.dark .description p {
+  color: white;
+}
+
+.dark .div p {
+  color: white;
 }

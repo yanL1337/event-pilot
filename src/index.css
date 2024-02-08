@@ -1,16 +1,16 @@
 @font-face {
   font-family: Inter;
-  src: url("./assets/fonts/Inter-VariableFont_slnt_wght.ttf");
+  src: url('./assets/fonts/Inter-VariableFont_slnt_wght.ttf');
 }
 
 @font-face {
   font-family: Oswald;
-  src: url("./assets/fonts/Oswald-VariableFont_wght.ttf");
+  src: url('./assets/fonts/Oswald-VariableFont_wght.ttf');
 }
 
 @font-face {
   font-family: KumbhSans;
-  src: url("./assets/fonts/KumbhSans-VariableFont_YOPQ_wght.ttf");
+  src: url('./assets/fonts/KumbhSans-VariableFont_YOPQ_wght.ttf');
 }
 
 * {

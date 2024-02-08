@@ -1,0 +1,84 @@
+.wrapper {
+  min-height: 100vh;
+}
+
+.logininput {
+  width: 85%;
+  margin: 0 auto 20px auto;
+  display: block;
+}
+
+.link {
+  font-weight: 100;
+  font-size: 1.4rem;
+  color: #a6a6a6;
+  margin-left: 15vw;
+  padding-bottom: 10vh;
+}
+
+.imglogo {
+  width: 50px;
+  height: 50px;
+  display: block;
+  margin: 10vh auto 10px auto;
+}
+
+.headline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.event {
+  color: #5d3ede;
+  font-size: 3.5rem;
+  font-weight: 500;
+}
+
+.pilot {
+  color: #00ecaa;
+  font-size: 3.5rem;
+  font-weight: 500;
+}
+
+.signin {
+  color: #120d26;
+  font-size: 2.4rem;
+  margin: 0 0 20px 7.5%;
+  font-weight: 500;
+}
+
+.wrapper .inputfile {
+  width: 85%;
+  margin: 0 auto 20px auto;
+  display: block;
+}
+
+.logininputlast {
+  margin: 0 auto 37vh auto;
+  width: 85%;
+
+  display: block;
+}
+
+.warning {
+  color: tomato;
+  font-size: 1.6rem;
+  position: fixed;
+  top: 50vh;
+  left: 7.5%;
+  width: 85%;
+  text-align: center;
+  animation: warning 1.5s;
+}
+
+@keyframes warning {
+  0% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}

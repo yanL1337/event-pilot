@@ -80,9 +80,11 @@ const CategoryOutput = ({ viewEventData, isLoading, eventFilter }) => {
           );
         })
       ) : (
-        <p>Keine Events gefunden</p>
+        <p style={{ textAlign: 'center' }}>no events found</p>
       )}
-      {next < viewEventData?.length && <LoadMoreButton handleMoreEvents={handleMoreEvents} />}
+      {next < viewEventData?.length && !isLoading && (
+        <LoadMoreButton handleMoreEvents={handleMoreEvents} />
+      )}
     </article>
   );
 };

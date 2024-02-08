@@ -1,4 +1,5 @@
 import { useState } from "react";
+import style from "../../pages/css/UserProfil.module.css";
 
 const AddInterest = ({ addInterest }) => {
   const [showModal, setShowModal] = useState(false);
@@ -24,21 +25,12 @@ const AddInterest = ({ addInterest }) => {
 
   return (
     <div>
-      <div
-        onClick={toggleModal}
-        style={{
-          marginTop: "2vh",
-          background: "rgba(93, 62, 222, 0.30)",
-          padding: "2vw",
-          borderRadius: "20px",
-          cursor: "pointer", // Mauszeiger ändern, um Klickbarkeit anzuzeigen
-        }}
-      >
-        Add +
+      <div onClick={toggleModal} className={style.selectinterest}>
+        Add Interest
       </div>
 
       {showModal && (
-        <dialog style={{ padding: "5px" }} open>
+        <dialog className={style.addinterest} open>
           <select onChange={add}>
             <option>Select Interest</option>
             {userInterests.map((interest, index) => {
@@ -49,7 +41,9 @@ const AddInterest = ({ addInterest }) => {
               );
             })}
           </select>
-          <button onClick={toggleModal}>X</button>
+          <button className={style.x} onClick={toggleModal}>
+            X
+          </button>
         </dialog>
       )}
     </div>

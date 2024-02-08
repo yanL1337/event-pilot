@@ -1,5 +1,6 @@
-import { useEffect, useReducer, useState } from 'react';
+import { useEffect, useReducer, useState, useContext } from 'react';
 import { initialEventState, reducer, validateEventForm } from '../../utils/stateHandler';
+import { ThemeContext } from '../../context/context';
 import { getCityFromLocation } from '../../utils/geoLocation';
 import { getCategories, lockLastDays } from '../../utils/helperFunction';
 import useLocalStorage from '../../hooks/useLocalStorage';
@@ -21,6 +22,7 @@ import {
 import { germanCities } from '../../utils/data';
 
 const AddEventForm = () => {
+  const { theme } = useContext(ThemeContext);
   const [citySuggestions, setCitySuggestion] = useState([]);
   const [eventData, eventFormDispatch] = useReducer(reducer, initialEventState);
   const [addSuccess, setAddSuccess] = useState(false);
@@ -32,12 +34,20 @@ const AddEventForm = () => {
     // Hole Location und sette den state
     getCityFromLocation().then((city) => {
       if (city) {
-        eventFormDispatch({ type: 'SET_FIELD', field: 'location', value: city });
+        eventFormDispatch({
+          type: 'SET_FIELD',
+          field: 'location',
+          value: city,
+        });
       }
     });
 
     // Setzen den Creator
-    eventFormDispatch({ type: 'SET_FIELD', field: 'creator', value: userDataAuth[0].model.id });
+    eventFormDispatch({
+      type: 'SET_FIELD',
+      field: 'creator',
+      value: userDataAuth[0].model.id,
+    });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -67,12 +77,17 @@ const AddEventForm = () => {
       setAddSuccess(true);
       return;
     }
+    setIsLoading(false);
   };
 
   const handleChangeEventFormData = (e) => {
     // Die File müssen wir anders behandeln
     if (e.target.name === 'image') {
-      eventFormDispatch({ type: 'SET_FIELD', field: e.target.name, value: e.target.files[0] });
+      eventFormDispatch({
+        type: 'SET_FIELD',
+        field: e.target.name,
+        value: e.target.files[0],
+      });
 
       // Wir müssen die upload datei anzeigen lassen hinter dem Button
       const file = e.target.files[0];
@@ -83,7 +98,11 @@ const AddEventForm = () => {
       return;
     }
 
-    eventFormDispatch({ type: 'SET_FIELD', field: e.target.name, value: e.target.value });
+    eventFormDispatch({
+      type: 'SET_FIELD',
+      field: e.target.name,
+      value: e.target.value,
+    });
 
     if (e.target.name === 'location') {
       handleCitySuggestionClick(e.target.name, e.target.value);
@@ -119,17 +138,17 @@ const AddEventForm = () => {
   };
 
   return (
-    <section className={styles.section}>
-      <article
-        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100vw' }}
-      >
-        <form
-          onSubmit={onSubmitForm}
-          style={{ display: 'flex', flexDirection: 'column', gap: '32px', width: '100%' }}
-        >
-          <div style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
-            <label htmlFor="name"></label>
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+    <section className={theme ? styles.dark : null}>
+      <article className={styles.section}>
+        <form onSubmit={onSubmitForm}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              position: 'relative',
+            }}
+          >
+            <div className={styles.wrapperdiv}>
               <FontAwesomeIcon
                 icon={faBarsStaggered}
                 style={{
@@ -138,7 +157,7 @@ const AddEventForm = () => {
                   position: 'absolute',
 
                   left: '16px',
-                  top: '22.5%',
+                  top: '15%',
                 }}
               />
               <input
@@ -157,7 +176,13 @@ const AddEventForm = () => {
               )}
             </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              position: 'relative',
+            }}
+          >
             <label htmlFor="category"></label>
             <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
               <FontAwesomeIcon
@@ -167,7 +192,7 @@ const AddEventForm = () => {
                   height: '30px',
                   position: 'absolute',
                   left: '16px',
-                  top: '22.5%',
+                  top: '15%',
                 }}
               />
               <select
@@ -192,7 +217,13 @@ const AddEventForm = () => {
               )}
             </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              position: 'relative',
+            }}
+          >
             <label htmlFor="date"></label>
             <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
               <FontAwesomeIcon
@@ -202,7 +233,7 @@ const AddEventForm = () => {
                   height: '30px',
                   position: 'absolute',
                   left: '16px',
-                  top: '22.5%',
+                  top: '15%',
                 }}
               />
               <input
@@ -222,7 +253,13 @@ const AddEventForm = () => {
               )}
             </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              position: 'relative',
+            }}
+          >
             <label htmlFor="location"></label>
             <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
               <FontAwesomeIcon
@@ -232,12 +269,16 @@ const AddEventForm = () => {
                   height: '30px',
                   position: 'absolute',
                   left: '16px',
-                  top: '22.5%',
+                  top: '15%',
                 }}
                 onClick={() => {
                   getCityFromLocation().then((city) => {
                     if (city) {
-                      eventFormDispatch({ type: 'SET_FIELD', field: 'location', value: city });
+                      eventFormDispatch({
+                        type: 'SET_FIELD',
+                        field: 'location',
+                        value: city,
+                      });
                     }
                   });
                 }}
@@ -291,7 +332,13 @@ const AddEventForm = () => {
               )}
             </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              position: 'relative',
+            }}
+          >
             <label htmlFor="description"></label>
             <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
               <FontAwesomeIcon
@@ -301,7 +348,7 @@ const AddEventForm = () => {
                   height: '30px',
                   position: 'absolute',
                   left: '16px',
-                  top: '7%',
+                  top: '5%',
                 }}
               />
               <textarea
@@ -328,11 +375,17 @@ const AddEventForm = () => {
               <FontAwesomeIcon icon={faUpload} style={{ color: 'gray', height: '30px' }} />
               <span> Event Image Upload</span>
             </label>
-            <input type="file" name="image" id="image" onChange={handleChangeEventFormData} />
+            <input
+              className={styles.uploadfile}
+              type="file"
+              name="image"
+              id="image"
+              onChange={handleChangeEventFormData}
+            />
             {selectedImage && (
               <div className={styles.imagePreview}>
                 <p onClick={handleClearImage}>Clear Image</p>
-                <img src={selectedImage} alt="Event" style={{ width: '100%', marginTop: '10px' }} />
+                <img src={selectedImage} alt="Event" />
               </div>
             )}
           </div>
@@ -353,7 +406,14 @@ const AddEventForm = () => {
           <div className={styles.successmessage_box}>
             <FontAwesomeIcon icon={faThumbsUp} />
             <p>Sie haben das Event erfolgreich angelegt</p>
-            <div style={{ display: 'flex', gap: '12px' }}>
+
+            <div
+              style={{
+                display: 'flex',
+                gap: '12px',
+                alignItems: 'center',
+              }}
+            >
               <Link to="/home" className={styles.successmessage_box_elements}>
                 Zurück zu Events
               </Link>

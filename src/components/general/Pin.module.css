@@ -1,11 +1,19 @@
 .pin {
-  background-color: var(--firstBGColor);
+  background-color: transparent;
   padding: 7.5px;
-  color: white;
+  color: var(--firstBGColor);
   font-size: 1.5rem;
   border-radius: 10px;
   font-weight: 400;
   display: flex;
   align-items: center;
   gap: 8px;
+  border: 1px solid var(--firstBGColor);
+  margin-top: 20px;
+}
+
+.pin span {
+  color: "#00ECAA";
+  font-weight: 100;
+  font-size: 1.8rem;
 }
