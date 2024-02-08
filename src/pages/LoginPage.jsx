@@ -6,12 +6,13 @@ import DynamicTriggerButton from '../components/buttons/DynamicTriggerButton.jsx
 import style from './css/Login.module.css';
 import LoadingElement from '../components/loading/LoadingElement.jsx';
 
+
 const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
   const emailRef = useRef();
   const passRef = useRef();
   const navigate = useNavigate();
+  const [fehlgeschlagen, setFehlgeschlagen] = useState();
 
   const sendData = async () => {
     try {
@@ -20,11 +21,10 @@ const LoginPage = () => {
       setIsLoading(false);
       navigate('/home');
     } catch (error) {
+
+      setFehlgeschlagen(true);
       setIsLoading(false);
-      setErrorMessage('Wrong Credentials');
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+      
       console.log(error);
     }
   };
@@ -53,22 +53,12 @@ const LoginPage = () => {
           type="password"
           placeholder="Password"
         />
-        {errorMessage && (
-          <p
-            style={{
-              position: 'absolute',
-              bottom: '25%',
-              width: '100%',
-              backgroundColor: 'pink',
-              padding: '5px',
-              color: 'darkred',
-              textAlign: 'center',
-              fontSize: '2rem',
-            }}
-          >
-            {errorMessage}
+        
+        {fehlgeschlagen ? (
+          <p className={style.warning}>
+            Oops, that went wrong, please check your email address and password.
           </p>
-        )}
+        ) : null}
 
         <div>
           {!isLoading ? (

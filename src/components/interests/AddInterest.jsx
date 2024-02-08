@@ -30,7 +30,7 @@ const AddInterest = ({ addInterest }) => {
       </div>
 
       {showModal && (
-        <dialog style={{ padding: "5px" }} open>
+        <dialog className={style.addinterest} open>
           <select onChange={add}>
             <option>Select Interest</option>
             {userInterests.map((interest, index) => {
@@ -41,7 +41,9 @@ const AddInterest = ({ addInterest }) => {
               );
             })}
           </select>
-          <button onClick={toggleModal}>X</button>
+          <button className={style.x} onClick={toggleModal}>
+            X
+          </button>
         </dialog>
       )}
     </div>

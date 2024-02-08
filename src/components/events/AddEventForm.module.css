@@ -3,6 +3,7 @@
   position: relative;
   width: 85%;
   margin: 0 auto 0 auto;
+  min-height: 100vh;
 }
 
 .button {
@@ -11,17 +12,13 @@
 
 .fields {
   font-size: 1.75rem;
-  box-shadow: 1px 1px 20px rgb(221, 219, 219);
+  box-shadow: 0px 0px 10px rgb(221, 219, 219);
   padding: 20px 0 20px 60px;
   border: none;
   width: 100%;
   border-radius: 15px;
   margin: 0 auto 20px auto;
   display: block;
-}
-
-div > .button {
-  width: 100%;
 }
 
 .errormessage {
@@ -51,7 +48,7 @@ div > .button {
 
 .successmessage_wrapper > div {
   padding: 25px;
-  width: 375px;
+  width: 85%;
   height: 150px;
   top: 50%;
   left: 50%;
@@ -62,7 +59,9 @@ div > .button {
 .successmessage_box_elements {
   font-size: 1.5rem;
   color: var(--linkColor);
-  font-weight: 800;
+  font-weight: 400;
+  margin: 0;
+  padding: 0;
 }
 
 .successmessage_box {
@@ -73,13 +72,13 @@ div > .button {
   justify-content: center;
   align-items: center;
   background-color: var(--selectedColor);
-  width: 250px;
+  width: 70vw;
   height: 100px;
-  border-radius: 25px;
+  border-radius: 15px;
   text-align: center;
   color: white;
   font-size: 2rem;
-  font-weight: bold;
+  font-weight: 100;
 }
 
 .imagePreview {
@@ -90,20 +89,23 @@ div > .button {
 
 .imagePreview p {
   position: absolute;
-  color: var(--firstFontColor);
-  font-weight: 800;
+  color: #00ecaa;
+  font-weight: 200;
   font-size: 1.75rem;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: var(--selectedColor);
-  padding: 5px;
+  border: 1px solid #00ecaa;
+  background-color: white;
+  padding: 10px 20px;
   border-radius: 15px;
 }
 
 .imagePreview img {
   height: 300px;
   object-fit: cover;
+  margin: 20px 0;
+  border-radius: 15px;
 }
 
 input[type='file'] {
@@ -113,7 +115,6 @@ input[type='file'] {
 .custom_file_upload {
   display: inline-block;
   padding: 20px 12px;
-
   cursor: pointer;
   display: flex;
   font-size: 1.75rem;
@@ -122,7 +123,7 @@ input[type='file'] {
   gap: 16px;
   align-items: center;
   border-radius: 15px;
-  box-shadow: 1px 1px 20px rgb(221, 219, 219);
+  box-shadow: 0px 0px 10px rgb(221, 219, 219);
 }
 
 .wrapperdiv {
@@ -133,6 +134,20 @@ input[type='file'] {
 
 .uploadfile {
   margin-bottom: 3ßpx;
+}
+
+.dark .fields {
+  background-color: rgb(36, 36, 36);
+  box-shadow: 0 0 10px #121212;
+  color: #848484;
+}
+
+.dark .custom_file_upload {
+  box-shadow: 0 0 10px #121212;
+}
+
+.dark .imagePreview p {
+  background-color: rgb(36, 36, 36);
 }
 
 @keyframes zoomIn {

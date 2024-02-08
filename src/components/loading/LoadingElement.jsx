@@ -1,11 +1,15 @@
+import style from "./LoadingElement.module.css";
 import PropTypes from 'prop-types';
 
 const LoadingElement = ({ dynamicHeight }) => {
-  const heightStyle = dynamicHeight ? `${dynamicHeight}px` : '75px';
-
+  const heightStyle = dynamicHeight ? `${dynamicHeight}px` : '10%';
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
-      <img src="/images/LoadingAnimation.gif" alt="is loading..." style={{ height: heightStyle }} />
+    <div className={style.loadingelement}>
+      <img
+        src="/images/Logo.png"
+        alt="is loading..."
+        style={{ height: heightStyle }}
+      />
     </div>
   );
 };

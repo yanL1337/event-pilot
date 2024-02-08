@@ -56,7 +56,29 @@
 }
 
 .logininputlast {
-  width: 85%;
   margin: 0 auto 37vh auto;
+  width: 85%;
+
   display: block;
+}
+
+.warning {
+  color: tomato;
+  font-size: 1.6rem;
+  position: fixed;
+  top: 50vh;
+  left: 7.5%;
+  width: 85%;
+  text-align: center;
+  animation: warning 1.5s;
+}
+
+@keyframes warning {
+  0% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }

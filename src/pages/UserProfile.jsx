@@ -1,18 +1,20 @@
-
-import PropTypes from 'prop-types';
-import { useEffect, useRef, useState } from 'react';
-import pb from '../lib/pocketbase.js';
-import editProfile from '/images/EditIcon.svg';
-import Following from '../components/following/Following.jsx';
-import Interests from '../components/interests/Interests.jsx';
-import OwnEvent from '../components/events/OwnEvent.jsx';
-import { Header } from '../components/header/Header.jsx';
+import PropTypes from "prop-types";
+import { useEffect, useRef, useState, useContext } from "react";
+import pb from "../lib/pocketbase.js";
+import editProfile from "/images/EditIcon.svg";
+import Following from "../components/following/Following.jsx";
+import Interests from "../components/interests/Interests.jsx";
+import { OwnEvent } from "../components/events/OwnEvent.jsx";
+import { Header } from "../components/header/Header.jsx";
+import style from "./css/UserProfil.module.css";
+import { ThemeContext } from "../context/context";
+import FallbackLoadingScreen from "../components/loading/FallbackLoadingScreen.jsx";
 import FlipMove from 'react-flip-move';
-import style from './css/UserProfil.module.css';
 
 
 
 export const UserProfile = ({ children }) => {
+  const { theme } = useContext(ThemeContext);
   const [user, setUser] = useState();
   const [edit, setEdit] = useState(false);
   const [changes, setChanges] = useState({});
@@ -147,8 +149,9 @@ export const UserProfile = ({ children }) => {
             </>
           ) : (
             //* wird beim EditProfil Button angezeigt
-            //submitChanges, changes, handleInputChange
             <>
+
+            <section className={theme ? style.dark : ""}>
               <Header headertext={`Edit Profile`} />
               <form onSubmit={submitChanges}>
                 <div className={style.editimg}>
@@ -171,41 +174,43 @@ export const UserProfile = ({ children }) => {
                       id="file-input"
                       type="file"
                     />
+
                   </div>
-                </div>
 
-                <input
-                  className={style.input}
-                  name="firstname"
-                  placeholder="First Name"
-                  value={changes.firstname || ''}
-                  onChange={handleInputChange}
-                />
-                <input
-                  className={style.input}
-                  name="lastname"
-                  placeholder="Last Name"
-                  value={changes.lastname || ''}
-                  onChange={handleInputChange}
-                />
 
-                <textarea
-                  className={style.textinput}
-                  name="description"
-                  placeholder="About me"
-                  value={changes.description || ''}
-                  onChange={handleInputChange}
-                />
+                  <input
+                    className={style.input}
+                    name="firstname"
+                    placeholder="First Name"
+                    value={changes.firstname || ""}
+                    onChange={handleInputChange}
+                  />
+                  <input
+                    className={style.input}
+                    name="lastname"
+                    placeholder="Last Name"
+                    value={changes.lastname || ""}
+                    onChange={handleInputChange}
+                  />
 
-                <Interests
-                  changes={changes}
-                  setChanges={setChanges}
-                  edit={edit}
-                />
-                <button className={style.savebutton} type="submit">
-                  <p>Save changes</p>
-                </button>
-              </form>
+                  <textarea
+                    className={style.textinput}
+                    name="description"
+                    placeholder="About me"
+                    value={changes.description || ""}
+                    onChange={handleInputChange}
+                  />
+
+                  <Interests
+                    changes={changes}
+                    setChanges={setChanges}
+                    edit={edit}
+                  />
+                  <button className={style.savebutton} type="submit">
+                    <p>Save changes</p>
+                  </button>
+                </form>
+              </section>
             </>
           )}
         </section>
@@ -215,33 +220,42 @@ export const UserProfile = ({ children }) => {
     // * wird bei Events angezeigt
   } else if (user) {
     return (
-      <section className={style.wrapper}>
-        <Header headertext={`${user.firstname} ${user.lastname}`} />
-        <img
-          className={style.profilimg}
-          src={`https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage}`}
-        />
+      <>
+        {" "}
+        <section className={style.wrapper}>
+          <Header headertext={`${user.firstname} ${user.lastname}`} />
+          <img
+            className={style.profilimg}
+            src={`https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage}`}
+          />
 
-        <div className={style.followdiv}>
-          <div className={style.follow}>
-            <Following user={user} />
-            <p className={style.light}>Following</p>
+          <div className={style.followdiv}>
+            <div className={style.follow}>
+              <Following user={user} />
+              <p className={style.light}>Following</p>
+            </div>
+            <div>
+              <p>{user?.follower.length}</p>
+              <p className={style.light}>Followers</p>
+            </div>
           </div>
-          <div>
-            <p>{user?.follower.length}</p>
-            <p className={style.light}>Followers</p>
-          </div>
-        </div>
-        <div className={style.tabs}>
-          <button className={colorAbout ? style.activeTab : null} onClick={about}>
-            ABOUT
-          </button>
-          <button className={colorEvents ? style.activeTab : null} onClick={events}>
-            EVENTS
-          </button>
-        </div>
 
+          <div className={style.tabs}>
+            <button
+              className={colorAbout ? style.activeTab : null}
+              onClick={about}
+            >
+              ABOUT
+            </button>
+            <button
+              className={colorEvents ? style.activeTab : null}
+              onClick={events}
+            >
+              EVENTS
+            </button>
+          </div>
         <FlipMove>
+
           {ownEvents.length > 0 ? (
             ownEvents?.map((singleEvent) => {
               return (
@@ -256,21 +270,26 @@ export const UserProfile = ({ children }) => {
           ) : (
             <div
               style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop: '30%',
-                gap: '20px',
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                marginTop: "30%",
+                gap: "20px",
               }}
             >
               <h2>You aren’t hosting any events yet</h2>
             </div>
           )}
-        </FlipMove>
+
+            </FlipMove>
+        </section>
+
         {children}
-      </section>
+      </>
     );
+  } else {
+    return <FallbackLoadingScreen />;
   }
 };
 

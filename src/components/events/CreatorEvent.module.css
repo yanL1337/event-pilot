@@ -69,3 +69,16 @@
 .wrapper {
   position: relative;
 }
+
+.dark .categoryOutput_box {
+  background-color: rgb(36, 36, 36);
+  box-shadow: 0 0 10px #121212;
+}
+
+.dark .categoryOutput_box_info h2 {
+  color: white;
+}
+
+.dark .categoryOutput_box_info p {
+  color: #9c9ffc;
+}
