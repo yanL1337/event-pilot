@@ -30,3 +30,12 @@
 .output {
   flex-direction: column;
 }
+
+.nearby {
+  text-align: center;
+  font-size: 1.6rem;
+  margin: 20px auto 40px auto;
+  color: #876afd;
+  width: 85%;
+  font-weight: 100;
+}
