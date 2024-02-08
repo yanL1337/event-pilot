@@ -220,7 +220,7 @@ export const getEventFavorites = async () => {
       expand: 'favoriteEvents',
     });
 
-    return record.favoriteEvents;
+    return record.expand.favoriteEvents;
   } catch (error) {
     return null;
   }
@@ -229,18 +229,7 @@ export const getEventFavorites = async () => {
 export const getEventFavoritesData = async () => {
   try {
     // holen uns erstmal alle fav ids
-    const favIds = await getEventFavorites();
-    const returnFavArr = [];
-
-    const allExistingEvents = await pb.collection('events').getFullList();
-
-    for (const eventObj of allExistingEvents) {
-      favIds.forEach((fav) => {
-        if (fav === eventObj.id) {
-          returnFavArr.push(eventObj);
-        }
-      });
-    }
+    const returnFavArr = await getEventFavorites();
 
     return returnFavArr;
   } catch (error) {
