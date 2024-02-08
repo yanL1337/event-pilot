@@ -43,6 +43,13 @@ const RegisterPage = () => {
             type="text"
             placeholder="Nachname"
           />
+
+          <input
+            className={style.logininput}
+            name="description"
+            id="description"
+            placeholder="About me"
+          />
           <input
             className={style.logininput}
             name="email"
@@ -79,7 +86,7 @@ const RegisterPage = () => {
           </div>
         </form>
         <Link className={style.link} to={"/"} href="#">
-          Already have an account?
+          Already have an account? Login
         </Link>
       </div>
     </section>

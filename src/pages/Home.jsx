@@ -15,10 +15,9 @@ import style from "./css/Home.module.css";
 import OutputHome from "../components/general/OutputHome";
 import FallbackLoadingScreen from "../components/loading/FallbackLoadingScreen";
 
-export function Home({ children }) {
-  const [events, setEvents] = useState([]);
+export function Home({ children, events, nearby }) {
   const [userLoc, setUserLoc] = useState([]);
-  const [nearby, setNearby] = useState([]);
+
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const favContext = useRef(null);
@@ -33,27 +32,6 @@ export function Home({ children }) {
   }, []);
 
   useEffect(() => {
-    console.log("dawdawda");
-    const getEvents = async () => {
-      const events = await pb
-        .collection("events")
-        .getFullList({ sort: "date" });
-      setEvents(events);
-      //console.log(events);
-    };
-    getEvents();
-  }, []);
-
-  useEffect(() => {
-    const getLoc = () => {
-      getCityFromLocation().then((city) =>
-        setNearby(events?.filter((ev) => ev?.location == city))
-      );
-    };
-
-    getLoc();
-    //hier eigentlich userLoc
-
     setRandomEvent(events[Math.floor(Math.random() * 10)]);
   }, [events]);
 
