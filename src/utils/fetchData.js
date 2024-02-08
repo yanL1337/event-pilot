@@ -253,19 +253,10 @@ export const getRegisteredEventsByUser = async () => {
     const userId = pb.authStore.model.id;
 
     const registeredEvents = await pb.collection('users').getOne(userId, {
-      expand: 'registeredUsers',
-      fields: 'registeredEvents',
+      expand: 'registeredEvents',
     });
 
-    let detailedEvents = [];
-
-    for (const eventID of registeredEvents.registeredEvents) {
-      const detail = await pb.collection('events').getOne(eventID);
-
-      detailedEvents.push(detail);
-    }
-
-    return detailedEvents;
+    return registeredEvents.expand.registeredEvents;
   } catch (error) {
     console.log(error);
   }

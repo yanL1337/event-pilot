@@ -1,14 +1,9 @@
-import { useEffect, useReducer, useState, useContext } from "react";
-import {
-  initialEventState,
-  reducer,
-  validateEventForm,
-} from "../../utils/stateHandler";
-import { ThemeContext } from "../../context/context";
-import { getCityFromLocation } from "../../utils/geoLocation";
-import { getCategories, lockLastDays } from "../../utils/helperFunction";
-import useLocalStorage from "../../hooks/useLocalStorage";
-
+import { useEffect, useReducer, useState, useContext } from 'react';
+import { initialEventState, reducer, validateEventForm } from '../../utils/stateHandler';
+import { ThemeContext } from '../../context/context';
+import { getCityFromLocation } from '../../utils/geoLocation';
+import { getCategories, lockLastDays } from '../../utils/helperFunction';
+import useLocalStorage from '../../hooks/useLocalStorage';
 
 /* CSS */
 import styles from './AddEventForm.module.css';
@@ -82,6 +77,7 @@ const AddEventForm = () => {
       setAddSuccess(true);
       return;
     }
+    setIsLoading(false);
   };
 
   const handleChangeEventFormData = (e) => {
@@ -413,18 +409,15 @@ const AddEventForm = () => {
 
             <div
               style={{
-                display: "flex",
-                gap: "12px",
-                alignItems: "center",
+                display: 'flex',
+                gap: '12px',
+                alignItems: 'center',
               }}
             >
               <Link to="/home" className={styles.successmessage_box_elements}>
                 Zurück zu Events
               </Link>
-              <p
-                className={styles.successmessage_box_elements}
-                onClick={resetForm}
-              >
+              <p className={styles.successmessage_box_elements} onClick={resetForm}>
                 Neues Event anlegen
               </p>
             </div>

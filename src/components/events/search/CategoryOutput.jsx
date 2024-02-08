@@ -1,16 +1,16 @@
-import PropTypes from "prop-types";
-import Pin from "../../general/Pin";
-import LoadingElement from "../../loading/LoadingElement";
-import OutputItem from "../../general/OutputItem";
+import PropTypes from 'prop-types';
+import Pin from '../../general/Pin';
+import LoadingElement from '../../loading/LoadingElement';
+import OutputItem from '../../general/OutputItem';
 
 const eventsPerRow = 6;
 
 /* CSS */
-import styles from "./CategoryOutput.module.css";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { getEventFavorites } from "../../../utils/fetchData";
-import { formatDateToString } from "../../../utils/helperFunction";
-import LoadMoreButton from "../../buttons/LoadMoreButton";
+import styles from './CategoryOutput.module.css';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { getEventFavorites } from '../../../utils/fetchData';
+import { formatDateToString } from '../../../utils/helperFunction';
+import LoadMoreButton from '../../buttons/LoadMoreButton';
 
 const CategoryOutput = ({ viewEventData, isLoading, eventFilter }) => {
   const [allFavorites, setAllFavorites] = useState([]);
@@ -41,12 +41,12 @@ const CategoryOutput = ({ viewEventData, isLoading, eventFilter }) => {
               return null;
             }
 
-            if (filter === "name") {
+            if (filter === 'name') {
               return;
             }
 
-            if (filter === "date") {
-              if (eventFilter[filter].type === "equal") {
+            if (filter === 'date') {
+              if (eventFilter[filter].type === 'equal') {
                 return (
                   <Pin
                     key={crypto.randomUUID()}
@@ -54,12 +54,7 @@ const CategoryOutput = ({ viewEventData, isLoading, eventFilter }) => {
                   />
                 );
               }
-              return (
-                <Pin
-                  key={crypto.randomUUID()}
-                  value={eventFilter[filter].type}
-                />
-              );
+              return <Pin key={crypto.randomUUID()} value={eventFilter[filter].type} />;
             }
 
             if (Array.isArray(eventFilter[filter])) {
@@ -68,9 +63,7 @@ const CategoryOutput = ({ viewEventData, isLoading, eventFilter }) => {
               });
             }
 
-            return (
-              <Pin key={crypto.randomUUID()} value={eventFilter[filter]} />
-            );
+            return <Pin key={crypto.randomUUID()} value={eventFilter[filter]} />;
           })}
       </div>
       {isLoading ? (
@@ -87,7 +80,7 @@ const CategoryOutput = ({ viewEventData, isLoading, eventFilter }) => {
           );
         })
       ) : (
-        <p style={{ textAlign: "center" }}>Keine Events gefunden</p>
+        <p style={{ textAlign: 'center' }}>no events found</p>
       )}
       {next < viewEventData?.length && !isLoading && (
         <LoadMoreButton handleMoreEvents={handleMoreEvents} />

@@ -1,19 +1,15 @@
-import { useState, useEffect, useContext, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
-import pb from "../lib/pocketbase";
-import FallbackLoadingScreen from "../components/loading/FallbackLoadingScreen";
-import style from "./css/EventDetails.module.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { displayFavMessage, formatDateToString } from "../utils/helperFunction";
-import {
-  addEventFavorites,
-  addRegisteredEvents,
-  getEventFavorites,
-} from "../utils/fetchData";
-import { SetFavoriteMessageContext, ThemeContext } from "../context/context";
-import { faBookmark } from "@fortawesome/free-solid-svg-icons";
-import DynamicTriggerButton from "../components/buttons/DynamicTriggerButton";
-import { Header } from "../components/header/Header";
+import { useState, useEffect, useContext, useRef } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import pb from '../lib/pocketbase';
+import FallbackLoadingScreen from '../components/loading/FallbackLoadingScreen';
+import style from './css/EventDetails.module.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { displayFavMessage, formatDateToString } from '../utils/helperFunction';
+import { addEventFavorites, addRegisteredEvents, getEventFavorites } from '../utils/fetchData';
+import { SetFavoriteMessageContext, ThemeContext } from '../context/context';
+import { faBookmark } from '@fortawesome/free-solid-svg-icons';
+import DynamicTriggerButton from '../components/buttons/DynamicTriggerButton';
+import { Header } from '../components/header/Header';
 import LoadingElement from '../components/loading/LoadingElement';
 
 export function EventDetails() {
@@ -35,7 +31,7 @@ export function EventDetails() {
   useEffect(() => {
     const getDetailEvent = async () => {
       setIsLoading(true);
-      await fetch(pb.baseUrl + "/api/collections/events/records/" + id)
+      await fetch(pb.baseUrl + '/api/collections/events/records/' + id)
         .then((response) => response.json())
         .then((data) => {
           // Wir setten die Event details
@@ -44,9 +40,7 @@ export function EventDetails() {
           setRegisteredUserCount(data.registeredUser?.length);
 
           // Wir checken ab ob user schon registriert ist
-          const hasRegistered = data.registeredUser.some(
-            (id) => id === pb.authStore.model.id
-          );
+          const hasRegistered = data.registeredUser.some((id) => id === pb.authStore.model.id);
 
           setRegistered(hasRegistered);
           setIsLoading(false);
@@ -70,7 +64,7 @@ export function EventDetails() {
   // - fetch für Creator Daten
   useEffect(() => {
     async function getCreator() {
-      const record = await pb.collection("users").getOne(detailEvent.creator);
+      const record = await pb.collection('users').getOne(detailEvent.creator);
 
       setCreator(record);
       setInitialLoad(false);
@@ -90,15 +84,15 @@ export function EventDetails() {
         `You have registered with ${detailEvent.name}`,
         setFavMessage,
         favMessageTimer,
-        "registerEvent"
+        'registerEvent'
       );
       setRegisteredUserCount((count) => count + 1);
     } else if (!registered && !initialLoad) {
       displayFavMessage(
-        `You have logged out by ${detailEvent.name}`,
+        `You have unregister by ${detailEvent.name}`,
         setFavMessage,
         favMessageTimer,
-        "deleteEvent"
+        'deleteEvent'
       );
       setRegisteredUserCount((count) => count - 1);
     }
@@ -113,15 +107,15 @@ export function EventDetails() {
     setRegistered((cur) => !cur);
 
     const Mail = async () => {
-      await fetch(import.meta.env.VITE_BACKEND + "/sendmail", {
-        method: "POST",
+      await fetch(import.meta.env.VITE_BACKEND + '/sendmail', {
+        method: 'POST',
         body: JSON.stringify({
           email: pb.authStore.model.email,
           name: pb.authStore.model.firstname,
           event: detailEvent.name,
         }),
         headers: {
-          "content-type": "application/json",
+          'content-type': 'application/json',
         },
       });
     };
@@ -144,14 +138,14 @@ export function EventDetails() {
           `${eventName} was added as a favorite`,
           setFavMessage,
           favMessageTimer,
-          "favorites"
+          'favorites'
         );
       } else {
         displayFavMessage(
           `${eventName} has been removed from favorites`,
           setFavMessage,
           favMessageTimer,
-          "favorites"
+          'favorites'
         );
       }
 
@@ -165,7 +159,7 @@ export function EventDetails() {
   const getFavByUser = async () => {
     const response = await getEventFavorites();
     if (response) {
-      const favId = response.filter((fav) => fav === id).join("");
+      const favId = response.filter((fav) => fav === id).join('');
       setEventFavorite(favId);
     }
   };
@@ -179,43 +173,39 @@ export function EventDetails() {
             src={`${
               detailEvent.image
                 ? pb.baseUrl +
-                  "/api/files/" +
+                  '/api/files/' +
                   detailEvent.collectionId +
-                  "/" +
+                  '/' +
                   detailEvent.id +
-                  "/" +
+                  '/' +
                   detailEvent.image
-                : "/images/No_image_available.svg.png"
+                : '/images/No_image_available.svg.png'
             }`}
             alt="Image"
           />
           <div className={style.eventDetails}>
-            <Link to="/event/search" style={{ fontSize: "2rem" }}>
+            <Link to="/event/search" style={{ fontSize: '2rem' }}>
               ←
             </Link>
             <h1>Event Details</h1>
             {eventFavorite === detailEvent.id ? (
               <button
                 className={style.bookmark}
-                onClick={() =>
-                  toggleFavorites(detailEvent.id, detailEvent.name)
-                }
+                onClick={() => toggleFavorites(detailEvent.id, detailEvent.name)}
               >
                 <FontAwesomeIcon
                   icon={faBookmark}
-                  style={{ color: "#63E6BE", height: "20px", width: "20px" }}
+                  style={{ color: '#63E6BE', height: '20px', width: '20px' }}
                 />
               </button>
             ) : (
               <button
                 className={style.bookmark}
-                onClick={() =>
-                  toggleFavorites(detailEvent.id, detailEvent.name)
-                }
+                onClick={() => toggleFavorites(detailEvent.id, detailEvent.name)}
               >
                 <FontAwesomeIcon
-                  icon={["far", "bookmark"]}
-                  style={{ color: "#63E6BE", height: "25px" }}
+                  icon={['far', 'bookmark']}
+                  style={{ color: '#63E6BE', height: '25px' }}
                 />
               </button>
             )}
@@ -247,13 +237,13 @@ export function EventDetails() {
                   src={`${
                     creator.profilImage
                       ? pb.baseUrl +
-                        "/api/files/" +
+                        '/api/files/' +
                         creator.collectionId +
-                        "/" +
+                        '/' +
                         creator.id +
-                        "/" +
+                        '/' +
                         creator.profilImage
-                      : "/images/No_image_available.svg.png"
+                      : '/images/No_image_available.svg.png'
                   }`}
                   alt="Profilbild des Creators"
                 />
@@ -268,21 +258,20 @@ export function EventDetails() {
               <p>{detailEvent.description}</p>
             </div>
 
-          {!isLoadingRegister ? (
-
-            <DynamicTriggerButton
-              className={style.register}
-              hasArrow={true}
-              onTriggerEventFn={register}
-            >
-              {registered ? 'UNREGISTER' : 'REGISTER'}
-            </DynamicTriggerButton>
-          ) : (
-            <LoadingElement />
-          )}
-        </section>
-      </main>
-     </section>
+            {!isLoadingRegister ? (
+              <DynamicTriggerButton
+                className={style.register}
+                hasArrow={true}
+                onTriggerEventFn={register}
+              >
+                {registered ? 'UNREGISTER' : 'REGISTER'}
+              </DynamicTriggerButton>
+            ) : (
+              <LoadingElement />
+            )}
+          </section>
+        </main>
+      </section>
     );
   } else {
     return <FallbackLoadingScreen />;
