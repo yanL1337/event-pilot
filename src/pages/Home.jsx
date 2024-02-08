@@ -33,7 +33,7 @@ export function Home({ children }) {
   }, []);
 
   useEffect(() => {
-    console.log("test");
+    console.log("dawdawda");
     const getEvents = async () => {
       const events = await pb
         .collection("events")
