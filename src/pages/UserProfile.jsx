@@ -1,3 +1,4 @@
+
 import PropTypes from 'prop-types';
 import { useEffect, useRef, useState } from 'react';
 import pb from '../lib/pocketbase.js';
@@ -8,6 +9,8 @@ import OwnEvent from '../components/events/OwnEvent.jsx';
 import { Header } from '../components/header/Header.jsx';
 import FlipMove from 'react-flip-move';
 import style from './css/UserProfil.module.css';
+
+
 
 export const UserProfile = ({ children }) => {
   const [user, setUser] = useState();
@@ -66,6 +69,12 @@ export const UserProfile = ({ children }) => {
       console.error('Failed to update', error);
     }
   };
+
+  const [file, setFile] = useState();
+  function handleChange(e) {
+    console.log(e.target.files);
+    setFile(URL.createObjectURL(e.target.files[0]));
+  }
 
   // ##############################
   function about() {
@@ -145,14 +154,23 @@ export const UserProfile = ({ children }) => {
                 <div className={style.editimg}>
                   <img
                     className={style.profilimgedit}
-                    src={`https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage}`}
+                    src={
+                      file
+                        ? file
+                        : `https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage}`
+                    }
                   />
                   <div className={style.imgupload}>
                     <label htmlFor="file-input">
                       <img style={{ width: '7vw', cursor: 'pointer' }} src={editProfile} />
                     </label>
 
-                    <input name="profilImage" id="file-input" type="file" />
+                    <input
+                      name="profilImage"
+                      onChange={handleChange}
+                      id="file-input"
+                      type="file"
+                    />
                   </div>
                 </div>
 
@@ -179,7 +197,11 @@ export const UserProfile = ({ children }) => {
                   onChange={handleInputChange}
                 />
 
-                <Interests changes={changes} setChanges={setChanges} edit={edit} />
+                <Interests
+                  changes={changes}
+                  setChanges={setChanges}
+                  edit={edit}
+                />
                 <button className={style.savebutton} type="submit">
                   <p>Save changes</p>
                 </button>
@@ -218,6 +240,7 @@ export const UserProfile = ({ children }) => {
             EVENTS
           </button>
         </div>
+
         <FlipMove>
           {ownEvents.length > 0 ? (
             ownEvents?.map((singleEvent) => {
@@ -245,7 +268,6 @@ export const UserProfile = ({ children }) => {
             </div>
           )}
         </FlipMove>
-
         {children}
       </section>
     );
