@@ -12,7 +12,6 @@ import PropTypes from "prop-types";
 const Navbar = ({ activeName }) => {
   const { theme } = useContext(ThemeContext);
 
-  console.log(theme);
   return (
     <section className={theme ? style.dark : ""}>
       <nav className={style.navbar}>
