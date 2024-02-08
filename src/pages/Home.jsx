@@ -109,20 +109,26 @@ export function Home({ children }) {
             <h3>Nearby you</h3>
             <a onClick={navigateToNearbyEvent}>See all</a>
           </div>
-          <Slider {...settings}>
-            {user &&
-              nearby?.map((event) => (
-                <div key={event.id}>
-                  <OutputHome
-                    data={event}
-                    allFavorites={user?.favoriteEvents || []}
-                    registeredEvents={[]}
-                    favMessageTimer={favContext}
-                    isOnFavSite={false}
-                  />
-                </div>
-              ))}
-          </Slider>
+          {nearby?.length > 0 ? (
+            <Slider {...settings}>
+              {user &&
+                nearby?.map((event) => (
+                  <div key={event.id}>
+                    <OutputHome
+                      data={event}
+                      allFavorites={user?.favoriteEvents || []}
+                      registeredEvents={[]}
+                      favMessageTimer={favContext}
+                      isOnFavSite={false}
+                    />
+                  </div>
+                ))}
+            </Slider>
+          ) : (
+            <p className={style.nearby}>
+              Oh no, unfortunately there are no events near you...
+            </p>
+          )}
 
           <div className={style.random}>
             <OutputItem
