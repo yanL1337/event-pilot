@@ -245,7 +245,7 @@ export const getRegisteredEventsByUser = async () => {
       expand: 'registeredEvents',
     });
 
-    return registeredEvents.expand.registeredEvents;
+    return registeredEvents?.expand?.registeredEvents;
   } catch (error) {
     console.log(error);
   }
