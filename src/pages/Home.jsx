@@ -1,19 +1,19 @@
-import { Link, useNavigate } from "react-router-dom";
-import pb from "../lib/pocketbase";
-import { useContext, useEffect, useRef, useState } from "react";
-import OutputItem from "../components/general/OutputItem";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import LocationHeader from "../components/header/LocationHeader";
+import { Link, useNavigate } from 'react-router-dom';
+import pb from '../lib/pocketbase';
+import { useContext, useEffect, useRef, useState } from 'react';
+import OutputItem from '../components/general/OutputItem';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import LocationHeader from '../components/header/LocationHeader';
 import {
   getCurrentPosition,
   getCityFromCoordinates,
   getCityFromLocation,
-} from "../utils/geoLocation";
-import style from "./css/Home.module.css";
-import OutputHome from "../components/general/OutputHome";
-import FallbackLoadingScreen from "../components/loading/FallbackLoadingScreen";
+} from '../utils/geoLocation';
+import style from './css/Home.module.css';
+import OutputHome from '../components/general/OutputHome';
+import FallbackLoadingScreen from '../components/loading/FallbackLoadingScreen';
 
 export function Home({ children }) {
   const [events, setEvents] = useState([]);
@@ -26,7 +26,7 @@ export function Home({ children }) {
 
   useEffect(() => {
     const getUser = async () => {
-      const user = await pb.collection("users").getOne(pb.authStore.model.id);
+      const user = await pb.collection('users').getOne(pb.authStore.model.id);
       setUser(user);
     };
     getUser();
@@ -35,9 +35,7 @@ export function Home({ children }) {
   useEffect(() => {
     console.log("dawdawda");
     const getEvents = async () => {
-      const events = await pb
-        .collection("events")
-        .getFullList({ sort: "date" });
+      const events = await pb.collection('events').getFullList({ sort: 'date' });
       setEvents(events);
       //console.log(events);
     };
@@ -46,9 +44,7 @@ export function Home({ children }) {
 
   useEffect(() => {
     const getLoc = () => {
-      getCityFromLocation().then((city) =>
-        setNearby(events?.filter((ev) => ev?.location == city))
-      );
+      getCityFromLocation().then((city) => setNearby(events?.filter((ev) => ev?.location == city)));
     };
 
     getLoc();
@@ -59,7 +55,7 @@ export function Home({ children }) {
 
   const navigateToNearbyEvent = () => {
     getCityFromLocation().then((city) =>
-      navigate("/event/search", {
+      navigate('/event/search', {
         state: city,
       })
     );
@@ -75,17 +71,13 @@ export function Home({ children }) {
     autoplaySpeed: 6000,
     variableWidth: true,
     centerMode: true,
-    cssEase: "linear",
+    cssEase: 'linear',
   };
 
   if (nearby && user && events && randomEvent) {
     return (
       <>
-        <LocationHeader
-          logo={"/images/Logo.png"}
-          bgColor={"transparent"}
-          fontcolor={"#876AFD"}
-        />
+        <LocationHeader logo={'/images/Logo.png'} bgColor={'transparent'} fontcolor={'#876AFD'} />
         <section className={style.wrapper}>
           <div className={style.flex}>
             <h3>Upcoming Events</h3>
@@ -126,9 +118,7 @@ export function Home({ children }) {
                 ))}
             </Slider>
           ) : (
-            <p className={style.nearby}>
-              Oh no, unfortunately there are no events near you...
-            </p>
+            <p className={style.nearby}>Oh no, unfortunately there are no events near you...</p>
           )}
 
           <div className={style.random}>
@@ -136,7 +126,7 @@ export function Home({ children }) {
               data={randomEvent || {}}
               allFavorites={user?.favoriteEvents || []}
               registeredEvents={[]}
-              favMessageTimer={{}}
+              favMessageTimer={favContext}
               isOnFavSite={false}
             />
           </div>
