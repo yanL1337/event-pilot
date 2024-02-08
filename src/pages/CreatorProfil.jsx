@@ -279,7 +279,7 @@ export function CreatorProfil() {
             </button>
           </div>
 
-          {comments.items.map((singleComment) => {
+          {comments?.items?.map((singleComment) => {
             return (
               <div className={styles.ratingCard} key={crypto.randomUUID()}>
                 <Rating rating={singleComment.rating} />
