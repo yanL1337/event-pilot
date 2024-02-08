@@ -33,6 +33,7 @@ export function Home({ children }) {
   }, []);
 
   useEffect(() => {
+    console.log("test");
     const getEvents = async () => {
       const events = await pb
         .collection("events")
@@ -77,7 +78,7 @@ export function Home({ children }) {
     cssEase: "linear",
   };
 
-  if (nearby.length > 0 && user && events && randomEvent) {
+  if (nearby && user && events && randomEvent) {
     return (
       <>
         <LocationHeader
