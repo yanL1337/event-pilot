@@ -10,6 +10,7 @@ import style from './css/UserProfil.module.css';
 import { ThemeContext } from '../context/context';
 import FallbackLoadingScreen from '../components/loading/FallbackLoadingScreen.jsx';
 import FlipMove from 'react-flip-move';
+import LoadingElement from '../components/loading/LoadingElement.jsx';
 
 export const UserProfile = ({ children }) => {
   const { theme } = useContext(ThemeContext);
@@ -153,62 +154,63 @@ export const UserProfile = ({ children }) => {
             <>
               <section className={theme ? style.dark : ''}>
                 <Header headertext={`Edit Profile`} />
-                <form onSubmit={submitChanges}>
-                  <div className={style.editimg}>
-                    <img
-                      className={style.profilimgedit}
-                      src={
-                        file
-                          ? file
-                          : `https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage}`
-                      }
-                    />
-                    <div className={style.imgupload}>
-                      <label htmlFor="file-input">
-                        <img style={{ width: '7vw', cursor: 'pointer' }} src={editProfile} />
-                      </label>
-
-                      <input
-                        name="profilImage"
-                        onChange={handleChange}
-                        id="file-input"
-                        type="file"
+                {!isLoading ? (
+                  <form onSubmit={submitChanges}>
+                    <div className={style.editimg}>
+                      <img
+                        className={style.profilimgedit}
+                        src={
+                          file
+                            ? file
+                            : `https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage}`
+                        }
                       />
+                      <div className={style.imgupload}>
+                        <label htmlFor="file-input">
+                          <img style={{ width: '7vw', cursor: 'pointer' }} src={editProfile} />
+                        </label>
+
+                        <input
+                          name="profilImage"
+                          onChange={handleChange}
+                          id="file-input"
+                          type="file"
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  <input
-                    className={style.input}
-                    name="firstname"
-                    placeholder="First Name"
-                    value={changes.firstname || ''}
-                    onChange={handleInputChange}
-                  />
-                  <input
-                    className={style.input}
-                    name="lastname"
-                    placeholder="Last Name"
-                    value={changes.lastname || ''}
-                    onChange={handleInputChange}
-                  />
+                    <input
+                      className={style.input}
+                      name="firstname"
+                      placeholder="First Name"
+                      value={changes.firstname || ''}
+                      onChange={handleInputChange}
+                    />
+                    <input
+                      className={style.input}
+                      name="lastname"
+                      placeholder="Last Name"
+                      value={changes.lastname || ''}
+                      onChange={handleInputChange}
+                    />
 
-                  <textarea
-                    className={style.textinput}
-                    name="description"
-                    placeholder="About me"
-                    value={changes.description || ''}
-                    onChange={handleInputChange}
-                  />
+                    <textarea
+                      className={style.textinput}
+                      name="description"
+                      placeholder="About me"
+                      value={changes.description || ''}
+                      onChange={handleInputChange}
+                    />
 
-                  <Interests changes={changes} setChanges={setChanges} edit={edit} />
-                  {!isLoading ? (
+                    <Interests changes={changes} setChanges={setChanges} edit={edit} />
+
                     <button className={style.savebutton} type="submit">
                       <p>Save changes</p>
                     </button>
-                  ) : (
-                    <FallbackLoadingScreen />
-                  )}
-                </form>
+                  </form>
+                ) : (
+                  <LoadingElement />
+                )}
               </section>
             </>
           )}
