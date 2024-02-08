@@ -15,6 +15,7 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
+  object-fit: cover;
 }
 
 .flexdiv {
@@ -69,8 +70,6 @@
 }
 
 .wrapper1 {
-  width: 85%;
-  margin: 0 auto;
   min-height: 100vh;
 }
 
@@ -99,4 +98,14 @@
 
 .comment {
   font-size: 1.4rem;
+}
+
+.dark .input {
+  background-color: rgb(36, 36, 36);
+  box-shadow: 0 0 10px #121212;
+}
+
+.article {
+  width: 85%;
+  margin: 0 auto;
 }

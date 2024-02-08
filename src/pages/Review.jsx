@@ -5,9 +5,10 @@ import style from "./css/Review.module.css";
 import { Header } from "../components/header/Header";
 import { Rating } from "react-simple-star-rating";
 import { displayFavMessage } from "../utils/helperFunction";
-import { SetFavoriteMessageContext } from "../context/context";
+import { SetFavoriteMessageContext, ThemeContext } from "../context/context";
 
 export function Review() {
+  const { theme } = useContext(ThemeContext);
   const [creator, setCreator] = useState([]);
   const [rating, setRating] = useState(0);
   const { id } = useParams();
@@ -79,32 +80,37 @@ export function Review() {
   if (creator) {
     return (
       <>
-        <Header
-          headertext={`Review ${creator.firstname} ${creator.lastname}`}
-        />
-        <main className={style.wrapper1}>
-          <div>
-            <img
-              className={style.creatorprofil_img}
-              src={`${pb.baseUrl}/api/files/${creator.collectionId}/${creator.id}/${creator.profilImage}`}
-              alt="Profilbild"
+        <section className={theme ? style.dark : null}>
+          <article className={style.article}>
+            <Header
+              headertext={`Review ${creator.firstname}`}
+              className={style.header}
             />
-          </div>
-          <div>
-            <Rating
-              onClick={handleRating}
-              fillColor="#00ECAA"
-              className={style.stars}
-            />
-            <div className={style.commentdiv}>
-              <label className={style.label}>★ Your Review</label>
-              <input type="text" ref={commentRef} className={style.input} />
-            </div>
-          </div>
-          <button className={style.button} onClick={sendReview}>
-            SUBMIT
-          </button>
-        </main>
+            <main className={style.wrapper1}>
+              <div>
+                <img
+                  className={style.creatorprofil_img}
+                  src={`${pb.baseUrl}/api/files/${creator.collectionId}/${creator.id}/${creator.profilImage}`}
+                  alt="Profilbild"
+                />
+              </div>
+              <div>
+                <Rating
+                  onClick={handleRating}
+                  fillColor="#00ECAA"
+                  className={style.stars}
+                />
+                <div className={style.commentdiv}>
+                  <label className={style.label}>★ Your Review</label>
+                  <input type="text" ref={commentRef} className={style.input} />
+                </div>
+              </div>
+              <button className={style.button} onClick={sendReview}>
+                SUBMIT
+              </button>
+            </main>
+          </article>
+        </section>
       </>
     );
   }

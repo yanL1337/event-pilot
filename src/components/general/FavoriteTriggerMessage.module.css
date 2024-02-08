@@ -10,7 +10,7 @@
   min-height: 67px;
   width: 100%;
   font-weight: 700;
-  border-radius: 12px;
+  border-radius: 0 0 15px 15px;
   padding: 16px 22px 17px 20px;
   background: var(--selectedColor);
   z-index: 10;

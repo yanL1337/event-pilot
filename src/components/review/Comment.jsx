@@ -15,7 +15,7 @@ export function Comment({ singleComment }) {
       setWriter(record);
     }
     getWriter();
-  }, [singleComment]);
+  }, []);
 
   if (singleComment && writer) {
     return (

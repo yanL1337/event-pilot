@@ -13,7 +13,7 @@
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  object-fit: "cover";
+  object-fit: cover;
   margin: 0 auto;
   display: block;
 }
@@ -173,4 +173,49 @@ input {
   border-radius: 15px;
   cursor: "pointer";
   color: #5d3ede;
+}
+
+.addinterest {
+  border: none;
+  border-radius: 15px;
+}
+
+.addinterest select {
+  background-color: #e6e6e6;
+  border: none;
+  border-radius: 15px 0 0 15px;
+  font-size: 1.2rem;
+  font-family: inter;
+  font-weight: 100;
+  padding: 10px;
+  color: #747688;
+}
+
+.x {
+  background-color: #747688;
+  border: none;
+  border-radius: 0 15px 15px 0;
+  font-size: 1.2rem;
+  font-family: inter;
+  font-weight: 100;
+  padding: 11px;
+  color: #e6e6e6;
+}
+
+.dark .textinput {
+  background-color: rgb(36, 36, 36);
+  box-shadow: 0 0 10px #121212;
+}
+
+.dark .input {
+  background-color: rgb(36, 36, 36);
+  box-shadow: 0 0 10px #121212;
+}
+
+.dark .addinterest select {
+  background-color: rgb(36, 36, 36);
+}
+
+.dark .x {
+  background-color: rgb(36, 36, 36);
 }

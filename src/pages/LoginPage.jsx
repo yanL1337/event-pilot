@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import pb from "../lib/pocketbase.js";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,7 @@ const LoginPage = () => {
   const emailRef = useRef();
   const passRef = useRef();
   const navigate = useNavigate();
+  const [fehlgeschlagen, setFehlgeschlagen] = useState();
 
   const sendData = async () => {
     try {
@@ -17,6 +18,7 @@ const LoginPage = () => {
         .authWithPassword(emailRef.current.value, passRef.current.value);
       navigate("/home");
     } catch (error) {
+      setFehlgeschlagen(true);
       console.log(error);
     }
   };
@@ -45,6 +47,12 @@ const LoginPage = () => {
           type="password"
           placeholder="Password"
         />
+
+        {fehlgeschlagen ? (
+          <p className={style.warning}>
+            Oops, that went wrong, please check your email address and password.
+          </p>
+        ) : null}
 
         <div>
           <DynamicTriggerButton hasArrow={true} onTriggerEventFn={sendData}>

@@ -1,11 +1,29 @@
 .section {
   width: 100vw;
-}
-
-.loading_div {
+  height: 100vh;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  flex-direction: column;
+  gap: 30px;
+  animation: event 2s infinite;
+}
+
+.section span {
+  font-size: 1.2rem;
+  color: #876afd;
+  font-weight: 100;
+}
+
+@keyframes event {
+  0% {
+    rotate: 0;
+  }
+
+  50% {
+    rotate: 0.5turn;
+  }
+  100% {
+    rotate: 1turn;
+  }
 }

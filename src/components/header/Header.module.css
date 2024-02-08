@@ -30,3 +30,7 @@
   background-color: transparent;
   border: none;
 }
+
+.dark .header a {
+  color: white;
+}

@@ -1,9 +1,10 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useState, useContext } from "react";
 import {
   initialEventState,
   reducer,
   validateEventForm,
 } from "../../utils/stateHandler";
+import { ThemeContext } from "../../context/context";
 import { getCityFromLocation } from "../../utils/geoLocation";
 import { getCategories, lockLastDays } from "../../utils/helperFunction";
 import useLocalStorage from "../../hooks/useLocalStorage";
@@ -25,6 +26,7 @@ import {
 import { germanCities } from "../../utils/data";
 
 const AddEventForm = () => {
+  const { theme } = useContext(ThemeContext);
   const [citySuggestions, setCitySuggestion] = useState([]);
   const [eventData, eventFormDispatch] = useReducer(reducer, initialEventState);
   const [addSuccess, setAddSuccess] = useState(false);
@@ -141,8 +143,8 @@ const AddEventForm = () => {
   };
 
   return (
-    <section className={styles.section}>
-      <article>
+    <section className={theme ? styles.dark : null}>
+      <article className={styles.section}>
         <form onSubmit={onSubmitForm}>
           <div
             style={{
@@ -424,7 +426,13 @@ const AddEventForm = () => {
           <div className={styles.successmessage_box}>
             <FontAwesomeIcon icon={faThumbsUp} />
             <p>Sie haben das Event erfolgreich angelegt</p>
-            <div style={{ display: "flex", gap: "12px" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: "12px",
+                alignItems: "center",
+              }}
+            >
               <Link to="/home" className={styles.successmessage_box_elements}>
                 Zurück zu Events
               </Link>

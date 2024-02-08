@@ -25,6 +25,14 @@
   width: 100%;
 }
 
+.item_box_info h2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .item_box_info p {
   color: #5d3ede;
   font-size: 1.2rem;
@@ -43,8 +51,8 @@
   border: none;
   border-radius: 15px;
   padding: 2%;
-  top: 1%;
-  right: 5%;
+  top: 2%;
+  right: 3%;
 }
 
 a {
@@ -56,4 +64,16 @@ a {
   color: #120d26;
   font-weight: 500;
   line-height: 25px;
+}
+
+.dark .item_box {
+  box-shadow: 0 0 10px #121212;
+}
+
+.dark a {
+  color: white;
+}
+
+.dark .item_box_info p {
+  color: #9c9ffc;
 }
