@@ -1,13 +1,12 @@
-import PropTypes from 'prop-types';
-import { useEffect, useRef, useState } from 'react';
-import pb from '../lib/pocketbase.js';
-import editProfile from '/images/EditIcon.svg';
-import Following from '../components/following/Following.jsx';
-import Interests from '../components/interests/Interests.jsx';
-import { OwnEvent } from '../components/events/OwnEvent.jsx';
-import { Header } from '../components/header/Header.jsx';
-import style from './css/UserProfil.module.css';
-
+import PropTypes from "prop-types";
+import { useEffect, useRef, useState } from "react";
+import pb from "../lib/pocketbase.js";
+import editProfile from "/images/EditIcon.svg";
+import Following from "../components/following/Following.jsx";
+import Interests from "../components/interests/Interests.jsx";
+import { OwnEvent } from "../components/events/OwnEvent.jsx";
+import { Header } from "../components/header/Header.jsx";
+import style from "./css/UserProfil.module.css";
 
 export const UserProfile = ({ children }) => {
   const [user, setUser] = useState();
@@ -68,6 +67,12 @@ export const UserProfile = ({ children }) => {
       console.error("Failed to update", error);
     }
   };
+
+  const [file, setFile] = useState();
+  function handleChange(e) {
+    console.log(e.target.files);
+    setFile(URL.createObjectURL(e.target.files[0]));
+  }
 
   // ##############################
   function about() {
@@ -153,7 +158,11 @@ export const UserProfile = ({ children }) => {
                 <div className={style.editimg}>
                   <img
                     className={style.profilimgedit}
-                    src={`https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage}`}
+                    src={
+                      file
+                        ? file
+                        : `https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage}`
+                    }
                   />
                   <div className={style.imgupload}>
                     <label htmlFor="file-input">
@@ -163,7 +172,12 @@ export const UserProfile = ({ children }) => {
                       />
                     </label>
 
-                    <input name="profilImage" id="file-input" type="file" />
+                    <input
+                      name="profilImage"
+                      onChange={handleChange}
+                      id="file-input"
+                      type="file"
+                    />
                   </div>
                 </div>
 
@@ -190,7 +204,11 @@ export const UserProfile = ({ children }) => {
                   onChange={handleInputChange}
                 />
 
-                <Interests changes={changes} setChanges={setChanges} edit={edit} />
+                <Interests
+                  changes={changes}
+                  setChanges={setChanges}
+                  edit={edit}
+                />
                 <button className={style.savebutton} type="submit">
                   <p>Save changes</p>
                 </button>
@@ -238,14 +256,14 @@ export const UserProfile = ({ children }) => {
 
         {ownEvents.length > 0 ? (
           ownEvents?.map((singleEvent) => {
-                      return (
-            <OwnEvent
-              singleEvent={singleEvent}
-              favMessageTimer={favMessageTimer}
-              onDeleteEvents={deleteEvents}
-              key={crypto.randomUUID()}
-            />
-          )
+            return (
+              <OwnEvent
+                singleEvent={singleEvent}
+                favMessageTimer={favMessageTimer}
+                onDeleteEvents={deleteEvents}
+                key={crypto.randomUUID()}
+              />
+            );
           })
         ) : (
           <div
