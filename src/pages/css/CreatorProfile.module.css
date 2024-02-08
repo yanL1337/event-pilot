@@ -50,9 +50,11 @@
   border-radius: 15px;
   background-color: transparent;
   font-family: inter;
+  height: 47px;
 }
 
 .activefollowbutton {
+  height: 47px;
   width: 50%;
   padding: 10px;
   font-size: 1.6rem;

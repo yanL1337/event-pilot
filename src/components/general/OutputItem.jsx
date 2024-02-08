@@ -60,14 +60,14 @@ const OutputItem = ({
       // message einblenden
       if (fav) {
         displayFavMessage(
-          `${eventName} wurde als Favoriten hinzugefügt`,
+          `${eventName} was added as a favorite`,
           setFavMessage,
           favMessageTimer,
           "favorites"
         );
       } else {
         displayFavMessage(
-          `${eventName} wurde aus den Favoriten entfernt`,
+          `${eventName} has been removed from favorites`,
           setFavMessage,
           favMessageTimer,
           "favorites"
