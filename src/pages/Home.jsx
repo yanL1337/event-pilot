@@ -44,7 +44,7 @@ export function Home({ children }) {
   }, []);
 
   useEffect(() => {
-    const getLoc = async () => {
+    const getLoc = () => {
       getCityFromLocation().then((city) =>
         setNearby(events?.filter((ev) => ev?.location == city))
       );
@@ -77,7 +77,7 @@ export function Home({ children }) {
     cssEase: "linear",
   };
 
-  if (events && user && nearby && randomEvent) {
+  if (nearby.length > 0 && user && events && randomEvent) {
     return (
       <>
         <LocationHeader
