@@ -15,7 +15,6 @@ import style from "./css/Home.module.css";
 import OutputHome from "../components/general/OutputHome";
 import FallbackLoadingScreen from "../components/loading/FallbackLoadingScreen";
 
-
 export function Home({ children }) {
   const [events, setEvents] = useState([]);
   const [userLoc, setUserLoc] = useState([]);
@@ -78,69 +77,61 @@ export function Home({ children }) {
     cssEase: "linear",
   };
 
-
-  if (events && user && randomEvent) {
-  return (
-    <>
-       <LocationHeader
+  if (events && user && nearby && randomEvent) {
+    return (
+      <>
+        <LocationHeader
           logo={"/images/Logo.png"}
           bgColor={"transparent"}
-          fontcolor={"#876AFD"}/>
-        <section className={style.wrapper}>
-      <div
-  className={style.flex}
-     
-      >
-        <h3>Upcoming Events</h3>
-        <Link to="/event/search">See all</Link>
-      </div>
-      <Slider {...settings}>
-        {user &&
-          events?.map((event) => (
-            <div key={event.id}>
-              <OutputHome
-                data={event}
-                allFavorites={user?.favoriteEvents || []}
-                registeredEvents={[]}
-                favMessageTimer={favContext}
-                isOnFavSite={false}
-              />
-            </div>
-          ))}
-      </Slider>
-
-      <div
-         className={style.flex}
-      >
-        <h3>Nearby you</h3>
-        <p onClick={navigateToNearbyEvent}>See all</p>
-      </div>
-      <Slider {...settings}>
-        {user &&
-          nearby?.map((event) => (
-            <div key={event.id}>
-              <OutputHome
-                data={event}
-                allFavorites={user?.favoriteEvents || []}
-                registeredEvents={[]}
-                favMessageTimer={favContext}
-                isOnFavSite={false}
-              />
-            </div>
-          ))}
-      </Slider>
-
-      
-      <div  className={style.random}>
-        <OutputItem
-          data={randomEvent || {}}
-          allFavorites={user?.favoriteEvents || []}
-          registeredEvents={[]}
-          favMessageTimer={{}}
-          isOnFavSite={false}
-
+          fontcolor={"#876AFD"}
         />
+        <section className={style.wrapper}>
+          <div className={style.flex}>
+            <h3>Upcoming Events</h3>
+            <Link to="/event/search">See all</Link>
+          </div>
+          <Slider {...settings}>
+            {user &&
+              events?.map((event) => (
+                <div key={event.id}>
+                  <OutputHome
+                    data={event}
+                    allFavorites={user?.favoriteEvents || []}
+                    registeredEvents={[]}
+                    favMessageTimer={favContext}
+                    isOnFavSite={false}
+                  />
+                </div>
+              ))}
+          </Slider>
 
+          <div className={style.flex}>
+            <h3>Nearby you</h3>
+            <a onClick={navigateToNearbyEvent}>See all</a>
+          </div>
+          <Slider {...settings}>
+            {user &&
+              nearby?.map((event) => (
+                <div key={event.id}>
+                  <OutputHome
+                    data={event}
+                    allFavorites={user?.favoriteEvents || []}
+                    registeredEvents={[]}
+                    favMessageTimer={favContext}
+                    isOnFavSite={false}
+                  />
+                </div>
+              ))}
+          </Slider>
+
+          <div className={style.random}>
+            <OutputItem
+              data={randomEvent || {}}
+              allFavorites={user?.favoriteEvents || []}
+              registeredEvents={[]}
+              favMessageTimer={{}}
+              isOnFavSite={false}
+            />
           </div>
         </section>
         {children}
