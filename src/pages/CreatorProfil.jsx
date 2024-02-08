@@ -1,17 +1,16 @@
-import { useParams, Link, useLocation } from 'react-router-dom';
-import { useState, useEffect, useContext, useRef } from 'react';
-import pb from '../lib/pocketbase';
-import style from './css/CreatorProfile.module.css';
-import { CreatorEvent } from '../components/events/CreatorEvents';
-import FallbackLoadingScreen from '../components/loading/FallbackLoadingScreen';
-import { Comment } from '../components/review/Comment';
-import { Rating } from '../components/review/Rating';
-import styles from './css/Review.module.css';
-import { Header } from '../components/header/Header';
-import { SetFavoriteMessageContext } from '../context/context';
-import { displayFavMessage } from '../utils/helperFunction';
-import LoadingElement from '../components/loading/LoadingElement';
-
+import { useParams, Link, useLocation } from "react-router-dom";
+import { useState, useEffect, useContext, useRef } from "react";
+import pb from "../lib/pocketbase";
+import style from "./css/CreatorProfile.module.css";
+import { CreatorEvent } from "../components/events/CreatorEvents";
+import FallbackLoadingScreen from "../components/loading/FallbackLoadingScreen";
+import { Comment } from "../components/review/Comment";
+import { Rating } from "../components/review/Rating";
+import styles from "./css/Review.module.css";
+import { Header } from "../components/header/Header";
+import { SetFavoriteMessageContext } from "../context/context";
+import { displayFavMessage } from "../utils/helperFunction";
+import LoadingElement from "../components/loading/LoadingElement";
 
 export function CreatorProfil() {
   const [creator, setCreator] = useState([]);
@@ -37,16 +36,15 @@ export function CreatorProfil() {
 
   useEffect(() => {
     async function getCreator() {
-
       setInitialLoading(true);
-      const record = await pb.collection('users').getOne(id);
+      const record = await pb.collection("users").getOne(id);
       setCreator(record);
       setFollowers(record.follower?.length);
     }
     getCreator();
 
     // Wenn wir von der Review Seite kommen, hängen wir den State an mit dem Wert review
-    if (location.state && location.state === 'review') {
+    if (location.state && location.state === "review") {
       reviews();
     }
   }, [id, location.state]);
@@ -63,8 +61,8 @@ export function CreatorProfil() {
     async function getComments() {
       const commentList = await pb.collection("reviews").getList(1, 20, {
         filter: `creator_id="${creator?.id}"`,
-        sort: '-created',
-        expand: 'writer',
+        sort: "-created",
+        expand: "writer",
       });
 
       setComments(commentList);
@@ -72,7 +70,6 @@ export function CreatorProfil() {
     getComments();
     getEvents();
   }, [creator]);
-
 
   //- functions für die verschiedenen Tabs
   function about() {
@@ -109,21 +106,34 @@ export function CreatorProfil() {
   async function follow(name) {
     if (!followed) {
       setIsLoading(true);
-      await pb.collection('users').update(creator.id, { 'follower+': [pb.authStore.model.id] });
+      await pb
+        .collection("users")
+        .update(creator.id, { "follower+": [pb.authStore.model.id] });
       setIsLoading(false);
       setFollowed(true);
       setFollowers((count) => count + 1);
 
-      displayFavMessage(`You follow ${name}`, setFavMessage, favMessageTimer, 'follow');
+      displayFavMessage(
+        `You follow ${name}`,
+        setFavMessage,
+        favMessageTimer,
+        "follow"
+      );
     } else {
-
       setIsLoading(true);
-      await pb.collection('users').update(creator.id, { 'follower-': [pb.authStore.model.id] });
+      await pb
+        .collection("users")
+        .update(creator.id, { "follower-": [pb.authStore.model.id] });
       setIsLoading(false);
       setFollowed(false);
       setFollowers((count) => count - 1);
 
-      displayFavMessage(`You unfollow ${name}`, setFavMessage, favMessageTimer, 'unfollow');
+      displayFavMessage(
+        `You unfollow ${name}`,
+        setFavMessage,
+        favMessageTimer,
+        "unfollow"
+      );
     }
   }
 
@@ -145,7 +155,7 @@ export function CreatorProfil() {
 
   //   ======================================
   if (creator) {
-    if (state === 'about' && !initialLoading) {
+    if (state === "about" && !initialLoading) {
       return (
         <main className={style.wrapper}>
           <Header headertext={creator.firstname} />
@@ -168,13 +178,19 @@ export function CreatorProfil() {
           <div className={style.button}>
             {!isLoading ? (
               <button
-                className={followed ? style.activefollowbutton : style.followbutton}
+                className={
+                  followed ? style.activefollowbutton : style.followbutton
+                }
                 onClick={() => follow(creator.firstname)}
               >
-                Follow
+                {followed ? "Unfollow" : "Follow"}
               </button>
             ) : (
-              <button className={followed ? style.activefollowbutton : style.followbutton}>
+              <button
+                className={
+                  followed ? style.activefollowbutton : style.followbutton
+                }
+              >
                 <LoadingElement dynamicHeight="25" />
               </button>
             )}
@@ -205,7 +221,7 @@ export function CreatorProfil() {
           <p className={style.description}>{creator.description}</p>
         </main>
       );
-    } else if (state === 'events' && !initialLoading) {
+    } else if (state === "events" && !initialLoading) {
       return (
         <main className={style.wrapper}>
           <Header headertext={creator.firstname} />
@@ -226,10 +242,12 @@ export function CreatorProfil() {
           </div>
           <div className={style.button}>
             <button
-              className={followed ? style.activefollowbutton : style.followbutton}
+              className={
+                followed ? style.activefollowbutton : style.followbutton
+              }
               onClick={() => follow(creator.firstname)}
             >
-              Follow
+              {followed ? "Unfollow" : "Follow"}
             </button>
             <Link to={`/review/${id}`}>Review</Link>
           </div>
@@ -265,7 +283,7 @@ export function CreatorProfil() {
           })}
         </main>
       );
-    } else if (state === 'reviews' && !initialLoading) {
+    } else if (state === "reviews" && !initialLoading) {
       return (
         <main className={style.wrapper}>
           <Header headertext={creator.firstname} />
@@ -286,10 +304,12 @@ export function CreatorProfil() {
           </div>
           <div className={style.button}>
             <button
-              className={followed ? style.activefollowbutton : style.followbutton}
+              className={
+                followed ? style.activefollowbutton : style.followbutton
+              }
               onClick={() => follow(creator.firstname)}
             >
-              Follow
+              {followed ? "Unfollow" : "Follow"}
             </button>
             <Link to={`/review/${id}`}>Review</Link>
           </div>
