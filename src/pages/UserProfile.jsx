@@ -1,34 +1,34 @@
-import PropTypes from "prop-types";
-import { useEffect, useRef, useState, useContext } from "react";
-import pb from "../lib/pocketbase.js";
-import editProfile from "/images/EditIcon.svg";
-import Following from "../components/following/Following.jsx";
-import Interests from "../components/interests/Interests.jsx";
-import OwnEvent from "../components/events/OwnEvent.jsx";
-import { Header } from "../components/header/Header.jsx";
-import style from "./css/UserProfil.module.css";
-import { ThemeContext } from "../context/context";
-import FallbackLoadingScreen from "../components/loading/FallbackLoadingScreen.jsx";
-import FlipMove from "react-flip-move";
+import PropTypes from 'prop-types';
+import { useEffect, useRef, useState, useContext } from 'react';
+import pb from '../lib/pocketbase.js';
+import editProfile from '/images/EditIcon.svg';
+import Following from '../components/following/Following.jsx';
+import Interests from '../components/interests/Interests.jsx';
+import OwnEvent from '../components/events/OwnEvent.jsx';
+import { Header } from '../components/header/Header.jsx';
+import style from './css/UserProfil.module.css';
+import { ThemeContext } from '../context/context';
+import FallbackLoadingScreen from '../components/loading/FallbackLoadingScreen.jsx';
+import FlipMove from 'react-flip-move';
+import LoadingElement from '../components/loading/LoadingElement.jsx';
 
 export const UserProfile = ({ children }) => {
   const { theme } = useContext(ThemeContext);
   const [user, setUser] = useState();
   const [edit, setEdit] = useState(false);
   const [changes, setChanges] = useState({});
-  const [state, setState] = useState("about");
+  const [state, setState] = useState('about');
   const [ownEvents, setOwnEvents] = useState([]);
   const [colorAbout, setColorAbout] = useState(true);
   const [colorEvents, setColorEvents] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const favMessageTimer = useRef(null);
 
   useEffect(() => {
     const getUser = async () => {
       try {
-        const record = await pb
-          .collection("users")
-          .getOne(pb.authStore.model.id);
+        const record = await pb.collection('users').getOne(pb.authStore.model.id);
         setUser(record);
         setChanges(record);
       } catch (error) {
@@ -48,27 +48,29 @@ export const UserProfile = ({ children }) => {
     event.preventDefault();
     const formData = new FormData();
 
-    formData.append("firstname", changes.firstname);
-    formData.append("lastname", changes.lastname);
-    formData.append("description", changes.description);
+    formData.append('firstname', changes.firstname);
+    formData.append('lastname', changes.lastname);
+    formData.append('description', changes.description);
     const fileInput = document.querySelector('input[type="file"]');
 
     if (fileInput && fileInput.files[0]) {
-      formData.append("profilImage", fileInput.files[0]);
+      formData.append('profilImage', fileInput.files[0]);
     }
 
     for (let item of changes.interests) {
       console.log(item);
-      formData.append("interests", item);
+      formData.append('interests', item);
     }
 
     //formData.append("interests", changes.interests);
     try {
-      const record = await pb.collection("users").update(user.id, formData);
+      setIsLoading(true);
+      const record = await pb.collection('users').update(user.id, formData);
       setUser(record);
       setEdit(false);
+      setIsLoading(false);
     } catch (error) {
-      console.error("Failed to update", error);
+      console.error('Failed to update', error);
     }
   };
 
@@ -80,19 +82,19 @@ export const UserProfile = ({ children }) => {
 
   // ##############################
   function about() {
-    setState("about");
+    setState('about');
     setColorAbout(true);
     setColorEvents(false);
   }
   function events() {
-    setState("events");
+    setState('events');
     setColorAbout(false);
     setColorEvents(true);
   }
 
   useEffect(() => {
     async function getOwnEvents() {
-      const ownEvents = await pb.collection("events").getFullList({
+      const ownEvents = await pb.collection('events').getFullList({
         filter: `creator="${pb.authStore.model.id}"`,
       });
       setOwnEvents(ownEvents);
@@ -107,7 +109,7 @@ export const UserProfile = ({ children }) => {
   };
 
   //* wird angezeigt, wenn About ausgewählt ist
-  if (state === "about" && user) {
+  if (state === 'about' && user) {
     return (
       <>
         <section className={style.wrapper}>
@@ -130,16 +132,10 @@ export const UserProfile = ({ children }) => {
                 </div>
               </div>
               <div className={style.tabs}>
-                <button
-                  className={colorAbout ? style.activeTab : null}
-                  onClick={about}
-                >
+                <button className={colorAbout ? style.activeTab : null} onClick={about}>
                   ABOUT
                 </button>
-                <button
-                  className={colorEvents ? style.activeTab : null}
-                  onClick={events}
-                >
+                <button className={colorEvents ? style.activeTab : null} onClick={events}>
                   EVENTS
                 </button>
               </div>
@@ -156,67 +152,65 @@ export const UserProfile = ({ children }) => {
           ) : (
             //* wird beim EditProfil Button angezeigt
             <>
-              <section className={theme ? style.dark : ""}>
+              <section className={theme ? style.dark : ''}>
                 <Header headertext={`Edit Profile`} />
-                <form onSubmit={submitChanges}>
-                  <div className={style.editimg}>
-                    <img
-                      className={style.profilimgedit}
-                      src={
-                        file
-                          ? file
-                          : `https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage}`
-                      }
-                    />
-                    <div className={style.imgupload}>
-                      <label htmlFor="file-input">
-                        <img
-                          style={{ width: "7vw", cursor: "pointer" }}
-                          src={editProfile}
-                        />
-                      </label>
-
-                      <input
-                        name="profilImage"
-                        onChange={handleChange}
-                        id="file-input"
-                        type="file"
+                {!isLoading ? (
+                  <form onSubmit={submitChanges}>
+                    <div className={style.editimg}>
+                      <img
+                        className={style.profilimgedit}
+                        src={
+                          file
+                            ? file
+                            : `https://event-pilot.pockethost.io/api/files/${user?.collectionId}/${user?.id}/${user?.profilImage}`
+                        }
                       />
+                      <div className={style.imgupload}>
+                        <label htmlFor="file-input">
+                          <img style={{ width: '7vw', cursor: 'pointer' }} src={editProfile} />
+                        </label>
+
+                        <input
+                          name="profilImage"
+                          onChange={handleChange}
+                          id="file-input"
+                          type="file"
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  <input
-                    className={style.input}
-                    name="firstname"
-                    placeholder="First Name"
-                    value={changes.firstname || ""}
-                    onChange={handleInputChange}
-                  />
-                  <input
-                    className={style.input}
-                    name="lastname"
-                    placeholder="Last Name"
-                    value={changes.lastname || ""}
-                    onChange={handleInputChange}
-                  />
+                    <input
+                      className={style.input}
+                      name="firstname"
+                      placeholder="First Name"
+                      value={changes.firstname || ''}
+                      onChange={handleInputChange}
+                    />
+                    <input
+                      className={style.input}
+                      name="lastname"
+                      placeholder="Last Name"
+                      value={changes.lastname || ''}
+                      onChange={handleInputChange}
+                    />
 
-                  <textarea
-                    className={style.textinput}
-                    name="description"
-                    placeholder="About me"
-                    value={changes.description || ""}
-                    onChange={handleInputChange}
-                  />
+                    <textarea
+                      className={style.textinput}
+                      name="description"
+                      placeholder="About me"
+                      value={changes.description || ''}
+                      onChange={handleInputChange}
+                    />
 
-                  <Interests
-                    changes={changes}
-                    setChanges={setChanges}
-                    edit={edit}
-                  />
-                  <button className={style.savebutton} type="submit">
-                    <p>Save changes</p>
-                  </button>
-                </form>
+                    <Interests changes={changes} setChanges={setChanges} edit={edit} />
+
+                    <button className={style.savebutton} type="submit">
+                      <p>Save changes</p>
+                    </button>
+                  </form>
+                ) : (
+                  <LoadingElement />
+                )}
               </section>
             </>
           )}
@@ -247,16 +241,10 @@ export const UserProfile = ({ children }) => {
           </div>
 
           <div className={style.tabs}>
-            <button
-              className={colorAbout ? style.activeTab : null}
-              onClick={about}
-            >
+            <button className={colorAbout ? style.activeTab : null} onClick={about}>
               ABOUT
             </button>
-            <button
-              className={colorEvents ? style.activeTab : null}
-              onClick={events}
-            >
+            <button className={colorEvents ? style.activeTab : null} onClick={events}>
               EVENTS
             </button>
           </div>
@@ -275,12 +263,12 @@ export const UserProfile = ({ children }) => {
             ) : (
               <div
                 style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginTop: "30%",
-                  gap: "20px",
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginTop: '30%',
+                  gap: '20px',
                 }}
               >
                 <h2>You aren’t hosting any events yet</h2>

@@ -9,3 +9,7 @@
   margin: 0 3vw;
   padding: 1vh 2vw;
 }
+
+.slick-list {
+  height: 260px !important;
+}
