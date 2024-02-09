@@ -6,8 +6,7 @@ import FallbackLoadingScreen from '../loading/FallbackLoadingScreen';
 import style from '../../pages/css/Review.module.css';
 
 export function Comment({ singleComment }) {
-
-  if (singleComment && singleComment.expand.writer) {
+  if (singleComment.expand && singleComment.expand.writer) {
     const profileImagePath = `${pb.baseUrl}/api/files/${singleComment.expand.writer.collectionId}/${singleComment.expand.writer.id}/${singleComment.expand.writer.profilImage}`;
     return (
       <section className={style.wrapper}>

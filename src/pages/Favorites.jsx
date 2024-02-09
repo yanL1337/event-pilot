@@ -35,7 +35,7 @@ export function Favorites({ children }) {
     setIsLoading(true);
     const response = await getEventFavoritesData();
 
-    if (response.length > 0) {
+    if (response && response.length > 0) {
       // Wir erstellen nun aus response ein upcoming und ein past Event array
       const pastEvents = response.filter((events) => new Date(events.date) < new Date());
       const upComingEvents = response.filter((events) => new Date(events.date) >= new Date());

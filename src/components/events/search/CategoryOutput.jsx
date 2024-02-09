@@ -19,7 +19,7 @@ const CategoryOutput = ({ viewEventData, isLoading, eventFilter }) => {
 
   const fetchFavorites = useCallback(async () => {
     const response = await getEventFavorites();
-    setAllFavorites(response.map((cur) => cur.id));
+    setAllFavorites(response?.map((cur) => cur.id));
   }, []);
 
   useEffect(() => {
